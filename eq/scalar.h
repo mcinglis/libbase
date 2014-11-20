@@ -3,7 +3,10 @@
 #define LIBBASE_EQ_SCALAR_H
 
 
-#define DERIVING_EQ_SCALAR( T, TF ) \
+#include <libtypes/types.h>
+
+
+#define DERIVING_EQ_SCALAR( T, TT, TF ) \
                                                                               \
                                                                               \
     bool                                                                      \

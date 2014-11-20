@@ -3,13 +3,16 @@
 #define LIBBASE_ENUM_SCALAR_H
 
 
-#define DERIVING_ENUM_SCALAR( T, TF ) \
+#include <libmacro/require.h>  // REQUIRE
+
+
+#define DERIVING_ENUM_SCALAR( T, TT, TF ) \
                                                                               \
                                                                               \
     T                                                                         \
     TF##__succ( T const x )                                                   \
     {                                                                         \
-        REQUIRE( x < TF##__max_bound() );                                     \
+        REQUIRE( x != TF##__max_bound() );                                    \
         return x + 1;                                                         \
     }                                                                         \
                                                                               \
@@ -24,7 +27,7 @@
     T                                                                         \
     TF##__pred( T const x )                                                   \
     {                                                                         \
-        REQUIRE( x > TF##__min_bound() );                                     \
+        REQUIRE( x != TF##__min_bound() );                                    \
         return x - 1;                                                         \
     }                                                                         \
                                                                               \

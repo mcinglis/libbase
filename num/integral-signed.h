@@ -3,10 +3,12 @@
 #define LIBBASE_NUM_INTEGRAL_SIGNED_H
 
 
-#include "../types.h"
+#include <libtypes/types.h>    // bool, ord
+#include <libmacro/require.h>  // REQUIRE
+#include <libmacro/logic.h>    // IMPLIES
 
 
-#define DERIVING_NUM_INTEGRAL_SIGNED( T, TF ) \
+#define DERIVING_NUM_INTEGRAL_SIGNED( T, TT, TF ) \
                                                                               \
                                                                               \
     bool is_signed( void ) { return true; }                                   \
@@ -16,8 +18,8 @@
     TF##__can_add( T const x,                                                 \
                    T const y )                                                \
     {                                                                         \
-        return implies( y > 0, x <= ( TF##__max_bound() - y ) )               \
-            && implies( y < 0, x >= ( TF##__min_bound() - y ) );              \
+        return IMPLIES( y > 0, x <= ( TF##__max_bound() - y ) )               \
+            && IMPLIES( y < 0, x >= ( TF##__min_bound() - y ) );              \
     }                                                                         \
                                                                               \
                                                                               \
@@ -25,8 +27,8 @@
     TF##__can_sub( T const x,                                                 \
                    T const y )                                                \
     {                                                                         \
-        return implies( y > 0, x >= ( TF##__min_bound() + y ) )               \
-            && implies( y < 0, x <= ( TF##__max_bound() + y ) );              \
+        return IMPLIES( y > 0, x >= ( TF##__min_bound() + y ) )               \
+            && IMPLIES( y < 0, x <= ( TF##__max_bound() + y ) );              \
     }                                                                         \
                                                                               \
                                                                               \
@@ -39,7 +41,7 @@
                                : ( y >= ( TF##__min_bound() / x ) ) )         \
                          : ( ( y > 0 )                                        \
                                ? ( x >= ( TF##__min_bound() / y ) )           \
-                               : implies( x != 0,                             \
+                               : IMPLIES( x != 0,                             \
                                           y >= ( TF##__max_bound() / x ) ) ); \
     }                                                                         \
                                                                               \
@@ -49,7 +51,7 @@
                    T const y )                                                \
     {                                                                         \
         return ( y != 0 )                                                     \
-            && !( ( x == TF##__min_bound() ) && ( y == -1 ) );                \
+            && IMPLIES( x == TF##__min_bound(), y != -1 );                    \
     }                                                                         \
                                                                               \
                                                                               \
@@ -121,12 +123,24 @@
     }                                                                         \
                                                                               \
                                                                               \
+    bool                                                                      \
+    TF##__same_sign( T const x,                                               \
+                     T const y )                                              \
+    {                                                                         \
+        return ( x ^ y ) < 0;                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
     ord  TF##__compare_0     ( T const x ) { return TF##__compare( x, 0 ); }  \
     bool TF##__is_negative   ( T const x ) { return x < 0; }                  \
     bool TF##__is_nonpositive( T const x ) { return x <= 0; }                 \
     bool TF##__is_zero       ( T const x ) { return x == 0; }                 \
     bool TF##__is_nonnegative( T const x ) { return x >= 0; }                 \
     bool TF##__is_positive   ( T const x ) { return x > 0; }                  \
+                                                                              \
+                                                                              \
+    bool TF##__is_even( T const x ) { return x % 2 == 0; }                    \
+    bool TF##__is_odd ( T const x ) { return x % 2 == 1; }                    \
                                                                               \
                                                                               \
     T TF##__add_2( T const x ) { return TF##__add( x, 2 ); }                  \
