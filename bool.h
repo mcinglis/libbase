@@ -52,9 +52,11 @@ bool bool__max_n( size_t n, bool const * xs );
 // `true`. Returns `false` otherwise. Logically equivalent to `ANY()`.
 // @requires n > 0, xs != NULL
 
+// @public
 #define bool__min( ... ) \
     bool__min_n( PP_COUNT( __VA_ARGS__ ), ( bool[] ){ __VA_ARGS__ } )
 
+// @public
 #define bool__max( ... ) \
     bool__max_n( PP_COUNT( __VA_ARGS__ ), ( bool[] ){ __VA_ARGS__ } )
 
@@ -62,7 +64,6 @@ bool bool__clamp( bool lower, bool upper, bool x );
 // Returns: - `lower` if `lower >= x`;
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
-
 
 
 /////////////////////////////

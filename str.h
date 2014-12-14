@@ -12,7 +12,9 @@
 char const * str__id( char const * xs );         // Returns `xs`.
 
 
-#define EQ__STR
+/////////////////////////////
+/// EQ TYPECLASS
+/////////////////////////////
 
 bool str__equal( char const * xs, char const * ys );
 // Returns `true` if every `i`th character in `xs` is equal to the `i`th
@@ -22,7 +24,9 @@ bool str__not_equal( char const * xs, char const * ys );
 // Returns `!str__equal( xs, ys )`.
 
 
-# define ORD__STR
+/////////////////////////////
+/// ORD TYPECLASS
+/////////////////////////////
 
 ord str__compare( char const * xs, char const * ys );
 // Returns the lexicographical comparison of `xs` and `ys`.
@@ -53,9 +57,11 @@ char const * str__max_n( size_t n, char const * const * xss );
 // Returns the maximum str of the first `n` elements in the array `xss`.
 // @requires n > 0, xss != NULL
 
+// @public
 #define str__min( ... ) \
     str__min_n( PP_COUNT( __VA_ARGS__ ), ( char const * [] ){ __VA_ARGS__ } )
 
+// @public
 #define str__max( ... ) \
     str__max_n( PP_COUNT( __VA_ARGS__ ), ( char const * [] ){ __VA_ARGS__ } )
 

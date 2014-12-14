@@ -1,6 +1,6 @@
 
-#ifndef LIBBASE_BOOL_H
-#define LIBBASE_BOOL_H
+#ifndef LIBBASE_ORD_H
+#define LIBBASE_ORD_H
 
 
 #include <libpp/count.h>        // PP_COUNT
@@ -50,9 +50,11 @@ ord ord__max_n( size_t n, ord const * xs );
 // Returns the maximum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
+// @public
 #define ord__min( ... ) \
     ord__min_n( PP_COUNT( __VA_ARGS__ ), ( ord[] ){ __VA_ARGS__ } )
 
+// @public
 #define ord__max( ... ) \
     ord__max_n( PP_COUNT( __VA_ARGS__ ), ( ord[] ){ __VA_ARGS__ } )
 
@@ -60,7 +62,6 @@ ord ord__clamp( ord lower, ord upper, ord x );
 // Returns: - `lower` if `lower >= x`;
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
-
 
 
 /////////////////////////////

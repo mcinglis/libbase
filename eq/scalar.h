@@ -6,6 +6,7 @@
 #include <libtypes/types.h>
 
 
+// @public
 #define DERIVING_EQ_SCALAR( T, TT, TF ) \
                                                                               \
                                                                               \

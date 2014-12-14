@@ -6,6 +6,7 @@
 #include <libmacro/require.h>  // REQUIRE
 
 
+// @public
 #define DERIVING_ENUM_SCALAR( T, TT, TF ) \
                                                                               \
                                                                               \

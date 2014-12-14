@@ -10,19 +10,25 @@
 uchar uchar__id( uchar x );   // Returns `x`.
 
 
-#define BOUNDED_UCHAR
+/////////////////////////////
+/// BOUNDED TYPECLASS
+/////////////////////////////
 
 uchar uchar__min_bound( void );     // Returns `UCHAR_MIN`.
 uchar uchar__max_bound( void );     // Returns `UCHAR_MAX`.
 
 
-#define EQ__UCHAR
+/////////////////////////////
+/// EQ TYPECLASS
+/////////////////////////////
 
 bool uchar__equal( uchar x, uchar y );        // Returns `x == y`.
 bool uchar__not_equal( uchar x, uchar y );    // Returns `x != y`.
 
 
-#define ORD__UCHAR
+/////////////////////////////
+/// ORD TYPECLASS
+/////////////////////////////
 
 ord uchar__compare( uchar x, uchar y );   // Returns: `LT` if `x < y`,
                                           //          `EQ` if `x == y`, or
@@ -44,9 +50,11 @@ uchar uchar__max_n( size_t n, uchar const * xs );
 // Returns the maximum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
+// @public
 #define uchar__min( ... ) \
     uchar__min_n( PP_COUNT( __VA_ARGS__ ), ( uchar[] ){ __VA_ARGS__ } )
 
+// @public
 #define uchar__max( ... ) \
     uchar__max_n( PP_COUNT( __VA_ARGS__ ), ( uchar[] ){ __VA_ARGS__ } )
 
@@ -56,7 +64,9 @@ uchar uchar__clamp( uchar lower, uchar upper, uchar x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-#define ENUM__UCHAR
+/////////////////////////////
+/// ENUM TYPECLASS
+/////////////////////////////
 
 uchar uchar__succ( uchar x );   // Returns `x + 1`.
                                 // @requires x != uchar__max_bound()
@@ -71,7 +81,9 @@ uchar uchar__pred_b( uchar x ); // Returns `x - 1`, or `uchar__min_bound()`
                                 // if `x == uchar__min_bound()`.
 
 
-#define NUM__UCHAR
+/////////////////////////////
+/// NUM TYPECLASS
+/////////////////////////////
 
 bool uchar__is_signed( void );
 // Returns `false`, because `uchar` values can't be negative.

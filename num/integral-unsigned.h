@@ -8,6 +8,7 @@
 #include <libmacro/logic.h>    // IMPLIES
 
 
+// @public
 #define DERIVING_NUM_INTEGRAL_UNSIGNED( T, TT, TF ) \
                                                                               \
                                                                               \

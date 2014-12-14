@@ -7,6 +7,7 @@
 #include <libmacro/require.h>  // REQUIRE
 
 
+// @public
 #define DERIVING_ORD_SCALAR( T, TT, TF ) \
                                                                               \
                                                                               \

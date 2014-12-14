@@ -10,19 +10,25 @@
 int int__id( int x );   // Returns `x`.
 
 
-#define BOUNDED__INT
+/////////////////////////////
+/// BOUNDED TYPECLASS
+/////////////////////////////
 
 int int__min_bound( void );     // Returns `INT_MIN`.
 int int__max_bound( void );     // Returns `INT_MAX`.
 
 
-#define EQ__INT
+/////////////////////////////
+/// EQ TYPECLASS
+/////////////////////////////
 
 bool int__equal( int x, int y );        // Returns `x == y`.
 bool int__not_equal( int x, int y );    // Returns `x != y`.
 
 
-#define ORD__INT
+/////////////////////////////
+/// ORD TYPECLASS
+/////////////////////////////
 
 ord int__compare( int x, int y );   // Returns: `LT` if `x < y`,
                                     //          `EQ` if `x == y`, or
@@ -44,9 +50,11 @@ int int__max_n( size_t n, int const * xs );
 // Returns the maximum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
+// @public
 #define int__min( ... ) \
     int__min_n( PP_COUNT( __VA_ARGS__ ), ( int[] ){ __VA_ARGS__ } )
 
+// @public
 #define int__max( ... ) \
     int__max_n( PP_COUNT( __VA_ARGS__ ), ( int[] ){ __VA_ARGS__ } )
 
@@ -56,7 +64,9 @@ int int__clamp( int lower, int upper, int x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-#define ENUM__INT
+/////////////////////////////
+/// ENUM TYPECLASS
+/////////////////////////////
 
 int int__succ( int x );   // Returns `x + 1`.
                           // @requires x != int__max_bound()
@@ -71,7 +81,9 @@ int int__pred_b( int x ); // Returns `x - 1`,
                           // or `int__min_bound()` if `x == int__min_bound()`.
 
 
-#define NUM__INT
+/////////////////////////////
+/// NUM TYPECLASS
+/////////////////////////////
 
 bool int__is_signed( void );
 // Returns `true`, because `int` values can be negative.
