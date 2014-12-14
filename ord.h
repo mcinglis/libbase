@@ -3,6 +3,7 @@
 #define LIBBASE_BOOL_H
 
 
+#include <libpp/count.h>        // PP_COUNT
 #include <libtypes/types.h>     // bool, ord
 
 
@@ -34,21 +35,19 @@ ord ord__compare( ord x, ord y );   // Returns: `LT` if `x < y`,
                                     //          `GT` if `x > y`.
 
 bool ord__less_than( ord x, ord y );            // Returns `x < y`.
-bool ord__less_than_or_eq( ord x, ord y);       // Returns `x <= y`.
+bool ord__less_than_or_eq( ord x, ord y );      // Returns `x <= y`.
 bool ord__greater_than_or_eq( ord x, ord y );   // Returns `x >= y`.
 bool ord__greater_than( ord x, ord y );         // Returns `x > y`.
 
-ord ord__min2( ord x, ord y );   // Returns `x && y`.
-ord ord__max2( ord x, ord y );   // Returns `x || y`.
+ord ord__min2( ord x, ord y );  // Returns the minimum of `x` and `y`.
+ord ord__max2( ord x, ord y );  // Returns the maximum of `x` and `y`.
 
 ord ord__min_n( size_t n, ord const * xs );
-// Returns `false` if any of the first `n` elements in the array `xs` are
-// `false`. Returns `true` otherwise. Logically equivalent to `ALL()`.
+// Returns the minimum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
 ord ord__max_n( size_t n, ord const * xs );
-// Returns `true` if any of the first `n` elements in the array `xs` are
-// `true`. Returns `false` otherwise. Logically equivalent to `ANY()`.
+// Returns the maximum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
 #define ord__min( ... ) \
@@ -68,15 +67,15 @@ ord ord__clamp( ord lower, ord upper, ord x );
 /// ENUM TYPECLASS
 /////////////////////////////
 
-ord ord__succ( ord x );  // Returns `true`.
-                            // @requires x != true
+ord ord__succ( ord x );         // Returns `x + 1`.
+                                // @requires x != GT
 
-ord ord__succ_b( ord x );    // Returns `true`.
+ord ord__succ_b( ord x );       // Returns `x + 1`, or `GT` if `x == GT`.
 
-ord ord__pred( ord x );      // Returns `false`.
-                                // @requires x != false
+ord ord__pred( ord x );         // Returns `x - 1`.
+                                // @requires x != LT
 
-ord ord__pred_b( ord x );    // Returns `false`.
+ord ord__pred_b( ord x );       // Returns `x - 1`, or `LT` if `x == LT`.
 
 
 #endif

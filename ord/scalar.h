@@ -99,9 +99,9 @@
                                                                               \
                                                                               \
     T                                                                         \
-    TF##__clamp( int const lower,                                             \
-                 int const upper,                                             \
-                 int const x )                                                \
+    TF##__clamp( T const lower,                                               \
+                 T const upper,                                               \
+                 T const x )                                                  \
     {                                                                         \
         return ( lower >= x ) ? lower                                         \
              : ( upper <= x ) ? upper                                         \

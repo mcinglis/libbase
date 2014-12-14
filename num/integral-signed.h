@@ -11,7 +11,7 @@
 #define DERIVING_NUM_INTEGRAL_SIGNED( T, TT, TF ) \
                                                                               \
                                                                               \
-    bool is_signed( void ) { return true; }                                   \
+    bool TF##__is_signed( void ) { return true; }                             \
                                                                               \
                                                                               \
     bool                                                                      \
@@ -131,12 +131,12 @@
     }                                                                         \
                                                                               \
                                                                               \
-    ord  TF##__compare_0     ( T const x ) { return TF##__compare( x, 0 ); }  \
     bool TF##__is_negative   ( T const x ) { return x < 0; }                  \
     bool TF##__is_nonpositive( T const x ) { return x <= 0; }                 \
     bool TF##__is_zero       ( T const x ) { return x == 0; }                 \
     bool TF##__is_nonnegative( T const x ) { return x >= 0; }                 \
     bool TF##__is_positive   ( T const x ) { return x > 0; }                  \
+    ord  TF##__compare_0     ( T const x ) { return TF##__compare( x, 0 ); }  \
                                                                               \
                                                                               \
     bool TF##__is_even( T const x ) { return x % 2 == 0; }                    \
@@ -147,7 +147,11 @@
     T TF##__sub_2( T const x ) { return TF##__sub( x, 2 ); }                  \
     T TF##__mul_2( T const x ) { return TF##__mul( x, 2 ); }                  \
     T TF##__div_2( T const x ) { return TF##__div( x, 2 ); }                  \
-    T TF##__mod_2( T const x ) { return TF##__mod( x, 2 ); }
+    T TF##__mod_2( T const x ) { return TF##__mod( x, 2 ); }                  \
+                                                                              \
+    T TF##__mul_10( T const x ) { return TF##__mul( x, 10 ); }                \
+    T TF##__div_10( T const x ) { return TF##__div( x, 10 ); }                \
+    T TF##__mod_10( T const x ) { return TF##__mod( x, 10 ); }
 
 
 #endif

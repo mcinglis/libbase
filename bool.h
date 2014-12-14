@@ -3,6 +3,7 @@
 #define LIBBASE_BOOL_H
 
 
+#include <libpp/count.h>        // PP_COUNT
 #include <libtypes/types.h>     // bool, ord
 
 
@@ -34,7 +35,7 @@ ord bool__compare( bool x, bool y );   // Returns: `LT` if `x < y`,
                                        //          `GT` if `x > y`.
 
 bool bool__less_than( bool x, bool y );            // Returns `x < y`.
-bool bool__less_than_or_eq( bool x, bool y);       // Returns `x <= y`.
+bool bool__less_than_or_eq( bool x, bool y );      // Returns `x <= y`.
 bool bool__greater_than_or_eq( bool x, bool y );   // Returns `x >= y`.
 bool bool__greater_than( bool x, bool y );         // Returns `x > y`.
 

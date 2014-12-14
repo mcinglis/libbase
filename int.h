@@ -3,38 +3,33 @@
 #define LIBBASE_INT_H
 
 
+#include <libpp/count.h>        // PP_COUNT
 #include <libtypes/types.h>     // bool, ord
 
 
 int int__id( int x );   // Returns `x`.
 
 
-/////////////////////////////
-/// BOUNDED TYPECLASS
-/////////////////////////////
+#define BOUNDED__INT
 
 int int__min_bound( void );     // Returns `INT_MIN`.
 int int__max_bound( void );     // Returns `INT_MAX`.
 
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
+#define EQ__INT
 
 bool int__equal( int x, int y );        // Returns `x == y`.
 bool int__not_equal( int x, int y );    // Returns `x != y`.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
+#define ORD__INT
 
 ord int__compare( int x, int y );   // Returns: `LT` if `x < y`,
                                     //          `EQ` if `x == y`, or
                                     //          `GT` if `x > y`.
 
 bool int__less_than( int x, int y );            // Returns `x < y`.
-bool int__less_than_or_eq( int x, int y);       // Returns `x <= y`.
+bool int__less_than_or_eq( int x, int y );      // Returns `x <= y`.
 bool int__greater_than_or_eq( int x, int y );   // Returns `x >= y`.
 bool int__greater_than( int x, int y );         // Returns `x > y`.
 
@@ -61,10 +56,7 @@ int int__clamp( int lower, int upper, int x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-
-/////////////////////////////
-/// ENUM TYPECLASS
-/////////////////////////////
+#define ENUM__INT
 
 int int__succ( int x );   // Returns `x + 1`.
                           // @requires x != int__max_bound()
@@ -79,9 +71,7 @@ int int__pred_b( int x ); // Returns `x - 1`,
                           // or `int__min_bound()` if `x == int__min_bound()`.
 
 
-/////////////////////////////
-/// NUM TYPECLASS
-/////////////////////////////
+#define NUM__INT
 
 bool int__is_signed( void );
 // Returns `true`, because `int` values can be negative.
@@ -154,6 +144,10 @@ int int__sub_2( int x );    // Returns `int__sub( x, 2 )`.
 int int__mul_2( int x );    // Returns `int__mul( x, 2 )`.
 int int__div_2( int x );    // Returns `int__div( x, 2 )`.
 int int__mod_2( int x );    // Returns `int__mod( x, 2 )`.
+
+int int__mul_10( int x );   // Returns `int__mul( x, 10 )`.
+int int__div_10( int x );   // Returns `int__div( x, 10 )`.
+int int__mod_10( int x );   // Returns `int__mod( x, 10 )`.
 
 
 #endif
