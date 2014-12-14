@@ -41,7 +41,7 @@ objects: $(objects)
 clean:
 	rm -rf $(objects) $(mkdeps)
 
-%.o: %.c .make/deps
+%.o: %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -MMD -MF "$(@:.o=.dep.mk)" -c $< -o $@
 
 -include $(mkdeps)
