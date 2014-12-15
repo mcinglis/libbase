@@ -180,5 +180,19 @@ int int__div_10( int x );   // Returns `int__div( x, 10 )`.
 int int__mod_10( int x );   // Returns `int__mod( x, 10 )`.
 
 
+/////////////////////////////
+/// READ TYPECLASS
+/////////////////////////////
+
+int int__from_str( char const * str,
+                   bool * err );
+// Parses the given `str` to produce the contained `int` value. The string
+// must contain exactly a valid representation, but may have whitespacing on
+// either side of the value. If there was a parsing error and `err` is not
+// `NULL`, `*err` is set to `true`, and this returns `0`.
+//
+// @requires str != NULL
+
+
 #endif
 

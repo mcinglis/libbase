@@ -19,10 +19,12 @@
 
 #include "uchar.h"
 
+#include <stdlib.h>                 // strtoul
 #include <limits.h>                 // UCHAR_MAX, UCHAR_MIN
 
 #include <libpp/call.h>             // PP_CALL
 #include <libpp/separators.h>       // PP_SEP_NONE
+#include <libmacro/require.h>       // REQUIRE
 #include <libtypes/types.h>         // UCHAR_TYPE
 
 #include "eq/scalar.h"              // DERIVING_EQ_SCALAR
@@ -42,5 +44,32 @@ PP_CALL( UCHAR_TYPE, PP_SEP_NONE, DERIVING_EQ_SCALAR,
                                   DERIVING_ORD_SCALAR,
                                   DERIVING_ENUM_SCALAR,
                                   DERIVING_NUM_INTEGRAL_UNSIGNED )
+
+
+uchar
+uchar__from_str( char const * const str,
+                 bool * const err )
+{
+    REQUIRE( str != NULL );
+
+    if ( str[ 0 ] == '\0' ) {
+        goto error;
+    }
+    char * end_ptr;
+    ulong const x = strtoul( str, &end_ptr, 10 );
+    if ( end_ptr[ 0 ] != '\0' ) {
+        goto error;
+    }
+    if ( x > uchar__max_bound() ) {
+        goto error;
+    }
+    return x;
+
+error:
+    if ( err != NULL ) {
+        *err = true;
+    }
+    return 0;
+}
 
 

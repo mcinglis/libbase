@@ -19,6 +19,7 @@
 
 #include "int.h"
 
+#include <stdlib.h>                 // strtol
 #include <limits.h>                 // INT_MAX, INT_MIN
 
 #include <libpp/call.h>             // PP_CALL
@@ -42,5 +43,32 @@ PP_CALL( INT_TYPE, PP_SEP_NONE, DERIVING_EQ_SCALAR,
                                 DERIVING_ORD_SCALAR,
                                 DERIVING_ENUM_SCALAR,
                                 DERIVING_NUM_INTEGRAL_SIGNED )
+
+
+uchar
+int__from_str( char const * const str,
+               bool * const err )
+{
+    REQUIRE( str != NULL );
+
+    if ( str[ 0 ] == '\0' ) {
+        goto error;
+    }
+    char * end_ptr;
+    long const x = strtol( str, &end_ptr, 10 );
+    if ( end_ptr[ 0 ] != '\0' ) {
+        goto error;
+    }
+    if ( x > int__max_bound() ) {
+        goto error;
+    }
+    return x;
+
+error:
+    if ( err != NULL ) {
+        *err = true;
+    }
+    return 0;
+}
 
 

@@ -9,11 +9,10 @@ CPPFLAGS += -I$(DEPS_DIR)
 
 cflags_std := -std=c11
 cflags_warnings := -Wall -Wextra -Wpedantic \
-                   -Wcomments -Wformat=2 -Wjump-misses-init -Wlogical-op \
-                   -Wmissing-include-dirs -Wnested-externs \
-                   -Wold-style-definition -Wredundant-decls -Wshadow \
-                   -Wstrict-prototypes -Wunused-macros -Wvla -Wwrite-strings \
-                   -Wno-override-init -Wno-unused-parameter
+                   -Wcomments -Wformat=2 -Wlogical-op -Wmissing-include-dirs \
+                   -Wnested-externs -Wold-style-definition -Wredundant-decls \
+                   -Wshadow -Wstrict-prototypes -Wunused-macros -Wvla \
+                   -Wwrite-strings -Wno-override-init -Wno-unused-parameter
 
 CFLAGS ?= $(cflags_std) -g -Og $(cflags_warnings)
 
