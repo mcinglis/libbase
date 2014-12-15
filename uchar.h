@@ -25,6 +25,12 @@
 #include <libtypes/types.h>     // bool, ord, uchar
 
 
+typedef struct {
+    uchar value;
+    bool nothing;
+} Maybe_uchar;
+
+
 uchar uchar__id( uchar x );   // Returns `x`.
 
 
@@ -161,14 +167,11 @@ uchar uchar__mod_10( uchar x );   // Returns `uchar__mod( x, 10 )`.
 /// READ TYPECLASS
 /////////////////////////////
 
-uchar uchar__from_str( char const * str,
-                       bool * err );
+Maybe_uchar uchar__from_str( char const * str );
 // Parses the given `str` to produce the contained `uchar` value. The string
 // must contain exactly a valid representation, but may have whitespacing on
-// either side of the value. If there was a parsing error and `err` is not
-// `NULL`, `*err` is set to `true`, and this returns `0`.
-//
-// @requires str != NULL
+// either side of the value. If `str == NULL` or there was a parsing error,
+// returns `( Maybe_uchar ){ .nothing = true }`.
 
 
 #endif

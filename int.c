@@ -45,30 +45,20 @@ PP_CALL( INT_TYPE, PP_SEP_NONE, DERIVING_EQ_SCALAR,
                                 DERIVING_NUM_INTEGRAL_SIGNED )
 
 
-uchar
-int__from_str( char const * const str,
-               bool * const err )
+Maybe_int
+int__from_str( char const * const str )
 {
-    REQUIRE( str != NULL );
-
-    if ( str[ 0 ] == '\0' ) {
-        goto error;
+    if ( str == NULL || str[ 0 ] == '\0' ) {
+        return ( Maybe_int ){ .nothing = true };
     }
     char * end_ptr;
     long const x = strtol( str, &end_ptr, 10 );
-    if ( end_ptr[ 0 ] != '\0' ) {
-        goto error;
+    if ( end_ptr[ 0 ] != '\0'
+      || x < int__min_bound()
+      || x > int__max_bound() ) {
+        return ( Maybe_int ){ .nothing = true };
     }
-    if ( x > int__max_bound() ) {
-        goto error;
-    }
-    return x;
-
-error:
-    if ( err != NULL ) {
-        *err = true;
-    }
-    return 0;
+    return ( Maybe_int ){ .value = x };
 }
 
 

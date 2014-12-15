@@ -24,7 +24,6 @@
 
 #include <libpp/call.h>             // PP_CALL
 #include <libpp/separators.h>       // PP_SEP_NONE
-#include <libmacro/require.h>       // REQUIRE
 #include <libtypes/types.h>         // UCHAR_TYPE
 
 #include "eq/scalar.h"              // DERIVING_EQ_SCALAR
@@ -46,30 +45,19 @@ PP_CALL( UCHAR_TYPE, PP_SEP_NONE, DERIVING_EQ_SCALAR,
                                   DERIVING_NUM_INTEGRAL_UNSIGNED )
 
 
-uchar
-uchar__from_str( char const * const str,
-                 bool * const err )
+Maybe_uchar
+uchar__from_str( char const * const str )
 {
-    REQUIRE( str != NULL );
-
-    if ( str[ 0 ] == '\0' ) {
-        goto error;
+    if ( str == NULL || str[ 0 ] == '\0' ) {
+        return ( Maybe_uchar ){ .nothing = true };
     }
     char * end_ptr;
     ulong const x = strtoul( str, &end_ptr, 10 );
-    if ( end_ptr[ 0 ] != '\0' ) {
-        goto error;
+    if ( end_ptr[ 0 ] != '\0'
+      || x > uchar__max_bound() ) {
+        return ( Maybe_uchar ){ .nothing = true };
     }
-    if ( x > uchar__max_bound() ) {
-        goto error;
-    }
-    return x;
-
-error:
-    if ( err != NULL ) {
-        *err = true;
-    }
-    return 0;
+    return ( Maybe_uchar ){ .value = x };
 }
 
 
