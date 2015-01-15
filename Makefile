@@ -12,9 +12,10 @@ cflags_warnings := -Wall -Wextra -Wpedantic \
                    -Wcomments -Wformat=2 -Wlogical-op -Wmissing-include-dirs \
                    -Wnested-externs -Wold-style-definition -Wredundant-decls \
                    -Wshadow -Wstrict-prototypes -Wunused-macros -Wvla \
-                   -Wwrite-strings -Wno-override-init -Wno-unused-parameter
+                   -Wwrite-strings \
+                   -Wno-override-init -Wno-unused-parameter
 
-CFLAGS ?= $(cflags_std) -g -Og $(cflags_warnings)
+CFLAGS ?= $(cflags_std) -g $(cflags_warnings)
 
 sources := $(wildcard *.c)
 objects := $(sources:.c=.o)
