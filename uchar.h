@@ -191,6 +191,10 @@ Result_uchar uchar__from_str( char const * str );
 // - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
 // - `ERANGE` if the resulting value is out of range of `uchar`;
 
+uchar uchar__from_str_e( char const * str, int * err );
+// Like `uchar__from_str()`, but setting the given `err` value to the error,
+// or `0` if no error.
+
 
 #endif
 

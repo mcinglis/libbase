@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#include <libmacro/require.h>   // REQUIRE
+
 
 // @public
 #define DERIVING_READ_INTEGRAL_SIGNED( T, TT, TF ) \
@@ -43,7 +45,19 @@
              : ( x < TF##__min_bound()                                        \
               || x > TF##__max_bound() )? ( Result_##TT ){ .error = ERANGE }  \
                                         : ( Result_##TT ){ .value = x };      \
-    }
+    }                                                                         \
+                                                                              \
+                                                                              \
+    T                                                                         \
+    TF##__from_str_e( char const * const str,                                 \
+                      int * const err )                                       \
+    {                                                                         \
+        Result_##TT const r = TF##__from_str( str );                          \
+        if ( err != NULL ) {                                                  \
+            *err = r.error;                                                   \
+        }                                                                     \
+        return r.value;                                                       \
+    }                                                                         \
 
 
 #endif
