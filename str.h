@@ -27,6 +27,18 @@
 // A "str" is an array of `char`s terminated by the null character `\0`.
 
 
+typedef struct {
+    char const * value;
+    bool nothing;
+} Maybe_str;
+
+
+typedef struct {
+    char const * value;
+    int error;
+} Result_str;
+
+
 char const * str__id( char const * xs );         // Returns `xs`.
 
 

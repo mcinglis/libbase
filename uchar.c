@@ -19,8 +19,7 @@
 
 #include "uchar.h"
 
-#include <stdlib.h>                 // strtoul
-#include <limits.h>                 // UCHAR_MAX, UCHAR_MIN
+#include <limits.h>                 // UCHAR_MAX
 
 #include <libpp/call.h>             // PP_CALL
 #include <libpp/separators.h>       // PP_SEP_NONE
@@ -30,6 +29,7 @@
 #include "ord/scalar.h"             // DERIVING_ORD_SCALAR
 #include "enum/scalar.h"            // DERIVING_ENUM_SCALAR
 #include "num/integral-unsigned.h"  // DERIVING_NUM_INTEGRAL_UNSIGNED
+#include "read/integral-unsigned.h" // DERIVING_READ_INTEGRAL_UNSIGNED
 
 
 uchar uchar__id( uchar const x ) { return x; }
@@ -42,22 +42,7 @@ uchar uchar__max_bound( void ) { return UCHAR_MAX; }
 PP_CALL( UCHAR_TYPE, PP_SEP_NONE, DERIVING_EQ_SCALAR,
                                   DERIVING_ORD_SCALAR,
                                   DERIVING_ENUM_SCALAR,
-                                  DERIVING_NUM_INTEGRAL_UNSIGNED )
-
-
-Maybe_uchar
-uchar__from_str( char const * const str )
-{
-    if ( str == NULL || str[ 0 ] == '\0' ) {
-        return ( Maybe_uchar ){ .nothing = true };
-    }
-    char * end_ptr;
-    ulong const x = strtoul( str, &end_ptr, 10 );
-    if ( end_ptr[ 0 ] != '\0'
-      || x > uchar__max_bound() ) {
-        return ( Maybe_uchar ){ .nothing = true };
-    }
-    return ( Maybe_uchar ){ .value = x };
-}
+                                  DERIVING_NUM_INTEGRAL_UNSIGNED,
+                                  DERIVING_READ_INTEGRAL_UNSIGNED )
 
 

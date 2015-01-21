@@ -31,6 +31,12 @@ typedef struct {
 } Maybe_int;
 
 
+typedef struct {
+    int value;
+    int error;
+} Result_int;
+
+
 int int__id( int x );   // Returns `x`.
 
 
@@ -54,17 +60,21 @@ bool int__not_equal( int x, int y );    // Returns `x != y`.
 /// ORD TYPECLASS
 /////////////////////////////
 
-ord int__compare( int x, int y );   // Returns: `LT` if `x < y`,
-                                    //          `EQ` if `x == y`, or
-                                    //          `GT` if `x > y`.
+ord int__compare( int x, int y );
+// Returns: `LT` if `x < y`,
+//          `EQ` if `x == y`, or
+//          `GT` if `x > y`.
 
 bool int__less_than( int x, int y );            // Returns `x < y`.
 bool int__less_than_or_eq( int x, int y );      // Returns `x <= y`.
 bool int__greater_than_or_eq( int x, int y );   // Returns `x >= y`.
 bool int__greater_than( int x, int y );         // Returns `x > y`.
 
-int int__min2( int x, int y ); // Returns `x` if `x < y`, or `y` otherwise.
-int int__max2( int x, int y ); // Returns `x` if `x > y`, or `y` otherwise.
+int int__min2( int x, int y );
+// Returns `x` if `x < y`, or `y` otherwise.
+
+int int__max2( int x, int y );
+// Returns `x` if `x > y`, or `y` otherwise.
 
 int int__min_n( size_t n, int const * xs );
 // Returns the minimum value of the first `n` elements in the array `xs`.
@@ -92,17 +102,19 @@ int int__clamp( int lower, int upper, int x );
 /// ENUM TYPECLASS
 /////////////////////////////
 
-int int__succ( int x );   // Returns `x + 1`.
-                          // @requires x != int__max_bound()
+int int__succ( int x );
+// Returns `x + 1`.
+// @requires x != int__max_bound()
 
-int int__succ_b( int x ); // Returns `x + 1`,
-                          // or `int__max_bound()` if `x == int__max_bound()`.
+int int__succ_b( int x );
+// Returns `x + 1`, or `int__max_bound()` if `x == int__max_bound()`.
 
-int int__pred( int x );   // Returns `x - 1`.
-                          // @requires x != int__min_bound()
+int int__pred( int x );
+// Returns `x - 1`.
+// @requires x != int__min_bound()
 
-int int__pred_b( int x ); // Returns `x - 1`,
-                          // or `int__min_bound()` if `x == int__min_bound()`.
+int int__pred_b( int x );
+// Returns `x - 1`, or `int__min_bound()` if `x == int__min_bound()`.
 
 
 /////////////////////////////
@@ -141,26 +153,33 @@ bool int__can_div( int x, int y );
 //
 //     ( y != 0 ) && !( ( x == int__min_bound ) && ( y == -1 ) )
 
-int int__add( int x, int y );   // Returns `x + y`.
-                                // @requires int__can_add( x, y )
+int int__add( int x, int y );
+// Returns `x + y`.
+// @requires int__can_add( x, y )
 
-int int__sub( int x, int y );   // Returns `x - y`.
-                                // @requires int__can_sub( x, y )
+int int__sub( int x, int y );
+// Returns `x - y`.
+// @requires int__can_sub( x, y )
 
-int int__mul( int x, int y );   // Returns `x * y`.
-                                // @requires int__can_mul( x, y )
+int int__mul( int x, int y );
+// Returns `x * y`.
+// @requires int__can_mul( x, y )
 
-int int__div( int x, int y );   // Returns `x / y`.
-                                // @requires int__can_div( x, y )
+int int__div( int x, int y );
+// Returns `x / y`.
+// @requires int__can_div( x, y )
 
-int int__mod( int x, int y );   // Returns `x % y`.
-                                // @requires int__can_div( x, y )
+int int__mod( int x, int y );
+// Returns `x % y`.
+// @requires int__can_div( x, y )
 
-int int__negate( int x );       // Returns `-x`.
-                                // @requires x != int__min_bound
+int int__negate( int x );
+// Returns `-x`.
+// @requires x != int__min_bound
 
-int int__abs( int x );          // Returns `( x < 0 ) ? -x : x`.
-                                // @requires x != int__min_bound
+int int__abs( int x );
+// Returns `( x < 0 ) ? -x : x`.
+// @requires x != int__min_bound
 
 bool int__same_sign( int x, int y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
@@ -190,11 +209,11 @@ int int__mod_10( int x );   // Returns `int__mod( x, 10 )`.
 /// READ TYPECLASS
 /////////////////////////////
 
-Maybe_int int__from_str( char const * str );
-// Parses the given `str` to produce the contained `int` value. The string
-// must contain exactly a valid representation, but may have whitespacing on
-// either side of the value. If `str == NULL` or there was a parsing error,
-// returns `( Maybe_int ){ .nothing = true }`.
+Result_int int__from_str( char const * str );
+// Parses the given `str` to produce the contained `int` value. Errors:
+// - `EINVAL` if `str == NULL` or `str` is `""`;
+// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
+// - `ERANGE` if the resulting value is out of range of `int`;
 
 
 #endif

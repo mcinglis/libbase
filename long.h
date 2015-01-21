@@ -31,6 +31,12 @@ typedef struct {
 } Maybe_long;
 
 
+typedef struct {
+    long value;
+    int error;
+} Result_long;
+
+
 long long__id( long x );   // Returns `x`.
 
 
@@ -203,11 +209,11 @@ long long__mod_10( long x );   // Returns `long__mod( x, 10 )`.
 /// READ TYPECLASS
 /////////////////////////////
 
-Maybe_long long__from_str( char const * str );
-// Parses the given `str` to produce the contained `long` value. The string
-// must contain exactly a valid representation, but may have whitespacing on
-// either side of the value. If `str == NULL` or there was a parsing error,
-// returns `( Maybe_long ){ .nothing = true }`.
+Result_long long__from_str( char const * str );
+// Parses the given `str` to produce the contained `long` value. Errors:
+// - `EINVAL` if `str == NULL` or `str` is `""`;
+// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
+// - `ERANGE` if the resulting value is out of range of `long`;
 
 
 #endif

@@ -31,6 +31,12 @@ typedef struct {
 } Maybe_uint;
 
 
+typedef struct {
+    uint value;
+    int error;
+} Result_uint;
+
+
 uint uint__id( uint x );   // Returns `x`.
 
 
@@ -38,8 +44,8 @@ uint uint__id( uint x );   // Returns `x`.
 /// BOUNDED TYPECLASS
 /////////////////////////////
 
-uint uint__min_bound( void );     // Returns `uint_MIN`.
-uint uint__max_bound( void );     // Returns `uint_MAX`.
+uint uint__min_bound( void );     // Returns `0`.
+uint uint__max_bound( void );     // Returns `UINT_MAX`.
 
 
 /////////////////////////////
@@ -54,17 +60,21 @@ bool uint__not_equal( uint x, uint y );    // Returns `x != y`.
 /// ORD TYPECLASS
 /////////////////////////////
 
-ord uint__compare( uint x, uint y );   // Returns: `LT` if `x < y`,
-                                       //          `EQ` if `x == y`, or
-                                       //          `GT` if `x > y`.
+ord uint__compare( uint x, uint y );
+// Returns: `LT` if `x < y`,
+//          `EQ` if `x == y`, or
+//          `GT` if `x > y`.
 
 bool uint__less_than( uint x, uint y );            // Returns `x < y`.
 bool uint__less_than_or_eq( uint x, uint y );      // Returns `x <= y`.
 bool uint__greater_than_or_eq( uint x, uint y );   // Returns `x >= y`.
 bool uint__greater_than( uint x, uint y );         // Returns `x > y`.
 
-uint uint__min2( uint x, uint y ); // Returns `x` if `x < y`, or `y` otherwise.
-uint uint__max2( uint x, uint y ); // Returns `x` if `x > y`, or `y` otherwise.
+uint uint__min2( uint x, uint y );
+// Returns `x` if `x < y`, or `y` otherwise.
+
+uint uint__max2( uint x, uint y );
+// Returns `x` if `x > y`, or `y` otherwise.
 
 uint uint__min_n( size_t n, uint const * xs );
 // Returns the minimum value of the first `n` elements in the array `xs`.
@@ -92,32 +102,38 @@ uint uint__clamp( uint lower, uint upper, uint x );
 /// ENUM TYPECLASS
 /////////////////////////////
 
-uint uint__succ( uint x );   // Returns `x + 1`.
-                             // @requires x != uint__max_bound()
+uint uint__succ( uint x );
+// Returns `x + 1`.
+// @requires x != uint__max_bound()
 
-uint uint__succ_b( uint x ); // Returns `x + 1`, or `uint__max_bound()`
-                             // if `x == uint__max_bound()`.
+uint uint__succ_b( uint x );
+// Returns `x + 1`, or `uint__max_bound()` if `x == uint__max_bound()`.
 
-uint uint__pred( uint x );   // Returns `x - 1`.
-                             // @requires x != uint__min_bound()
+uint uint__pred( uint x );
+// Returns `x - 1`.
+// @requires x != uint__min_bound()
 
-uint uint__pred_b( uint x ); // Returns `x - 1`, or `uint__min_bound()`
-                             // if `x == uint__min_bound()`.
+uint uint__pred_b( uint x );
+// Returns `x - 1`, or `uint__min_bound()` if `x == uint__min_bound()`.
 
 
 /////////////////////////////
 /// NUM TYPECLASS
 /////////////////////////////
 
-bool uint__is_signed( void );
-// Returns `false`, because `uint` values can't be negative.
+bool uint__is_signed( void );   // Returns `false`.
 
-// Addition, subtraction and multiplication of `uint` values is always
-// well-defined:
+bool uint__can_add( uint x, uint y );
+// Returns the boolean that the expression `x + y` will not overflow;
+// equivalent to `x <= ( uint__max_bound() - y )`.
 
-bool uint__can_add( uint x, uint y );        // Returns `true`.
-bool uint__can_sub( uint x, uint y );        // Returns `true`.
-bool uint__can_mul( uint x, uint y );        // Returns `true`.
+bool uint__can_sub( uint x, uint y );
+// Returns the boolean that the expression `x - y` will not underflow;
+// equivalent to `x >= y`.
+
+bool uint__can_mul( uint x, uint y );
+// Returns the boolean that the expression `x * y` will not overflow;
+// equivalent to `x <= ( uint__max_bound() / y )`.
 
 bool uint__can_div( uint x, uint y );
 // Returns the boolean that the behavior of `x / y` is well-defined, i.e.,
@@ -127,14 +143,16 @@ uint uint__add( uint x, uint y );   // Returns `x + y`.
 uint uint__sub( uint x, uint y );   // Returns `x - y`.
 uint uint__mul( uint x, uint y );   // Returns `x * y`.
 
-uint uint__div( uint x, uint y );   // Returns `x / y`.
-                                    // @requires y != 0
+uint uint__div( uint x, uint y );
+// Returns `x / y`.
+// @requires y != 0
 
-uint uint__mod( uint x, uint y );   // Returns `x % y`.
-                                    // @requires y != 0
+uint uint__mod( uint x, uint y );
+// Returns `x % y`.
+// @requires y != 0
 
 uint uint__negate( uint x );
-// If `x == 0`, returns `0`.  Otherwise, returns `uint__max_bound() - x + 1`.
+// If `x == 0`, returns `0`. Otherwise, returns `uint__max_bound() - x + 1`.
 
 uint uint__abs( uint x );
 // Returns `x`, because it will never be negative.
@@ -167,11 +185,11 @@ uint uint__mod_10( uint x );   // Returns `uint__mod( x, 10 )`.
 /// READ TYPECLASS
 /////////////////////////////
 
-Maybe_uint uint__from_str( char const * str );
-// Parses the given `str` to produce the contained `uint` value. The string
-// must contain exactly a valid representation, but may have whitespacing on
-// either side of the value. If `str == NULL` or there was a parsing error,
-// returns `( Maybe_uint ){ .nothing = true }`.
+Result_uint uint__from_str( char const * str );
+// Parses the given `str` to produce the contained `uint` value. Errors:
+// - `EINVAL` if `str == NULL` or `str` is `""`;
+// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
+// - `ERANGE` if the resulting value is out of range of `uint`;
 
 
 #endif

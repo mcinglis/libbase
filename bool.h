@@ -25,6 +25,18 @@
 #include <libtypes/types.h>     // bool, ord
 
 
+typedef struct {
+    bool value;
+    bool nothing;
+} Maybe_bool;
+
+
+typedef struct {
+    bool value;
+    int error;
+} Result_bool;
+
+
 bool bool__id( bool x );    // Returns `x`.
 
 

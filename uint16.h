@@ -31,6 +31,12 @@ typedef struct {
 } Maybe_uint16;
 
 
+typedef struct {
+    uint16_t value;
+    int error;
+} Result_uint16;
+
+
 uint16_t uint16__id( uint16_t x );   // Returns `x`.
 
 
@@ -38,8 +44,8 @@ uint16_t uint16__id( uint16_t x );   // Returns `x`.
 /// BOUNDED TYPECLASS
 /////////////////////////////
 
-uint16_t uint16__min_bound( void );     // Returns `uint16_MIN`.
-uint16_t uint16__max_bound( void );     // Returns `uint16_MAX`.
+uint16_t uint16__min_bound( void );     // Returns `0`.
+uint16_t uint16__max_bound( void );     // Returns `UINT16_MAX`.
 
 
 /////////////////////////////
@@ -54,22 +60,15 @@ bool uint16__not_equal( uint16_t x, uint16_t y );    // Returns `x != y`.
 /// ORD TYPECLASS
 /////////////////////////////
 
-ord uint16__compare( uint16_t x, uint16_t y );   // Returns:
-                                                 // - `LT` if `x < y`;
-                                                 // - `EQ` if `x == y`; or
-                                                 // - `GT` if `x > y`.
+ord uint16__compare( uint16_t x, uint16_t y );
+// Returns: `LT` if `x < y`,
+//          `EQ` if `x == y`, or
+//          `GT` if `x > y`.
 
-bool uint16__less_than( uint16_t x, uint16_t y );
-// Returns `x < y`.
-
-bool uint16__less_than_or_eq( uint16_t x, uint16_t y );
-// Returns `x <= y`.
-
-bool uint16__greater_than_or_eq( uint16_t x, uint16_t y );
-// Returns `x >= y`.
-
-bool uint16__greater_than( uint16_t x, uint16_t y );
-// Returns `x > y`.
+bool uint16__less_than( uint16_t x, uint16_t y );            // Returns `x < y`.
+bool uint16__less_than_or_eq( uint16_t x, uint16_t y );      // Returns `x <= y`.
+bool uint16__greater_than_or_eq( uint16_t x, uint16_t y );   // Returns `x >= y`.
+bool uint16__greater_than( uint16_t x, uint16_t y );         // Returns `x > y`.
 
 uint16_t uint16__min2( uint16_t x, uint16_t y );
 // Returns `x` if `x < y`, or `y` otherwise.
@@ -108,31 +107,33 @@ uint16_t uint16__succ( uint16_t x );
 // @requires x != uint16__max_bound()
 
 uint16_t uint16__succ_b( uint16_t x );
-// Returns `x + 1`, or `uint16__max_bound()`
-// if `x == uint16__max_bound()`.
+// Returns `x + 1`, or `uint16__max_bound()` if `x == uint16__max_bound()`.
 
 uint16_t uint16__pred( uint16_t x );
 // Returns `x - 1`.
 // @requires x != uint16__min_bound()
 
 uint16_t uint16__pred_b( uint16_t x );
-// Returns `x - 1`, or `uint16__min_bound()`
-// if `x == uint16__min_bound()`.
+// Returns `x - 1`, or `uint16__min_bound()` if `x == uint16__min_bound()`.
 
 
 /////////////////////////////
 /// NUM TYPECLASS
 /////////////////////////////
 
-bool uint16__is_signed( void );
-// Returns `false`, because `uint16_t` values can't be negative.
+bool uint16__is_signed( void );   // Returns `false`.
 
-// Addition, subtraction and multiplication of `uint16_t` values is always
-// well-defined:
+bool uint16__can_add( uint16_t x, uint16_t y );
+// Returns the boolean that the expression `x + y` will not overflow;
+// equivalent to `x <= ( uint16__max_bound() - y )`.
 
-bool uint16__can_add( uint16_t x, uint16_t y );        // Returns `true`.
-bool uint16__can_sub( uint16_t x, uint16_t y );        // Returns `true`.
-bool uint16__can_mul( uint16_t x, uint16_t y );        // Returns `true`.
+bool uint16__can_sub( uint16_t x, uint16_t y );
+// Returns the boolean that the expression `x - y` will not underflow;
+// equivalent to `x >= y`.
+
+bool uint16__can_mul( uint16_t x, uint16_t y );
+// Returns the boolean that the expression `x * y` will not overflow;
+// equivalent to `x <= ( uint16__max_bound() / y )`.
 
 bool uint16__can_div( uint16_t x, uint16_t y );
 // Returns the boolean that the behavior of `x / y` is well-defined, i.e.,
@@ -142,11 +143,13 @@ uint16_t uint16__add( uint16_t x, uint16_t y );   // Returns `x + y`.
 uint16_t uint16__sub( uint16_t x, uint16_t y );   // Returns `x - y`.
 uint16_t uint16__mul( uint16_t x, uint16_t y );   // Returns `x * y`.
 
-uint16_t uint16__div( uint16_t x, uint16_t y );   // Returns `x / y`.
-                                                  // @requires y != 0
+uint16_t uint16__div( uint16_t x, uint16_t y );
+// Returns `x / y`.
+// @requires y != 0
 
-uint16_t uint16__mod( uint16_t x, uint16_t y );   // Returns `x % y`.
-                                                  // @requires y != 0
+uint16_t uint16__mod( uint16_t x, uint16_t y );
+// Returns `x % y`.
+// @requires y != 0
 
 uint16_t uint16__negate( uint16_t x );
 // If `x == 0`, returns `0`. Otherwise, returns `uint16__max_bound() - x + 1`.
@@ -162,7 +165,9 @@ bool uint16__is_nonpositive( uint16_t x );  // Returns `x == 0`.
 bool uint16__is_zero( uint16_t x );         // Returns `x == 0`.
 bool uint16__is_nonnegative( uint16_t x );  // Returns `true`.
 bool uint16__is_positive( uint16_t x );     // Returns `x > 0`.
-ord  uint16__compare_0( uint16_t x );    // Returns `uint16__compare( x, 0 )`.
+
+ord  uint16__compare_0( uint16_t x );
+// Returns `uint16__compare( x, 0 )`.
 
 bool uint16__is_even( uint16_t x );     // Returns `x % 2 == 0`.
 bool uint16__is_odd( uint16_t x );      // Returns `x % 2 == 1`.
@@ -182,11 +187,11 @@ uint16_t uint16__mod_10( uint16_t x );   // Returns `uint16__mod( x, 10 )`.
 /// READ TYPECLASS
 /////////////////////////////
 
-Maybe_uint16 uint16__from_str( char const * str );
-// Parses the given `str` to produce the contained `uint16_t` value. The
-// string must contain exactly a valid representation, but may have
-// whitespacing on either side of the value. If `str == NULL` or there was a
-// parsing error, returns `( Maybe_uint16 ){ .nothing = true }`.
+Result_uint16 uint16__from_str( char const * str );
+// Parses the given `str` to produce the contained `uint16_t` value. Errors:
+// - `EINVAL` if `str == NULL` or `str` is `""`;
+// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
+// - `ERANGE` if the resulting value is out of range of `uint16_t`;
 
 
 #endif

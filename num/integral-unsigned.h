@@ -33,12 +33,24 @@
     bool TF##__is_signed( void ) { return false; }                            \
                                                                               \
                                                                               \
-    bool TF##__can_add( T const x, T const y ) { return true; }               \
-    bool TF##__can_sub( T const x, T const y ) { return true; }               \
-    bool TF##__can_mul( T const x, T const y ) { return true; }               \
+    bool TF##__can_add( T const x, T const y ) {                              \
+        return x <= ( TF##__max_bound() - y );                                \
+    }                                                                         \
                                                                               \
                                                                               \
-    bool TF##__can_div( T const x, T const y ) { return y != 0; }             \
+    bool TF##__can_sub( T const x, T const y ) {                              \
+        return x >= y;                                                        \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    bool TF##__can_mul( T const x, T const y ) {                              \
+        return x <= ( TF##__max_bound() / y );                                \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    bool TF##__can_div( T const x, T const y ) {                              \
+        return y != 0;                                                        \
+    }                                                                         \
                                                                               \
                                                                               \
     T TF##__add( T const x, T const y ) { return x + y; }                     \
