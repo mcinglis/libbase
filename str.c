@@ -19,6 +19,8 @@
 
 #include "str.h"
 
+#include <ctype.h>
+
 #include <libmacro/require.h>
 
 
@@ -44,6 +46,22 @@ str__not_equal( char const * const xs,
 }
 
 
+bool
+str__equal_i( char const * const xs,
+              char const * const ys )
+{
+    return str__compare_i( xs, ys ) == EQ;
+}
+
+
+bool
+str__not_equal_i( char const * const xs,
+                  char const * const ys )
+{
+    return !str__equal_i( xs, ys );
+}
+
+
 ord
 str__compare( char const * const xs,
               char const * const ys )
@@ -56,6 +74,23 @@ str__compare( char const * const xs,
         i++;
     }
     return ( xs[ i ] > ys[ i ] ) - ( xs[ i ] < ys[ i ] );
+}
+
+
+ord
+str__compare_i( char const * const xs,
+                char const * const ys )
+{
+    REQUIRE( xs != NULL, ys != NULL );
+
+    size_t i = 0;
+    char x, y;
+    while ( x = tolower( xs[ i ] ),
+            y = tolower( ys[ i ] ),
+            x == y && x != '\0' ) {
+        i++;
+    }
+    return ( x > y ) - ( x < y );
 }
 
 

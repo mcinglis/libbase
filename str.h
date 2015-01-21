@@ -53,6 +53,14 @@ bool str__equal( char const * xs, char const * ys );
 bool str__not_equal( char const * xs, char const * ys );
 // Returns `!str__equal( xs, ys )`.
 
+// EXTENSIONS:
+
+bool str__equal_i( char const * xs, char const * ys );
+// Like `str__equal()`, except case-insensitive.
+
+bool str__not_equal_i( char const * xs, char const * ys );
+// Returns `!str__equal_i( xs, ys )`.
+
 
 /////////////////////////////
 /// ORD TYPECLASS
@@ -101,6 +109,11 @@ char const * str__clamp( char const * lower,
 // Returns: - `lower` if `str__greater_than( lower, xs )`;
 //          - `upper` if `str__less_than( upper, xs )`;
 //          - `xs` otherwise
+
+// EXTENSIONS:
+
+ord str__compare_i( char const * xs, char const * ys );
+// Returns the lexicographical comparison of `xs` and `ys`.
 
 
 #endif
