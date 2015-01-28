@@ -42,18 +42,12 @@ typedef struct {
 char const * str__id( char const * xs );         // Returns `xs`.
 
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
-
 bool str__equal( char const * xs, char const * ys );
 // Returns `true` if every `i`th character in `xs` is equal to the `i`th
 // character in `ys`, including the null byte.
 
 bool str__not_equal( char const * xs, char const * ys );
 // Returns `!str__equal( xs, ys )`.
-
-// EXTENSIONS:
 
 bool str__equal_i( char const * xs, char const * ys );
 // Like `str__equal()`, except case-insensitive.
@@ -62,11 +56,10 @@ bool str__not_equal_i( char const * xs, char const * ys );
 // Returns `!str__equal_i( xs, ys )`.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
-
 ord str__compare( char const * xs, char const * ys );
+// Returns the lexicographical comparison of `xs` and `ys`.
+
+ord str__compare_i( char const * xs, char const * ys );
 // Returns the lexicographical comparison of `xs` and `ys`.
 
 bool str__less_than( char const * xs, char const * ys );
@@ -110,10 +103,16 @@ char const * str__clamp( char const * lower,
 //          - `upper` if `str__less_than( upper, xs )`;
 //          - `xs` otherwise
 
-// EXTENSIONS:
 
-ord str__compare_i( char const * xs, char const * ys );
-// Returns the lexicographical comparison of `xs` and `ys`.
+size_t str__length( char const * xs );
+// Returns the index of the first `'\0'` byte in `xs`.
+
+
+bool str__starts_with( char const * xs, char const * prefix );
+// Returns `true` if `prefix` is a prefix of `xs`, or `false` otherwise.
+
+bool str__ends_with( char const * xs, char const * suffix );
+// Returns `true` if `suffix` is a suffix of `xs`, or `false` otherwise.
 
 
 #endif

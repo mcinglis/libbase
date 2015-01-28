@@ -179,9 +179,58 @@ str__clamp( char const * const lower,
             char const * const upper,
             char const * const xs )
 {
+    REQUIRE( lower != NULL, upper != NULL, xs != NULL );
+
     return str__greater_than( lower, xs ) ? lower
          : str__less_than( upper, xs ) ? upper
          : xs;
 }
 
+
+size_t
+str__length( char const * const xs )
+{
+    REQUIRE( xs != NULL );
+
+    size_t len = 0;
+    while ( xs[ len ] != '\0' ) {
+        len++;
+    }
+    return len;
+}
+
+
+bool
+str__starts_with( char const * const xs,
+                  char const * const prefix )
+{
+    REQUIRE( xs != NULL, prefix != NULL );
+
+    for ( size_t i = 0; prefix[ i ] != '\0'; i++ ) {
+        if ( xs[ i ] != prefix[ i ] ) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+bool
+str__ends_with( char const * const xs,
+                char const * const suffix )
+{
+    REQUIRE( xs != NULL, suffix != NULL );
+
+    size_t const xs_len = str__length( xs );
+    size_t const suf_len = str__length( suffix );
+    if ( suf_len > xs_len ) {
+        return false;
+    }
+    for ( size_t i = 0; suffix[ i ] != '\0'; i++ ) {
+        if ( xs[ i + ( xs_len - suf_len ) ] != suffix[ i ] ) {
+            return false;
+        }
+    }
+    return true;
+}
 
