@@ -10,7 +10,6 @@
     "commands": {
         "build": "make",
         "fast":  "make fast",
-        "test":  "make test",
         "clean": "make clean"
     }
 }
