@@ -1,4 +1,9 @@
 
+// This file is the result of executing `genheader.py`. You should make changes
+// to this code by changing the template strings or the build process -- not
+// editing this file.
+
+
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -22,53 +27,64 @@
 
 
 #include <libpp/count.h>        // PP_COUNT
-#include <libtypes/types.h>     // bool, ord, ulong
+#include <libtypes/types.h>     // bool, ord
 
 
-typedef struct {
+typedef struct maybe_ulong {
     ulong value;
     bool nothing;
 } Maybe_ulong;
 
 
-typedef struct {
-    ulong value;
-    int error;
-} Result_ulong;
+ulong ulong__id( ulong x );
+// The identity function; returns `x`.
 
 
-ulong ulong__id( ulong x );   // Returns `x`.
+
+///////////////////////////////////
+/// TYPECLASS: BOUNDED
+///////////////////////////////////
+
+ulong ulong__min_bound( void );
+// Returns `0`, as that's the minimum value representable by `ulong`.
+
+ulong ulong__max_bound( void );
+// Returns the maximum value representable by the `ulong` type.
 
 
-/////////////////////////////
-/// BOUNDED TYPECLASS
-/////////////////////////////
 
-ulong ulong__min_bound( void );     // Returns `0`.
-ulong ulong__max_bound( void );     // Returns `ULONG_MAX`.
+///////////////////////////////////
+/// TYPECLASS: EQ
+///////////////////////////////////
 
+bool ulong__equal( ulong x, ulong y );
+// Returns `true` if `x == y`, or `false` if not.
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
-
-bool ulong__equal( ulong x, ulong y );        // Returns `x == y`.
-bool ulong__not_equal( ulong x, ulong y );    // Returns `x != y`.
+bool ulong__not_equal( ulong x, ulong y );
+// Returns `true` if `x != y`, or `false` if not.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ORD
+///////////////////////////////////
 
 ord ulong__compare( ulong x, ulong y );
 // Returns: `LT` if `x < y`,
 //          `EQ` if `x == y`, or
 //          `GT` if `x > y`.
 
-bool ulong__less_than( ulong x, ulong y );            // Returns `x < y`.
-bool ulong__less_than_or_eq( ulong x, ulong y );      // Returns `x <= y`.
-bool ulong__greater_than_or_eq( ulong x, ulong y );   // Returns `x >= y`.
-bool ulong__greater_than( ulong x, ulong y );         // Returns `x > y`.
+bool ulong__less_than( ulong x, ulong y );
+// Returns `true` if `x < y`, or `false` if not.
+
+bool ulong__less_than_or_eq( ulong x, ulong y );
+// Returns `true` if `x <= y`, or `false` if not.
+
+bool ulong__greater_than_or_eq( ulong x, ulong y );
+// Returns `true` if `x >= y`, or `false` if not.
+
+bool ulong__greater_than( ulong x, ulong y );
+// Returns `true` if `x > y`, or `false` if not.
 
 ulong ulong__min2( ulong x, ulong y );
 // Returns `x` if `x < y`, or `y` otherwise.
@@ -98,50 +114,68 @@ ulong ulong__clamp( ulong lower, ulong upper, ulong x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-/////////////////////////////
-/// ENUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ENUM
+///////////////////////////////////
 
 ulong ulong__succ( ulong x );
 // Returns `x + 1`.
 // @requires x != ulong__max_bound()
 
 ulong ulong__succ_b( ulong x );
-// Returns `x + 1`, or `ulong__max_bound()` if `x == ulong__max_bound()`.
+// Returns `x + 1`, or `ulong__max_bound()` if
+// `x == ulong__max_bound()`.
 
 ulong ulong__pred( ulong x );
 // Returns `x - 1`.
 // @requires x != ulong__min_bound()
 
 ulong ulong__pred_b( ulong x );
-// Returns `x - 1`, or `ulong__min_bound()` if `x == ulong__min_bound()`.
+// Returns `x - 1`, or `ulong__min_bound()` if
+// `x == ulong__min_bound()`.
 
 
-/////////////////////////////
-/// NUM TYPECLASS
-/////////////////////////////
 
-bool ulong__is_signed( void );   // Returns `false`.
+///////////////////////////////////
+/// TYPECLASS: NUM
+///////////////////////////////////
+
+bool ulong__is_signed( void );
+// Returns `false`, because `ulong` values can't be negative.
+
+bool ulong__add_would_underflow( ulong, ulong );
+bool ulong__add_would_overflow( ulong, ulong );
 
 bool ulong__can_add( ulong x, ulong y );
-// Returns the boolean that the expression `x + y` will not overflow;
-// equivalent to `x <= ( ulong__max_bound() - y )`.
+// Returns the boolean that the behavior of `x + y` will not overflow.
+
+bool ulong__sub_would_underflow( ulong, ulong );
+bool ulong__sub_would_overflow( ulong, ulong );
 
 bool ulong__can_sub( ulong x, ulong y );
-// Returns the boolean that the expression `x - y` will not underflow;
-// equivalent to `x >= y`.
+// Returns the boolean that the behavior of `x - y` will not underflow.
+
+bool ulong__mul_would_underflow( ulong, ulong );
+bool ulong__mul_would_overflow( ulong, ulong );
 
 bool ulong__can_mul( ulong x, ulong y );
-// Returns the boolean that the expression `x * y` will not overflow;
-// equivalent to `x <= ( ulong__max_bound() / y )`.
+// Returns the boolean that the behavior of `x * y` will not overflow.
+
+bool ulong__div_would_underflow( ulong, ulong );
+bool ulong__div_would_overflow( ulong, ulong );
 
 bool ulong__can_div( ulong x, ulong y );
-// Returns the boolean that the behavior of `x / y` is well-defined, i.e.,
-// that `y != 0`.
+// Returns the boolean that `y != 0`.
 
-ulong ulong__add( ulong x, ulong y );   // Returns `x + y`.
-ulong ulong__sub( ulong x, ulong y );   // Returns `x - y`.
-ulong ulong__mul( ulong x, ulong y );   // Returns `x * y`.
+ulong ulong__add( ulong x, ulong y );
+// Returns `x + y`, which may overflow.
+
+ulong ulong__sub( ulong x, ulong y );
+// Returns `x - y`, which may underflow.
+
+ulong ulong__mul( ulong x, ulong y );
+// Returns `x * y`, which may overflow.
 
 ulong ulong__div( ulong x, ulong y );
 // Returns `x / y`.
@@ -152,49 +186,80 @@ ulong ulong__mod( ulong x, ulong y );
 // @requires y != 0
 
 ulong ulong__negate( ulong x );
-// If `x == 0`, returns `0`. Otherwise, returns `ulong__max_bound() - x + 1`.
+// Returns `-x`, which gives `ulong__max_bound() - x + 1`.
 
 ulong ulong__abs( ulong x );
 // Returns `x`, because it will never be negative.
 
-bool ulong__same_sign( ulong x, ulong y );
-// Returns `true`, because `ulong` values are never negative.
+ulong ulong__add_b( ulong x, ulong y );
+// Returns: - `ulong__max_bound()` if `x + y` would overflow;
+//          - `x + y` otherwise.
+
+ulong ulong__sub_b( ulong x, ulong y );
+// Returns: - `0` if `x - y` would underflow;
+//          - `x - y` otherwise.
+
+ulong ulong__mul_b( ulong x, ulong y );
+// Returns: - `ulong__max_bound()` if `x * y` would overflow;
+//          - `x * y` otherwise.
+
+ulong ulong__div_b( ulong x, ulong y );
+// Returns: - `0` if `y == 0 && x == 0`;
+//          - `ulong__max_bound()` if `y == 0 && x > 0`;
+//          - `x / y` otherwise.
+
+ulong ulong__mod_b( ulong x, ulong y );
+// Returns: - `0` if `y == 0`;
+//          - `x % y` otherwise.
+
+ulong ulong__negate_b( ulong x );
+// Returns `ulong__negate( x )`.
+
+ulong ulong__abs_b( ulong x );
+// Returns `ulong__abs( x )`.
+
+bool ulong__same_sign( ulong, ulong );
+// Returns `true`, because `ulong` values will always have the same sign.
 
 bool ulong__is_negative( ulong x );     // Returns `false`.
 bool ulong__is_nonpositive( ulong x );  // Returns `x == 0`.
 bool ulong__is_zero( ulong x );         // Returns `x == 0`.
 bool ulong__is_nonnegative( ulong x );  // Returns `true`.
-bool ulong__is_positive( ulong x );     // Returns `x > 0`.
-ord  ulong__compare_0( ulong x );       // Returns `ulong__compare( x, 0 )`.
+bool ulong__is_positive( ulong x );     // Returns `x != 0`.
 
-bool ulong__is_even( ulong x );     // Returns `x % 2 == 0`.
-bool ulong__is_odd( ulong x );      // Returns `x % 2 == 1`.
+ord ulong__compare_0( ulong x );
+// Returns `ulong__compare( x, 0 )`.
 
-ulong ulong__add_2( ulong x );    // Returns `ulong__add( x, 2 )`.
-ulong ulong__sub_2( ulong x );    // Returns `ulong__sub( x, 2 )`.
-ulong ulong__mul_2( ulong x );    // Returns `ulong__mul( x, 2 )`.
-ulong ulong__div_2( ulong x );    // Returns `ulong__div( x, 2 )`.
-ulong ulong__mod_2( ulong x );    // Returns `ulong__mod( x, 2 )`.
+bool ulong__is_even( ulong x );  // Returns `x % 2 == 0`.
+bool ulong__is_odd( ulong x );   // Returns `x % 2 == 1`.
 
-ulong ulong__mul_10( ulong x );   // Returns `ulong__mul( x, 10 )`.
-ulong ulong__div_10( ulong x );   // Returns `ulong__div( x, 10 )`.
-ulong ulong__mod_10( ulong x );   // Returns `ulong__mod( x, 10 )`.
+ulong ulong__add_2( ulong );
+ulong ulong__sub_2( ulong );
+ulong ulong__mul_2( ulong );
+ulong ulong__div_2( ulong );
+ulong ulong__mod_2( ulong );
+
+ulong ulong__mul_10( ulong );
+ulong ulong__div_10( ulong );
+
+ulong ulong__add_b_2( ulong );
+ulong ulong__sub_b_2( ulong );
+ulong ulong__mul_b_2( ulong );
+ulong ulong__mul_b_10( ulong );
 
 
-/////////////////////////////
-/// READ TYPECLASS
-/////////////////////////////
 
-Result_ulong ulong__from_str( char const * str );
-// Parses the given `str` to produce the contained `ulong` value. Errors:
+///////////////////////////////////
+/// TYPECLASS: READ
+///////////////////////////////////
+
+ulong ulong__from_str( char const * str );
+// Parses the given `str` to produce the contained `ulong` value.
+// On error, returns `0` and sets `errno` to:
 // - `EINVAL` if `str == NULL` or `str` is `""`;
-// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
-// - `ERANGE` if the resulting value is out of range of `ulong`;
-
-ulong ulong__from_str_e( char const * str, int * err );
-// Like `ulong__from_str()`, but setting the given `err` value to the error,
-// or `0` if no error.
+// - `EBADMSG` if `str` contains a value but a non-whitespace suffix;
+// - `ERANGE` if the resulting value can't be represented by an `ulong`.
 
 
-#endif
+#endif // ifndef LIBBASE_ULONG_H
 

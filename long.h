@@ -1,4 +1,9 @@
 
+// This file is the result of executing `genheader.py`. You should make changes
+// to this code by changing the template strings or the build process -- not
+// editing this file.
+
+
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -25,50 +30,61 @@
 #include <libtypes/types.h>     // bool, ord
 
 
-typedef struct {
+typedef struct maybe_long {
     long value;
     bool nothing;
 } Maybe_long;
 
 
-typedef struct {
-    long value;
-    int error;
-} Result_long;
+long long__id( long x );
+// The identity function; returns `x`.
 
 
-long long__id( long x );   // Returns `x`.
+
+///////////////////////////////////
+/// TYPECLASS: BOUNDED
+///////////////////////////////////
+
+long long__min_bound( void );
+// Returns the minimum value representable by the `long` type.
+
+long long__max_bound( void );
+// Returns the maximum value representable by the `long` type.
 
 
-/////////////////////////////
-/// BOUNDED TYPECLASS
-/////////////////////////////
 
-long long__min_bound( void );     // Returns `LONG_MIN`.
-long long__max_bound( void );     // Returns `LONG_MAX`.
+///////////////////////////////////
+/// TYPECLASS: EQ
+///////////////////////////////////
 
+bool long__equal( long x, long y );
+// Returns `true` if `x == y`, or `false` if not.
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
-
-bool long__equal( long x, long y );        // Returns `x == y`.
-bool long__not_equal( long x, long y );    // Returns `x != y`.
+bool long__not_equal( long x, long y );
+// Returns `true` if `x != y`, or `false` if not.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ORD
+///////////////////////////////////
 
 ord long__compare( long x, long y );
 // Returns: `LT` if `x < y`,
 //          `EQ` if `x == y`, or
 //          `GT` if `x > y`.
 
-bool long__less_than( long x, long y );            // Returns `x < y`.
-bool long__less_than_or_eq( long x, long y );      // Returns `x <= y`.
-bool long__greater_than_or_eq( long x, long y );   // Returns `x >= y`.
-bool long__greater_than( long x, long y );         // Returns `x > y`.
+bool long__less_than( long x, long y );
+// Returns `true` if `x < y`, or `false` if not.
+
+bool long__less_than_or_eq( long x, long y );
+// Returns `true` if `x <= y`, or `false` if not.
+
+bool long__greater_than_or_eq( long x, long y );
+// Returns `true` if `x >= y`, or `false` if not.
+
+bool long__greater_than( long x, long y );
+// Returns `true` if `x > y`, or `false` if not.
 
 long long__min2( long x, long y );
 // Returns `x` if `x < y`, or `y` otherwise.
@@ -98,60 +114,59 @@ long long__clamp( long lower, long upper, long x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-/////////////////////////////
-/// ENUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ENUM
+///////////////////////////////////
 
 long long__succ( long x );
 // Returns `x + 1`.
 // @requires x != long__max_bound()
 
 long long__succ_b( long x );
-// Returns `x + 1`, or `long__max_bound()` if `x == long__max_bound()`.
+// Returns `x + 1`, or `long__max_bound()` if
+// `x == long__max_bound()`.
 
 long long__pred( long x );
 // Returns `x - 1`.
 // @requires x != long__min_bound()
 
 long long__pred_b( long x );
-// Returns `x - 1`, or `long__min_bound()` if `x == long__min_bound()`.
+// Returns `x - 1`, or `long__min_bound()` if
+// `x == long__min_bound()`.
 
 
-/////////////////////////////
-/// NUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: NUM
+///////////////////////////////////
 
 bool long__is_signed( void );
 // Returns `true`, because `long` values can be negative.
 
+bool long__add_would_underflow( long, long );
+bool long__add_would_overflow( long, long );
+
 bool long__can_add( long x, long y );
 // Returns the boolean that the behavior of `x + y` is well-defined.
-// Equivalent to:
-//
-//        implies( y > 0, x <= ( long__max_bound - y ) )
-//     && implies( y < 0, x >= ( long__min_bound - y ) )
+
+bool long__sub_would_underflow( long, long );
+bool long__sub_would_overflow( long, long );
 
 bool long__can_sub( long x, long y );
 // Returns the boolean that the behavior of `x - y` is well-defined.
-// Equivalent to:
-//
-//        implies( y > 0, x >= ( long__min_bound - y ) )
-//     && implies( y < 0, x <= ( long__max_bound - y ) )
+
+bool long__mul_would_underflow( long, long );
+bool long__mul_would_overflow( long, long );
 
 bool long__can_mul( long x, long y );
 // Returns the boolean that the behavior of `x * y` is well-defined.
-// Equivalent to:
-//
-//     ( x > 0 ) ? ( y > 0 ) ? ( x <= ( long__max_bound / y ) )
-//                           : ( y >= ( long__min_bound / x ) )
-//               : ( y > 0 ) ? ( x >= ( long__min_bound / y ) )
-//                           : implies( x != 0, y >= ( long__max_bound / x ) )
+
+bool long__div_would_underflow( long, long );
+bool long__div_would_overflow( long, long );
 
 bool long__can_div( long x, long y );
 // Returns the boolean that the behavior of `x / y` is well-defined.
-// Equivalent to:
-//
-//     ( y != 0 ) && !( ( x == long__min_bound ) && ( y == -1 ) )
 
 long long__add( long x, long y );
 // Returns `x + y`.
@@ -175,11 +190,48 @@ long long__mod( long x, long y );
 
 long long__negate( long x );
 // Returns `-x`.
-// @requires x != long__min_bound
+// @requires x != long__min_bound()
 
 long long__abs( long x );
 // Returns `( x < 0 ) ? -x : x`.
-// @requires x != long__min_bound
+// @requires x != long__min_bound()
+
+long long__add_b( long x, long y );
+// Returns: - `long__min_bound()` if `x + y` would underflow;
+//          - `long__max_bound()` if `x + y` would overflow;
+//          - `x + y` otherwise.
+
+long long__sub_b( long x, long y );
+// Returns: - `long__min_bound()` if `x - y` would underflow;
+//          - `long__max_bound()` if `x - y` would overflow;
+//          - `x - y` otherwise.
+
+long long__mul_b( long x, long y );
+// Returns: - `long__min_bound()` if `x * y` would underflow;
+//          - `long__max_bound()` if `x * y` would overflow;
+//          - `x * y` otherwise.
+
+long long__div_b( long x, long y );
+// If `y == 0`, returns: - `long__min_bound()` if `x < 0`;
+//                       - `0` if `x == 0`;
+//                       - `long__max_bound()` if `x > 0`;
+// Otherwise, returns: - `long__min_bound()` if
+//                         `long__div_would_underflow( x, y )`;
+//                     - `long__max_bound()` if
+//                         `long__div_would_overflow( x, y )`;
+//                     - `x / y` otherwise;
+
+long long__mod_b( long x, long y );
+// Returns: - `0` if `!long__can_div( x, y )`;
+//          - `x % y` otherwise.
+
+long long__negate_b( long x );
+// Returns: - `long__max_bound()` if `x == long__min_bound()`;
+//          - `-x` otherwise.
+
+long long__abs_b( long x );
+// Returns: - `long__max_bound()` if `x == long__min_bound()`;
+//          - `long__abs( x )` otherwise.
 
 bool long__same_sign( long x, long y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
@@ -189,36 +241,40 @@ bool long__is_nonpositive( long x );  // Returns `x <= 0`.
 bool long__is_zero( long x );         // Returns `x == 0`.
 bool long__is_nonnegative( long x );  // Returns `x >= 0`.
 bool long__is_positive( long x );     // Returns `x > 0`.
-ord  long__compare_0( long x );       // Returns `long__compare( x, 0 )`.
+
+ord long__compare_0( long x );
+// Returns `long__compare( x, 0 )`.
 
 bool long__is_even( long x );     // Returns `x % 2 == 0`.
 bool long__is_odd( long x );      // Returns `x % 2 == 1`.
 
-long long__add_2( long x );    // Returns `long__add( x, 2 )`.
-long long__sub_2( long x );    // Returns `long__sub( x, 2 )`.
-long long__mul_2( long x );    // Returns `long__mul( x, 2 )`.
-long long__div_2( long x );    // Returns `long__div( x, 2 )`.
-long long__mod_2( long x );    // Returns `long__mod( x, 2 )`.
+long long__add_2( long );
+long long__sub_2( long );
+long long__mul_2( long );
+long long__div_2( long );
+long long__mod_2( long );
 
-long long__mul_10( long x );   // Returns `long__mul( x, 10 )`.
-long long__div_10( long x );   // Returns `long__div( x, 10 )`.
-long long__mod_10( long x );   // Returns `long__mod( x, 10 )`.
+long long__mul_10( long );
+long long__div_10( long );
+
+long long__add_b_2( long );
+long long__sub_b_2( long );
+long long__mul_b_2( long );
+long long__mul_b_10( long );
 
 
-/////////////////////////////
-/// READ TYPECLASS
-/////////////////////////////
 
-Result_long long__from_str( char const * str );
-// Parses the given `str` to produce the contained `long` value. Errors:
+///////////////////////////////////
+/// TYPECLASS: READ
+///////////////////////////////////
+
+long long__from_str( char const * str );
+// Parses the given `str` to produce the contained `long` value.
+// On error, returns `0` and sets `errno` to:
 // - `EINVAL` if `str == NULL` or `str` is `""`;
-// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
-// - `ERANGE` if the resulting value is out of range of `long`;
-
-long long__from_str_e( char const * str, int * err );
-// Like `long__from_str()`, but setting the given `err` value to the error,
-// or `0` if no error.
+// - `EBADMSG` if `str` contains a value but a non-whitespace suffix;
+// - `ERANGE` if the resulting value can't be represented by an `long`.
 
 
-#endif
+#endif // ifndef LIBBASE_LONG_H
 

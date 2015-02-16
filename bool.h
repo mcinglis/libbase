@@ -1,4 +1,9 @@
 
+// This file is the result of executing `genheader.py`. You should make changes
+// to this code by changing the template strings or the build process -- not
+// editing this file.
+
+
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -25,61 +30,74 @@
 #include <libtypes/types.h>     // bool, ord
 
 
-typedef struct {
+typedef struct maybe_bool {
     bool value;
     bool nothing;
 } Maybe_bool;
 
 
-typedef struct {
-    bool value;
-    int error;
-} Result_bool;
+bool bool__id( bool x );
+// The identity function; returns `x`.
 
 
-bool bool__id( bool x );    // Returns `x`.
+
+///////////////////////////////////
+/// TYPECLASS: BOUNDED
+///////////////////////////////////
+
+bool bool__min_bound( void );
+// Returns the minimum value representable by the `bool` type.
+
+bool bool__max_bound( void );
+// Returns the maximum value representable by the `bool` type.
 
 
-/////////////////////////////
-/// BOUNDED TYPECLASS
-/////////////////////////////
 
-bool bool__min_bound( void );   // Returns `false`.
-bool bool__max_bound( void );   // Returns `true`.
+///////////////////////////////////
+/// TYPECLASS: EQ
+///////////////////////////////////
 
+bool bool__equal( bool x, bool y );
+// Returns `true` if `x == y`, or `false` if not.
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
-
-bool bool__equal( bool x, bool y );         // Returns `x == y`.
-bool bool__not_equal( bool x, bool y );     // Returns `x != y`.
+bool bool__not_equal( bool x, bool y );
+// Returns `true` if `x != y`, or `false` if not.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
 
-ord bool__compare( bool x, bool y );   // Returns: `LT` if `x < y`,
-                                       //          `EQ` if `x == y`, or
-                                       //          `GT` if `x > y`.
+///////////////////////////////////
+/// TYPECLASS: ORD
+///////////////////////////////////
 
-bool bool__less_than( bool x, bool y );            // Returns `x < y`.
-bool bool__less_than_or_eq( bool x, bool y );      // Returns `x <= y`.
-bool bool__greater_than_or_eq( bool x, bool y );   // Returns `x >= y`.
-bool bool__greater_than( bool x, bool y );         // Returns `x > y`.
+ord bool__compare( bool x, bool y );
+// Returns: `LT` if `x < y`,
+//          `EQ` if `x == y`, or
+//          `GT` if `x > y`.
 
-bool bool__min2( bool x, bool y );   // Returns `x && y`.
-bool bool__max2( bool x, bool y );   // Returns `x || y`.
+bool bool__less_than( bool x, bool y );
+// Returns `true` if `x < y`, or `false` if not.
+
+bool bool__less_than_or_eq( bool x, bool y );
+// Returns `true` if `x <= y`, or `false` if not.
+
+bool bool__greater_than_or_eq( bool x, bool y );
+// Returns `true` if `x >= y`, or `false` if not.
+
+bool bool__greater_than( bool x, bool y );
+// Returns `true` if `x > y`, or `false` if not.
+
+bool bool__min2( bool x, bool y );
+// Returns `x` if `x < y`, or `y` otherwise.
+
+bool bool__max2( bool x, bool y );
+// Returns `x` if `x > y`, or `y` otherwise.
 
 bool bool__min_n( size_t n, bool const * xs );
-// Returns `false` if any of the first `n` elements in the array `xs` are
-// `false`. Returns `true` otherwise. Logically equivalent to `ALL()`.
+// Returns the minimum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
 bool bool__max_n( size_t n, bool const * xs );
-// Returns `true` if any of the first `n` elements in the array `xs` are
-// `true`. Returns `false` otherwise. Logically equivalent to `ANY()`.
+// Returns the maximum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
 // @public
@@ -96,20 +114,50 @@ bool bool__clamp( bool lower, bool upper, bool x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-/////////////////////////////
-/// ENUM TYPECLASS
-/////////////////////////////
 
-bool bool__succ( bool x );  // Returns `true`.
-                            // @requires x != true
+///////////////////////////////////
+/// TYPECLASS: ENUM
+///////////////////////////////////
 
-bool bool__succ_b( bool x );    // Returns `true`.
+bool bool__succ( bool x );
+// Returns `x + 1`.
+// @requires x != bool__max_bound()
 
-bool bool__pred( bool x );      // Returns `false`.
-                                // @requires x != false
+bool bool__succ_b( bool x );
+// Returns `x + 1`, or `bool__max_bound()` if
+// `x == bool__max_bound()`.
 
-bool bool__pred_b( bool x );    // Returns `false`.
+bool bool__pred( bool x );
+// Returns `x - 1`.
+// @requires x != bool__min_bound()
+
+bool bool__pred_b( bool x );
+// Returns `x - 1`, or `bool__min_bound()` if
+// `x == bool__min_bound()`.
 
 
-#endif
+
+///////////////////////////////////
+/// TYPECLASS: READ
+///////////////////////////////////
+
+bool bool__from_str( char const * str );
+// Returns `true` if the given `str` contains `"true"` surrounded only by
+// whitespace, or `false` if it contains `"false"` surrounded only by
+// whitespace. On error, returns `false` and sets `errno` to:
+// - `EINVAL` if `str == NULL` or `str` is `""`;
+// - `EBADMSG` if there was a parse error.
+
+
+
+///////////////////////////////////
+/// TYPECLASS: TO_CONSTSTR
+///////////////////////////////////
+
+char const *
+bool__to_conststr( bool x );
+// Returns `"true"` if `x == true`, or `"false"` otherwise.
+
+
+#endif // ifndef LIBBASE_BOOL_H
 

@@ -1,4 +1,9 @@
 
+// This file is the result of executing `genheader.py`. You should make changes
+// to this code by changing the template strings or the build process -- not
+// editing this file.
+
+
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -25,50 +30,61 @@
 #include <libtypes/types.h>     // bool, ord
 
 
-typedef struct {
+typedef struct maybe_int {
     int value;
     bool nothing;
 } Maybe_int;
 
 
-typedef struct {
-    int value;
-    int error;
-} Result_int;
+int int__id( int x );
+// The identity function; returns `x`.
 
 
-int int__id( int x );   // Returns `x`.
+
+///////////////////////////////////
+/// TYPECLASS: BOUNDED
+///////////////////////////////////
+
+int int__min_bound( void );
+// Returns the minimum value representable by the `int` type.
+
+int int__max_bound( void );
+// Returns the maximum value representable by the `int` type.
 
 
-/////////////////////////////
-/// BOUNDED TYPECLASS
-/////////////////////////////
 
-int int__min_bound( void );     // Returns `INT_MIN`.
-int int__max_bound( void );     // Returns `INT_MAX`.
+///////////////////////////////////
+/// TYPECLASS: EQ
+///////////////////////////////////
 
+bool int__equal( int x, int y );
+// Returns `true` if `x == y`, or `false` if not.
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
-
-bool int__equal( int x, int y );        // Returns `x == y`.
-bool int__not_equal( int x, int y );    // Returns `x != y`.
+bool int__not_equal( int x, int y );
+// Returns `true` if `x != y`, or `false` if not.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ORD
+///////////////////////////////////
 
 ord int__compare( int x, int y );
 // Returns: `LT` if `x < y`,
 //          `EQ` if `x == y`, or
 //          `GT` if `x > y`.
 
-bool int__less_than( int x, int y );            // Returns `x < y`.
-bool int__less_than_or_eq( int x, int y );      // Returns `x <= y`.
-bool int__greater_than_or_eq( int x, int y );   // Returns `x >= y`.
-bool int__greater_than( int x, int y );         // Returns `x > y`.
+bool int__less_than( int x, int y );
+// Returns `true` if `x < y`, or `false` if not.
+
+bool int__less_than_or_eq( int x, int y );
+// Returns `true` if `x <= y`, or `false` if not.
+
+bool int__greater_than_or_eq( int x, int y );
+// Returns `true` if `x >= y`, or `false` if not.
+
+bool int__greater_than( int x, int y );
+// Returns `true` if `x > y`, or `false` if not.
 
 int int__min2( int x, int y );
 // Returns `x` if `x < y`, or `y` otherwise.
@@ -98,60 +114,59 @@ int int__clamp( int lower, int upper, int x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-/////////////////////////////
-/// ENUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ENUM
+///////////////////////////////////
 
 int int__succ( int x );
 // Returns `x + 1`.
 // @requires x != int__max_bound()
 
 int int__succ_b( int x );
-// Returns `x + 1`, or `int__max_bound()` if `x == int__max_bound()`.
+// Returns `x + 1`, or `int__max_bound()` if
+// `x == int__max_bound()`.
 
 int int__pred( int x );
 // Returns `x - 1`.
 // @requires x != int__min_bound()
 
 int int__pred_b( int x );
-// Returns `x - 1`, or `int__min_bound()` if `x == int__min_bound()`.
+// Returns `x - 1`, or `int__min_bound()` if
+// `x == int__min_bound()`.
 
 
-/////////////////////////////
-/// NUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: NUM
+///////////////////////////////////
 
 bool int__is_signed( void );
 // Returns `true`, because `int` values can be negative.
 
+bool int__add_would_underflow( int, int );
+bool int__add_would_overflow( int, int );
+
 bool int__can_add( int x, int y );
 // Returns the boolean that the behavior of `x + y` is well-defined.
-// Equivalent to:
-//
-//        implies( y > 0, x <= ( int__max_bound - y ) )
-//     && implies( y < 0, x >= ( int__min_bound - y ) )
+
+bool int__sub_would_underflow( int, int );
+bool int__sub_would_overflow( int, int );
 
 bool int__can_sub( int x, int y );
 // Returns the boolean that the behavior of `x - y` is well-defined.
-// Equivalent to:
-//
-//        implies( y > 0, x >= ( int__min_bound - y ) )
-//     && implies( y < 0, x <= ( int__max_bound - y ) )
+
+bool int__mul_would_underflow( int, int );
+bool int__mul_would_overflow( int, int );
 
 bool int__can_mul( int x, int y );
 // Returns the boolean that the behavior of `x * y` is well-defined.
-// Equivalent to:
-//
-//     ( x > 0 ) ? ( y > 0 ) ? ( x <= ( int__max_bound / y ) )
-//                           : ( y >= ( int__min_bound / x ) )
-//               : ( y > 0 ) ? ( x >= ( int__min_bound / y ) )
-//                           : implies( x != 0, y >= ( int__max_bound / x ) )
+
+bool int__div_would_underflow( int, int );
+bool int__div_would_overflow( int, int );
 
 bool int__can_div( int x, int y );
 // Returns the boolean that the behavior of `x / y` is well-defined.
-// Equivalent to:
-//
-//     ( y != 0 ) && !( ( x == int__min_bound ) && ( y == -1 ) )
 
 int int__add( int x, int y );
 // Returns `x + y`.
@@ -175,11 +190,48 @@ int int__mod( int x, int y );
 
 int int__negate( int x );
 // Returns `-x`.
-// @requires x != int__min_bound
+// @requires x != int__min_bound()
 
 int int__abs( int x );
 // Returns `( x < 0 ) ? -x : x`.
-// @requires x != int__min_bound
+// @requires x != int__min_bound()
+
+int int__add_b( int x, int y );
+// Returns: - `int__min_bound()` if `x + y` would underflow;
+//          - `int__max_bound()` if `x + y` would overflow;
+//          - `x + y` otherwise.
+
+int int__sub_b( int x, int y );
+// Returns: - `int__min_bound()` if `x - y` would underflow;
+//          - `int__max_bound()` if `x - y` would overflow;
+//          - `x - y` otherwise.
+
+int int__mul_b( int x, int y );
+// Returns: - `int__min_bound()` if `x * y` would underflow;
+//          - `int__max_bound()` if `x * y` would overflow;
+//          - `x * y` otherwise.
+
+int int__div_b( int x, int y );
+// If `y == 0`, returns: - `int__min_bound()` if `x < 0`;
+//                       - `0` if `x == 0`;
+//                       - `int__max_bound()` if `x > 0`;
+// Otherwise, returns: - `int__min_bound()` if
+//                         `int__div_would_underflow( x, y )`;
+//                     - `int__max_bound()` if
+//                         `int__div_would_overflow( x, y )`;
+//                     - `x / y` otherwise;
+
+int int__mod_b( int x, int y );
+// Returns: - `0` if `!int__can_div( x, y )`;
+//          - `x % y` otherwise.
+
+int int__negate_b( int x );
+// Returns: - `int__max_bound()` if `x == int__min_bound()`;
+//          - `-x` otherwise.
+
+int int__abs_b( int x );
+// Returns: - `int__max_bound()` if `x == int__min_bound()`;
+//          - `int__abs( x )` otherwise.
 
 bool int__same_sign( int x, int y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
@@ -189,36 +241,40 @@ bool int__is_nonpositive( int x );  // Returns `x <= 0`.
 bool int__is_zero( int x );         // Returns `x == 0`.
 bool int__is_nonnegative( int x );  // Returns `x >= 0`.
 bool int__is_positive( int x );     // Returns `x > 0`.
-ord  int__compare_0( int x );       // Returns `int__compare( x, 0 )`.
+
+ord int__compare_0( int x );
+// Returns `int__compare( x, 0 )`.
 
 bool int__is_even( int x );     // Returns `x % 2 == 0`.
 bool int__is_odd( int x );      // Returns `x % 2 == 1`.
 
-int int__add_2( int x );    // Returns `int__add( x, 2 )`.
-int int__sub_2( int x );    // Returns `int__sub( x, 2 )`.
-int int__mul_2( int x );    // Returns `int__mul( x, 2 )`.
-int int__div_2( int x );    // Returns `int__div( x, 2 )`.
-int int__mod_2( int x );    // Returns `int__mod( x, 2 )`.
+int int__add_2( int );
+int int__sub_2( int );
+int int__mul_2( int );
+int int__div_2( int );
+int int__mod_2( int );
 
-int int__mul_10( int x );   // Returns `int__mul( x, 10 )`.
-int int__div_10( int x );   // Returns `int__div( x, 10 )`.
-int int__mod_10( int x );   // Returns `int__mod( x, 10 )`.
+int int__mul_10( int );
+int int__div_10( int );
+
+int int__add_b_2( int );
+int int__sub_b_2( int );
+int int__mul_b_2( int );
+int int__mul_b_10( int );
 
 
-/////////////////////////////
-/// READ TYPECLASS
-/////////////////////////////
 
-Result_int int__from_str( char const * str );
-// Parses the given `str` to produce the contained `int` value. Errors:
+///////////////////////////////////
+/// TYPECLASS: READ
+///////////////////////////////////
+
+int int__from_str( char const * str );
+// Parses the given `str` to produce the contained `int` value.
+// On error, returns `0` and sets `errno` to:
 // - `EINVAL` if `str == NULL` or `str` is `""`;
-// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
-// - `ERANGE` if the resulting value is out of range of `int`;
-
-int int__from_str_e( char const * str, int * err );
-// Like `int__from_str()`, but setting the given `err` value to the error, or
-// `0` if no error.
+// - `EBADMSG` if `str` contains a value but a non-whitespace suffix;
+// - `ERANGE` if the resulting value can't be represented by an `int`.
 
 
-#endif
+#endif // ifndef LIBBASE_INT_H
 

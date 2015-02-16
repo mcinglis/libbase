@@ -1,4 +1,9 @@
 
+// This file is the result of executing `gensource.py`. You should make changes
+// to this code by changing the template strings or the build process -- not
+// editing this file.
+
+
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -19,24 +24,247 @@
 
 #include "bool.h"
 
-#include <libpp/call.h>         // PP_CALL
-#include <libpp/separators.h>   // PP_SEP_NONE
-#include <libtypes/types.h>     // bool, BOOL_TYPE
-
-#include "eq/scalar.h"          // DERIVING_EQ_SCALAR
-#include "ord/scalar.h"         // DERIVING_ORD_SCALAR
-#include "enum/scalar.h"        // DERIVING_ENUM_SCALAR
+#include <libtypes/types.h>
 
 
 bool bool__id( bool const x ) { return x; }
+
+
+
+///////////////////////////////////
+/// TYPECLASS: BOUNDED
+///////////////////////////////////
 
 
 bool bool__min_bound( void ) { return false; }
 bool bool__max_bound( void ) { return true; }
 
 
-PP_CALL( BOOL_TYPE, PP_SEP_NONE, DERIVING_EQ_SCALAR,
-                                 DERIVING_ORD_SCALAR,
-                                 DERIVING_ENUM_SCALAR )
 
+///////////////////////////////////
+/// TYPECLASS: EQ
+///////////////////////////////////
+
+
+bool
+bool__equal(
+        bool const x,
+        bool const y )
+{
+    return x == y;
+}
+
+
+bool
+bool__not_equal(
+        bool const x,
+        bool const y )
+{
+    return x != y;
+}
+
+
+
+///////////////////////////////////
+/// TYPECLASS: ORD
+///////////////////////////////////
+
+
+#include <libmacro/assert.h>
+
+
+ord
+bool__compare(
+        bool const x,
+        bool const y )
+{
+    return ( x > y ) - ( x < y );
+}
+
+
+bool
+bool__less_than(
+        bool const x,
+        bool const y )
+{
+    return x < y;
+}
+
+
+bool
+bool__less_than_or_eq(
+        bool const x,
+        bool const y )
+{
+    return x <= y;
+}
+
+
+bool
+bool__greater_than_or_eq(
+        bool const x,
+        bool const y )
+{
+    return x >= y;
+}
+
+
+bool
+bool__greater_than(
+        bool const x,
+        bool const y )
+{
+    return x > y;
+}
+
+
+bool
+bool__min2(
+        bool const x,
+        bool const y )
+{
+    return ( x < y ) ? x : y;
+}
+
+
+bool
+bool__max2(
+        bool const x,
+        bool const y )
+{
+    return ( x > y ) ? x : y;
+}
+
+
+bool
+bool__min_n(
+        size_t const n,
+        bool const * const xs )
+{ ASSERT( n != 0, xs != NULL );
+    bool min = xs[ 0 ];
+    for ( size_t i = 1; i < n; i++ ) {
+        min = bool__min2( min, xs[ i ] );
+    }
+    return min;
+}
+
+
+bool
+bool__max_n(
+        size_t const n,
+        bool const * const xs )
+{ ASSERT( n != 0, xs != NULL );
+    bool max = xs[ 0 ];
+    for ( size_t i = 1; i < n; i++ ) {
+        max = bool__max2( max, xs[ i ] );
+    }
+    return max;
+}
+
+
+bool
+bool__clamp(
+        bool const lower,
+        bool const upper,
+        bool const x )
+{
+    return ( lower >= x ) ? lower
+         : ( upper <= x ) ? upper
+                          : x;
+}
+
+
+
+///////////////////////////////////
+/// TYPECLASS: ENUM
+///////////////////////////////////
+
+
+#include <libmacro/assert.h>
+
+
+bool
+bool__succ( bool const x )
+{ ASSERT( x != bool__max_bound() );
+    return x + 1;
+}
+
+
+bool
+bool__succ_b( bool const x )
+{
+    return ( x == bool__max_bound() ) ? x : ( x + 1 );
+}
+
+
+bool
+bool__pred( bool const x )
+{ ASSERT( x != bool__min_bound() );
+    return x - 1;
+}
+
+
+bool
+bool__pred_b( bool const x )
+{
+    return ( x == bool__min_bound() ) ? x : ( x - 1 );
+}
+
+
+
+///////////////////////////////////
+/// TYPECLASS: READ
+///////////////////////////////////
+
+
+#include <ctype.h>
+#include <errno.h>
+#include <string.h>
+
+bool
+bool__from_str( char const * str )
+{
+    if ( str == NULL || str[ 0 ] == '\0' ) {
+        errno = EINVAL;
+        return false;
+    }
+    errno = 0;
+    while ( isspace( *str ) ) {
+        str++;
+    }
+    bool r;
+    static char const true_str[] = "true";
+    static char const false_str[] = "false";
+    if ( strncmp( str, true_str, sizeof true_str - 1 ) == 0 ) {
+        r = true;
+        str += sizeof true_str - 1;
+    } else if ( strncmp( str, false_str, sizeof false_str - 1 ) == 0 ) {
+        r = false;
+        str += sizeof false_str - 1;
+    } else {
+        errno = EBADMSG;
+        return false;
+    }
+    while ( isspace( *str ) ) {
+        str++;
+    }
+    if ( *str != '\0' ) {
+        errno = EBADMSG;
+        return false;
+    }
+    return r;
+}
+
+
+
+///////////////////////////////////
+/// TYPECLASS: TO_CONSTSTR
+///////////////////////////////////
+
+
+char const *
+bool__to_conststr( bool const x )
+{
+    return x ? "true" : "false";
+}
 

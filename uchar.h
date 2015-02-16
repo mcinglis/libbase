@@ -1,4 +1,9 @@
 
+// This file is the result of executing `genheader.py`. You should make changes
+// to this code by changing the template strings or the build process -- not
+// editing this file.
+
+
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -22,53 +27,64 @@
 
 
 #include <libpp/count.h>        // PP_COUNT
-#include <libtypes/types.h>     // bool, ord, uchar
+#include <libtypes/types.h>     // bool, ord
 
 
-typedef struct {
+typedef struct maybe_uchar {
     uchar value;
     bool nothing;
 } Maybe_uchar;
 
 
-typedef struct {
-    uchar value;
-    int error;
-} Result_uchar;
+uchar uchar__id( uchar x );
+// The identity function; returns `x`.
 
 
-uchar uchar__id( uchar x );   // Returns `x`.
+
+///////////////////////////////////
+/// TYPECLASS: BOUNDED
+///////////////////////////////////
+
+uchar uchar__min_bound( void );
+// Returns `0`, as that's the minimum value representable by `uchar`.
+
+uchar uchar__max_bound( void );
+// Returns the maximum value representable by the `uchar` type.
 
 
-/////////////////////////////
-/// BOUNDED TYPECLASS
-/////////////////////////////
 
-uchar uchar__min_bound( void );     // Returns `0`.
-uchar uchar__max_bound( void );     // Returns `UCHAR_MAX`.
+///////////////////////////////////
+/// TYPECLASS: EQ
+///////////////////////////////////
 
+bool uchar__equal( uchar x, uchar y );
+// Returns `true` if `x == y`, or `false` if not.
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
-
-bool uchar__equal( uchar x, uchar y );        // Returns `x == y`.
-bool uchar__not_equal( uchar x, uchar y );    // Returns `x != y`.
+bool uchar__not_equal( uchar x, uchar y );
+// Returns `true` if `x != y`, or `false` if not.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ORD
+///////////////////////////////////
 
 ord uchar__compare( uchar x, uchar y );
 // Returns: `LT` if `x < y`,
 //          `EQ` if `x == y`, or
 //          `GT` if `x > y`.
 
-bool uchar__less_than( uchar x, uchar y );            // Returns `x < y`.
-bool uchar__less_than_or_eq( uchar x, uchar y );      // Returns `x <= y`.
-bool uchar__greater_than_or_eq( uchar x, uchar y );   // Returns `x >= y`.
-bool uchar__greater_than( uchar x, uchar y );         // Returns `x > y`.
+bool uchar__less_than( uchar x, uchar y );
+// Returns `true` if `x < y`, or `false` if not.
+
+bool uchar__less_than_or_eq( uchar x, uchar y );
+// Returns `true` if `x <= y`, or `false` if not.
+
+bool uchar__greater_than_or_eq( uchar x, uchar y );
+// Returns `true` if `x >= y`, or `false` if not.
+
+bool uchar__greater_than( uchar x, uchar y );
+// Returns `true` if `x > y`, or `false` if not.
 
 uchar uchar__min2( uchar x, uchar y );
 // Returns `x` if `x < y`, or `y` otherwise.
@@ -98,50 +114,68 @@ uchar uchar__clamp( uchar lower, uchar upper, uchar x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-/////////////////////////////
-/// ENUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ENUM
+///////////////////////////////////
 
 uchar uchar__succ( uchar x );
 // Returns `x + 1`.
 // @requires x != uchar__max_bound()
 
 uchar uchar__succ_b( uchar x );
-// Returns `x + 1`, or `uchar__max_bound()` if `x == uchar__max_bound()`.
+// Returns `x + 1`, or `uchar__max_bound()` if
+// `x == uchar__max_bound()`.
 
 uchar uchar__pred( uchar x );
 // Returns `x - 1`.
 // @requires x != uchar__min_bound()
 
 uchar uchar__pred_b( uchar x );
-// Returns `x - 1`, or `uchar__min_bound()` if `x == uchar__min_bound()`.
+// Returns `x - 1`, or `uchar__min_bound()` if
+// `x == uchar__min_bound()`.
 
 
-/////////////////////////////
-/// NUM TYPECLASS
-/////////////////////////////
 
-bool uchar__is_signed( void );   // Returns `false`.
+///////////////////////////////////
+/// TYPECLASS: NUM
+///////////////////////////////////
+
+bool uchar__is_signed( void );
+// Returns `false`, because `uchar` values can't be negative.
+
+bool uchar__add_would_underflow( uchar, uchar );
+bool uchar__add_would_overflow( uchar, uchar );
 
 bool uchar__can_add( uchar x, uchar y );
-// Returns the boolean that the expression `x + y` will not overflow;
-// equivalent to `x <= ( uchar__max_bound() - y )`.
+// Returns the boolean that the behavior of `x + y` will not overflow.
+
+bool uchar__sub_would_underflow( uchar, uchar );
+bool uchar__sub_would_overflow( uchar, uchar );
 
 bool uchar__can_sub( uchar x, uchar y );
-// Returns the boolean that the expression `x - y` will not underflow;
-// equivalent to `x >= y`.
+// Returns the boolean that the behavior of `x - y` will not underflow.
+
+bool uchar__mul_would_underflow( uchar, uchar );
+bool uchar__mul_would_overflow( uchar, uchar );
 
 bool uchar__can_mul( uchar x, uchar y );
-// Returns the boolean that the expression `x * y` will not overflow;
-// equivalent to `x <= ( uchar__max_bound() / y )`.
+// Returns the boolean that the behavior of `x * y` will not overflow.
+
+bool uchar__div_would_underflow( uchar, uchar );
+bool uchar__div_would_overflow( uchar, uchar );
 
 bool uchar__can_div( uchar x, uchar y );
-// Returns the boolean that the behavior of `x / y` is well-defined, i.e.,
-// that `y != 0`.
+// Returns the boolean that `y != 0`.
 
-uchar uchar__add( uchar x, uchar y );   // Returns `x + y`.
-uchar uchar__sub( uchar x, uchar y );   // Returns `x - y`.
-uchar uchar__mul( uchar x, uchar y );   // Returns `x * y`.
+uchar uchar__add( uchar x, uchar y );
+// Returns `x + y`, which may overflow.
+
+uchar uchar__sub( uchar x, uchar y );
+// Returns `x - y`, which may underflow.
+
+uchar uchar__mul( uchar x, uchar y );
+// Returns `x * y`, which may overflow.
 
 uchar uchar__div( uchar x, uchar y );
 // Returns `x / y`.
@@ -152,49 +186,80 @@ uchar uchar__mod( uchar x, uchar y );
 // @requires y != 0
 
 uchar uchar__negate( uchar x );
-// If `x == 0`, returns `0`. Otherwise, returns `uchar__max_bound() - x + 1`.
+// Returns `-x`, which gives `uchar__max_bound() - x + 1`.
 
 uchar uchar__abs( uchar x );
 // Returns `x`, because it will never be negative.
 
-bool uchar__same_sign( uchar x, uchar y );
-// Returns `true`, because `uchar` values are never negative.
+uchar uchar__add_b( uchar x, uchar y );
+// Returns: - `uchar__max_bound()` if `x + y` would overflow;
+//          - `x + y` otherwise.
+
+uchar uchar__sub_b( uchar x, uchar y );
+// Returns: - `0` if `x - y` would underflow;
+//          - `x - y` otherwise.
+
+uchar uchar__mul_b( uchar x, uchar y );
+// Returns: - `uchar__max_bound()` if `x * y` would overflow;
+//          - `x * y` otherwise.
+
+uchar uchar__div_b( uchar x, uchar y );
+// Returns: - `0` if `y == 0 && x == 0`;
+//          - `uchar__max_bound()` if `y == 0 && x > 0`;
+//          - `x / y` otherwise.
+
+uchar uchar__mod_b( uchar x, uchar y );
+// Returns: - `0` if `y == 0`;
+//          - `x % y` otherwise.
+
+uchar uchar__negate_b( uchar x );
+// Returns `uchar__negate( x )`.
+
+uchar uchar__abs_b( uchar x );
+// Returns `uchar__abs( x )`.
+
+bool uchar__same_sign( uchar, uchar );
+// Returns `true`, because `uchar` values will always have the same sign.
 
 bool uchar__is_negative( uchar x );     // Returns `false`.
 bool uchar__is_nonpositive( uchar x );  // Returns `x == 0`.
 bool uchar__is_zero( uchar x );         // Returns `x == 0`.
 bool uchar__is_nonnegative( uchar x );  // Returns `true`.
-bool uchar__is_positive( uchar x );     // Returns `x > 0`.
-ord  uchar__compare_0( uchar x );       // Returns `uchar__compare( x, 0 )`.
+bool uchar__is_positive( uchar x );     // Returns `x != 0`.
 
-bool uchar__is_even( uchar x );     // Returns `x % 2 == 0`.
-bool uchar__is_odd( uchar x );      // Returns `x % 2 == 1`.
+ord uchar__compare_0( uchar x );
+// Returns `uchar__compare( x, 0 )`.
 
-uchar uchar__add_2( uchar x );    // Returns `uchar__add( x, 2 )`.
-uchar uchar__sub_2( uchar x );    // Returns `uchar__sub( x, 2 )`.
-uchar uchar__mul_2( uchar x );    // Returns `uchar__mul( x, 2 )`.
-uchar uchar__div_2( uchar x );    // Returns `uchar__div( x, 2 )`.
-uchar uchar__mod_2( uchar x );    // Returns `uchar__mod( x, 2 )`.
+bool uchar__is_even( uchar x );  // Returns `x % 2 == 0`.
+bool uchar__is_odd( uchar x );   // Returns `x % 2 == 1`.
 
-uchar uchar__mul_10( uchar x );   // Returns `uchar__mul( x, 10 )`.
-uchar uchar__div_10( uchar x );   // Returns `uchar__div( x, 10 )`.
-uchar uchar__mod_10( uchar x );   // Returns `uchar__mod( x, 10 )`.
+uchar uchar__add_2( uchar );
+uchar uchar__sub_2( uchar );
+uchar uchar__mul_2( uchar );
+uchar uchar__div_2( uchar );
+uchar uchar__mod_2( uchar );
+
+uchar uchar__mul_10( uchar );
+uchar uchar__div_10( uchar );
+
+uchar uchar__add_b_2( uchar );
+uchar uchar__sub_b_2( uchar );
+uchar uchar__mul_b_2( uchar );
+uchar uchar__mul_b_10( uchar );
 
 
-/////////////////////////////
-/// READ TYPECLASS
-/////////////////////////////
 
-Result_uchar uchar__from_str( char const * str );
-// Parses the given `str` to produce the contained `uchar` value. Errors:
+///////////////////////////////////
+/// TYPECLASS: READ
+///////////////////////////////////
+
+uchar uchar__from_str( char const * str );
+// Parses the given `str` to produce the contained `uchar` value.
+// On error, returns `0` and sets `errno` to:
 // - `EINVAL` if `str == NULL` or `str` is `""`;
-// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
-// - `ERANGE` if the resulting value is out of range of `uchar`;
-
-uchar uchar__from_str_e( char const * str, int * err );
-// Like `uchar__from_str()`, but setting the given `err` value to the error,
-// or `0` if no error.
+// - `EBADMSG` if `str` contains a value but a non-whitespace suffix;
+// - `ERANGE` if the resulting value can't be represented by an `uchar`.
 
 
-#endif
+#endif // ifndef LIBBASE_UCHAR_H
 

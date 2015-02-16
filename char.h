@@ -1,4 +1,9 @@
 
+// This file is the result of executing `genheader.py`. You should make changes
+// to this code by changing the template strings or the build process -- not
+// editing this file.
+
+
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -25,50 +30,61 @@
 #include <libtypes/types.h>     // bool, ord
 
 
-typedef struct {
+typedef struct maybe_char {
     char value;
     bool nothing;
 } Maybe_char;
 
 
-typedef struct {
-    char value;
-    int error;
-} Result_char;
+char char__id( char x );
+// The identity function; returns `x`.
 
 
-char char__id( char x );   // Returns `x`.
+
+///////////////////////////////////
+/// TYPECLASS: BOUNDED
+///////////////////////////////////
+
+char char__min_bound( void );
+// Returns the minimum value representable by the `char` type.
+
+char char__max_bound( void );
+// Returns the maximum value representable by the `char` type.
 
 
-/////////////////////////////
-/// BOUNDED TYPECLASS
-/////////////////////////////
 
-char char__min_bound( void );     // Returns `CHAR_MIN`.
-char char__max_bound( void );     // Returns `CHAR_MAX`.
+///////////////////////////////////
+/// TYPECLASS: EQ
+///////////////////////////////////
 
+bool char__equal( char x, char y );
+// Returns `true` if `x == y`, or `false` if not.
 
-/////////////////////////////
-/// EQ TYPECLASS
-/////////////////////////////
-
-bool char__equal( char x, char y );        // Returns `x == y`.
-bool char__not_equal( char x, char y );    // Returns `x != y`.
+bool char__not_equal( char x, char y );
+// Returns `true` if `x != y`, or `false` if not.
 
 
-/////////////////////////////
-/// ORD TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ORD
+///////////////////////////////////
 
 ord char__compare( char x, char y );
 // Returns: `LT` if `x < y`,
 //          `EQ` if `x == y`, or
 //          `GT` if `x > y`.
 
-bool char__less_than( char x, char y );            // Returns `x < y`.
-bool char__less_than_or_eq( char x, char y );      // Returns `x <= y`.
-bool char__greater_than_or_eq( char x, char y );   // Returns `x >= y`.
-bool char__greater_than( char x, char y );         // Returns `x > y`.
+bool char__less_than( char x, char y );
+// Returns `true` if `x < y`, or `false` if not.
+
+bool char__less_than_or_eq( char x, char y );
+// Returns `true` if `x <= y`, or `false` if not.
+
+bool char__greater_than_or_eq( char x, char y );
+// Returns `true` if `x >= y`, or `false` if not.
+
+bool char__greater_than( char x, char y );
+// Returns `true` if `x > y`, or `false` if not.
 
 char char__min2( char x, char y );
 // Returns `x` if `x < y`, or `y` otherwise.
@@ -98,60 +114,59 @@ char char__clamp( char lower, char upper, char x );
 //          - `x` otherwise, if `lower < x && x < upper`
 
 
-/////////////////////////////
-/// ENUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: ENUM
+///////////////////////////////////
 
 char char__succ( char x );
 // Returns `x + 1`.
 // @requires x != char__max_bound()
 
 char char__succ_b( char x );
-// Returns `x + 1`, or `char__max_bound()` if `x == char__max_bound()`.
+// Returns `x + 1`, or `char__max_bound()` if
+// `x == char__max_bound()`.
 
 char char__pred( char x );
 // Returns `x - 1`.
 // @requires x != char__min_bound()
 
 char char__pred_b( char x );
-// Returns `x - 1`, or `char__min_bound()` if `x == char__min_bound()`.
+// Returns `x - 1`, or `char__min_bound()` if
+// `x == char__min_bound()`.
 
 
-/////////////////////////////
-/// NUM TYPECLASS
-/////////////////////////////
+
+///////////////////////////////////
+/// TYPECLASS: NUM
+///////////////////////////////////
 
 bool char__is_signed( void );
 // Returns `true`, because `char` values can be negative.
 
+bool char__add_would_underflow( char, char );
+bool char__add_would_overflow( char, char );
+
 bool char__can_add( char x, char y );
 // Returns the boolean that the behavior of `x + y` is well-defined.
-// Equivalent to:
-//
-//        implies( y > 0, x <= ( char__max_bound - y ) )
-//     && implies( y < 0, x >= ( char__min_bound - y ) )
+
+bool char__sub_would_underflow( char, char );
+bool char__sub_would_overflow( char, char );
 
 bool char__can_sub( char x, char y );
 // Returns the boolean that the behavior of `x - y` is well-defined.
-// Equivalent to:
-//
-//        implies( y > 0, x >= ( char__min_bound - y ) )
-//     && implies( y < 0, x <= ( char__max_bound - y ) )
+
+bool char__mul_would_underflow( char, char );
+bool char__mul_would_overflow( char, char );
 
 bool char__can_mul( char x, char y );
 // Returns the boolean that the behavior of `x * y` is well-defined.
-// Equivalent to:
-//
-//     ( x > 0 ) ? ( y > 0 ) ? ( x <= ( char__max_bound / y ) )
-//                           : ( y >= ( char__min_bound / x ) )
-//               : ( y > 0 ) ? ( x >= ( char__min_bound / y ) )
-//                           : implies( x != 0, y >= ( char__max_bound / x ) )
+
+bool char__div_would_underflow( char, char );
+bool char__div_would_overflow( char, char );
 
 bool char__can_div( char x, char y );
 // Returns the boolean that the behavior of `x / y` is well-defined.
-// Equivalent to:
-//
-//     ( y != 0 ) && !( ( x == char__min_bound ) && ( y == -1 ) )
 
 char char__add( char x, char y );
 // Returns `x + y`.
@@ -175,11 +190,48 @@ char char__mod( char x, char y );
 
 char char__negate( char x );
 // Returns `-x`.
-// @requires x != char__min_bound
+// @requires x != char__min_bound()
 
 char char__abs( char x );
 // Returns `( x < 0 ) ? -x : x`.
-// @requires x != char__min_bound
+// @requires x != char__min_bound()
+
+char char__add_b( char x, char y );
+// Returns: - `char__min_bound()` if `x + y` would underflow;
+//          - `char__max_bound()` if `x + y` would overflow;
+//          - `x + y` otherwise.
+
+char char__sub_b( char x, char y );
+// Returns: - `char__min_bound()` if `x - y` would underflow;
+//          - `char__max_bound()` if `x - y` would overflow;
+//          - `x - y` otherwise.
+
+char char__mul_b( char x, char y );
+// Returns: - `char__min_bound()` if `x * y` would underflow;
+//          - `char__max_bound()` if `x * y` would overflow;
+//          - `x * y` otherwise.
+
+char char__div_b( char x, char y );
+// If `y == 0`, returns: - `char__min_bound()` if `x < 0`;
+//                       - `0` if `x == 0`;
+//                       - `char__max_bound()` if `x > 0`;
+// Otherwise, returns: - `char__min_bound()` if
+//                         `char__div_would_underflow( x, y )`;
+//                     - `char__max_bound()` if
+//                         `char__div_would_overflow( x, y )`;
+//                     - `x / y` otherwise;
+
+char char__mod_b( char x, char y );
+// Returns: - `0` if `!char__can_div( x, y )`;
+//          - `x % y` otherwise.
+
+char char__negate_b( char x );
+// Returns: - `char__max_bound()` if `x == char__min_bound()`;
+//          - `-x` otherwise.
+
+char char__abs_b( char x );
+// Returns: - `char__max_bound()` if `x == char__min_bound()`;
+//          - `char__abs( x )` otherwise.
 
 bool char__same_sign( char x, char y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
@@ -189,36 +241,40 @@ bool char__is_nonpositive( char x );  // Returns `x <= 0`.
 bool char__is_zero( char x );         // Returns `x == 0`.
 bool char__is_nonnegative( char x );  // Returns `x >= 0`.
 bool char__is_positive( char x );     // Returns `x > 0`.
-ord  char__compare_0( char x );       // Returns `char__compare( x, 0 )`.
+
+ord char__compare_0( char x );
+// Returns `char__compare( x, 0 )`.
 
 bool char__is_even( char x );     // Returns `x % 2 == 0`.
 bool char__is_odd( char x );      // Returns `x % 2 == 1`.
 
-char char__add_2( char x );    // Returns `char__add( x, 2 )`.
-char char__sub_2( char x );    // Returns `char__sub( x, 2 )`.
-char char__mul_2( char x );    // Returns `char__mul( x, 2 )`.
-char char__div_2( char x );    // Returns `char__div( x, 2 )`.
-char char__mod_2( char x );    // Returns `char__mod( x, 2 )`.
+char char__add_2( char );
+char char__sub_2( char );
+char char__mul_2( char );
+char char__div_2( char );
+char char__mod_2( char );
 
-char char__mul_10( char x );   // Returns `char__mul( x, 10 )`.
-char char__div_10( char x );   // Returns `char__div( x, 10 )`.
-char char__mod_10( char x );   // Returns `char__mod( x, 10 )`.
+char char__mul_10( char );
+char char__div_10( char );
+
+char char__add_b_2( char );
+char char__sub_b_2( char );
+char char__mul_b_2( char );
+char char__mul_b_10( char );
 
 
-/////////////////////////////
-/// READ TYPECLASS
-/////////////////////////////
 
-Result_char char__from_str( char const * str );
-// Parses the given `str` to produce the contained `char` value. Errors:
+///////////////////////////////////
+/// TYPECLASS: READ
+///////////////////////////////////
+
+char char__from_str( char const * str );
+// Parses the given `str` to produce the contained `char` value.
+// On error, returns `0` and sets `errno` to:
 // - `EINVAL` if `str == NULL` or `str` is `""`;
-// - `EBADMSG` if `str` contains a value but also a non-numeric suffix;
-// - `ERANGE` if the resulting value is out of range of `char`;
-
-char char__from_str_e( char const * str, int * err );
-// Like `char__from_str()`, but setting the given `err` value to the error,
-// or `0` if no error.
+// - `EBADMSG` if `str` contains a value but a non-whitespace suffix;
+// - `ERANGE` if the resulting value can't be represented by an `char`.
 
 
-#endif
+#endif // ifndef LIBBASE_CHAR_H
 

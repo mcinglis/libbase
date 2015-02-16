@@ -27,19 +27,21 @@
 // A "str" is an array of `char`s terminated by the null character `\0`.
 
 
-typedef struct {
+typedef struct maybe_str {
     char const * value;
     bool nothing;
 } Maybe_str;
 
 
-typedef struct {
-    char const * value;
-    int error;
-} Result_str;
+char const * str__id( char const * xs );
+// The identity function; returns `xs`.
 
 
-char const * str__id( char const * xs );         // Returns `xs`.
+size_t str__length( char const * xs );
+// Returns the index of the first `'\0'` byte in `xs`.
+
+size_t str__size( char const * xs );
+// Returns the byte size of `xs` - i.e. `str__length( xs ) + 1`.
 
 
 bool str__equal( char const * xs, char const * ys );
@@ -102,10 +104,6 @@ char const * str__clamp( char const * lower,
 // Returns: - `lower` if `str__greater_than( lower, xs )`;
 //          - `upper` if `str__less_than( upper, xs )`;
 //          - `xs` otherwise
-
-
-size_t str__length( char const * xs );
-// Returns the index of the first `'\0'` byte in `xs`.
 
 
 bool str__starts_with( char const * xs, char const * prefix );

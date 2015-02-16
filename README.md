@@ -1,9 +1,9 @@
 
-**Libbase** defines useful functions for the standard types. The provided functions use the same suffixes for logically equivalent operations, and functions are separated into collections relevant to their behavior. Using the preprocessor, this allows for a crude typeclass system in C, in which some type `T` belongs to the `EQ` typeclass if the functions `T##__equal(x, y)` and `T##__not_equal(x, y)` are defined.
+**Libbase** defines useful functions for the standard types. The provided functions use the same suffixes for logically equivalent operations, and functions are separated into collections relevant to their behavior. Using a preprocessor, this allows for a crude typeclass system in C, in which some type `T` belongs to the `EQ` typeclass if the functions `T##__equal(x, y)` and `T##__not_equal(x, y)` are defined.
 
 The utility of this approach will become evident as I publish more libraries (particularly for data structures) using Libbase.
 
-There are header files for each of the typeclasses that provide macros that will auto-generate the source code for that typeclass for a given scalar type.
+Most of the source files are generated using [`gensource.py`](gensource.py), and most of the header files are generated using [`genheader.py`](genheader.py). The generated files are being stored in version control to make Libbase more approachable, and to allow people to use the code without having Python installed.
 
 
 ## Releases
