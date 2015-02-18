@@ -36,6 +36,31 @@ typedef struct maybe_ushort {
 } Maybe_ushort;
 
 
+typedef struct result_ushort {
+    ushort value;
+    int error;
+} Result_ushort;
+
+
+typedef struct arrayc_ushort {
+    ushort const * e;
+    size_t length;
+} ArrayC_ushort;
+
+
+typedef struct arraym_ushort {
+    ushort * e;
+    size_t length;
+} ArrayM_ushort;
+
+
+typedef struct vec_ushort {
+    ushort * e;
+    size_t length;
+    size_t capacity;
+} Vec_ushort;
+
+
 ushort ushort__id( ushort x );
 // The identity function; returns `x`.
 

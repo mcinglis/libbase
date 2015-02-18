@@ -36,6 +36,31 @@ typedef struct maybe_schar {
 } Maybe_schar;
 
 
+typedef struct result_schar {
+    schar value;
+    int error;
+} Result_schar;
+
+
+typedef struct arrayc_schar {
+    schar const * e;
+    size_t length;
+} ArrayC_schar;
+
+
+typedef struct arraym_schar {
+    schar * e;
+    size_t length;
+} ArrayM_schar;
+
+
+typedef struct vec_schar {
+    schar * e;
+    size_t length;
+    size_t capacity;
+} Vec_schar;
+
+
 schar schar__id( schar x );
 // The identity function; returns `x`.
 

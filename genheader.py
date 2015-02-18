@@ -66,6 +66,31 @@ typedef struct maybe_{typename} {{
 }} Maybe_{typename};
 
 
+typedef struct result_{typename} {{
+    {type} value;
+    int error;
+}} Result_{typename};
+
+
+typedef struct arrayc_{typename} {{
+    {type} const * e;
+    size_t length;
+}} ArrayC_{typename};
+
+
+typedef struct arraym_{typename} {{
+    {type} * e;
+    size_t length;
+}} ArrayM_{typename};
+
+
+typedef struct vec_{typename} {{
+    {type} * e;
+    size_t length;
+    size_t capacity;
+}} Vec_{typename};
+
+
 {type} {funcname}__id( {type} x );
 // The identity function; returns `x`.
 '''

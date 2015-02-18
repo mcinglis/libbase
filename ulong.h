@@ -36,6 +36,31 @@ typedef struct maybe_ulong {
 } Maybe_ulong;
 
 
+typedef struct result_ulong {
+    ulong value;
+    int error;
+} Result_ulong;
+
+
+typedef struct arrayc_ulong {
+    ulong const * e;
+    size_t length;
+} ArrayC_ulong;
+
+
+typedef struct arraym_ulong {
+    ulong * e;
+    size_t length;
+} ArrayM_ulong;
+
+
+typedef struct vec_ulong {
+    ulong * e;
+    size_t length;
+    size_t capacity;
+} Vec_ulong;
+
+
 ulong ulong__id( ulong x );
 // The identity function; returns `x`.
 

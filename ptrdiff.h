@@ -36,6 +36,31 @@ typedef struct maybe_ptrdiff {
 } Maybe_ptrdiff;
 
 
+typedef struct result_ptrdiff {
+    ptrdiff_t value;
+    int error;
+} Result_ptrdiff;
+
+
+typedef struct arrayc_ptrdiff {
+    ptrdiff_t const * e;
+    size_t length;
+} ArrayC_ptrdiff;
+
+
+typedef struct arraym_ptrdiff {
+    ptrdiff_t * e;
+    size_t length;
+} ArrayM_ptrdiff;
+
+
+typedef struct vec_ptrdiff {
+    ptrdiff_t * e;
+    size_t length;
+    size_t capacity;
+} Vec_ptrdiff;
+
+
 ptrdiff_t ptrdiff__id( ptrdiff_t x );
 // The identity function; returns `x`.
 

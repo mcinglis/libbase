@@ -36,6 +36,31 @@ typedef struct maybe_uint16 {
 } Maybe_uint16;
 
 
+typedef struct result_uint16 {
+    uint16_t value;
+    int error;
+} Result_uint16;
+
+
+typedef struct arrayc_uint16 {
+    uint16_t const * e;
+    size_t length;
+} ArrayC_uint16;
+
+
+typedef struct arraym_uint16 {
+    uint16_t * e;
+    size_t length;
+} ArrayM_uint16;
+
+
+typedef struct vec_uint16 {
+    uint16_t * e;
+    size_t length;
+    size_t capacity;
+} Vec_uint16;
+
+
 uint16_t uint16__id( uint16_t x );
 // The identity function; returns `x`.
 

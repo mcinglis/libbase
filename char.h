@@ -36,6 +36,31 @@ typedef struct maybe_char {
 } Maybe_char;
 
 
+typedef struct result_char {
+    char value;
+    int error;
+} Result_char;
+
+
+typedef struct arrayc_char {
+    char const * e;
+    size_t length;
+} ArrayC_char;
+
+
+typedef struct arraym_char {
+    char * e;
+    size_t length;
+} ArrayM_char;
+
+
+typedef struct vec_char {
+    char * e;
+    size_t length;
+    size_t capacity;
+} Vec_char;
+
+
 char char__id( char x );
 // The identity function; returns `x`.
 

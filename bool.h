@@ -36,6 +36,31 @@ typedef struct maybe_bool {
 } Maybe_bool;
 
 
+typedef struct result_bool {
+    bool value;
+    int error;
+} Result_bool;
+
+
+typedef struct arrayc_bool {
+    bool const * e;
+    size_t length;
+} ArrayC_bool;
+
+
+typedef struct arraym_bool {
+    bool * e;
+    size_t length;
+} ArrayM_bool;
+
+
+typedef struct vec_bool {
+    bool * e;
+    size_t length;
+    size_t capacity;
+} Vec_bool;
+
+
 bool bool__id( bool x );
 // The identity function; returns `x`.
 

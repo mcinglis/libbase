@@ -36,6 +36,31 @@ typedef struct maybe_uintmax {
 } Maybe_uintmax;
 
 
+typedef struct result_uintmax {
+    uintmax_t value;
+    int error;
+} Result_uintmax;
+
+
+typedef struct arrayc_uintmax {
+    uintmax_t const * e;
+    size_t length;
+} ArrayC_uintmax;
+
+
+typedef struct arraym_uintmax {
+    uintmax_t * e;
+    size_t length;
+} ArrayM_uintmax;
+
+
+typedef struct vec_uintmax {
+    uintmax_t * e;
+    size_t length;
+    size_t capacity;
+} Vec_uintmax;
+
+
 uintmax_t uintmax__id( uintmax_t x );
 // The identity function; returns `x`.
 

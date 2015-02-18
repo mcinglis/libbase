@@ -36,6 +36,31 @@ typedef struct maybe_int8 {
 } Maybe_int8;
 
 
+typedef struct result_int8 {
+    int8_t value;
+    int error;
+} Result_int8;
+
+
+typedef struct arrayc_int8 {
+    int8_t const * e;
+    size_t length;
+} ArrayC_int8;
+
+
+typedef struct arraym_int8 {
+    int8_t * e;
+    size_t length;
+} ArrayM_int8;
+
+
+typedef struct vec_int8 {
+    int8_t * e;
+    size_t length;
+    size_t capacity;
+} Vec_int8;
+
+
 int8_t int8__id( int8_t x );
 // The identity function; returns `x`.
 

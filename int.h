@@ -36,6 +36,31 @@ typedef struct maybe_int {
 } Maybe_int;
 
 
+typedef struct result_int {
+    int value;
+    int error;
+} Result_int;
+
+
+typedef struct arrayc_int {
+    int const * e;
+    size_t length;
+} ArrayC_int;
+
+
+typedef struct arraym_int {
+    int * e;
+    size_t length;
+} ArrayM_int;
+
+
+typedef struct vec_int {
+    int * e;
+    size_t length;
+    size_t capacity;
+} Vec_int;
+
+
 int int__id( int x );
 // The identity function; returns `x`.
 

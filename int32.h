@@ -36,6 +36,31 @@ typedef struct maybe_int32 {
 } Maybe_int32;
 
 
+typedef struct result_int32 {
+    int32_t value;
+    int error;
+} Result_int32;
+
+
+typedef struct arrayc_int32 {
+    int32_t const * e;
+    size_t length;
+} ArrayC_int32;
+
+
+typedef struct arraym_int32 {
+    int32_t * e;
+    size_t length;
+} ArrayM_int32;
+
+
+typedef struct vec_int32 {
+    int32_t * e;
+    size_t length;
+    size_t capacity;
+} Vec_int32;
+
+
 int32_t int32__id( int32_t x );
 // The identity function; returns `x`.
 

@@ -36,6 +36,31 @@ typedef struct maybe_size {
 } Maybe_size;
 
 
+typedef struct result_size {
+    size_t value;
+    int error;
+} Result_size;
+
+
+typedef struct arrayc_size {
+    size_t const * e;
+    size_t length;
+} ArrayC_size;
+
+
+typedef struct arraym_size {
+    size_t * e;
+    size_t length;
+} ArrayM_size;
+
+
+typedef struct vec_size {
+    size_t * e;
+    size_t length;
+    size_t capacity;
+} Vec_size;
+
+
 size_t size__id( size_t x );
 // The identity function; returns `x`.
 

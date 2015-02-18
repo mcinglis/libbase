@@ -36,6 +36,31 @@ typedef struct maybe_llong {
 } Maybe_llong;
 
 
+typedef struct result_llong {
+    llong value;
+    int error;
+} Result_llong;
+
+
+typedef struct arrayc_llong {
+    llong const * e;
+    size_t length;
+} ArrayC_llong;
+
+
+typedef struct arraym_llong {
+    llong * e;
+    size_t length;
+} ArrayM_llong;
+
+
+typedef struct vec_llong {
+    llong * e;
+    size_t length;
+    size_t capacity;
+} Vec_llong;
+
+
 llong llong__id( llong x );
 // The identity function; returns `x`.
 

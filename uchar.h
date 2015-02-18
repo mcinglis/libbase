@@ -36,6 +36,31 @@ typedef struct maybe_uchar {
 } Maybe_uchar;
 
 
+typedef struct result_uchar {
+    uchar value;
+    int error;
+} Result_uchar;
+
+
+typedef struct arrayc_uchar {
+    uchar const * e;
+    size_t length;
+} ArrayC_uchar;
+
+
+typedef struct arraym_uchar {
+    uchar * e;
+    size_t length;
+} ArrayM_uchar;
+
+
+typedef struct vec_uchar {
+    uchar * e;
+    size_t length;
+    size_t capacity;
+} Vec_uchar;
+
+
 uchar uchar__id( uchar x );
 // The identity function; returns `x`.
 

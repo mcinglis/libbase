@@ -36,6 +36,31 @@ typedef struct maybe_wchar {
 } Maybe_wchar;
 
 
+typedef struct result_wchar {
+    wchar_t value;
+    int error;
+} Result_wchar;
+
+
+typedef struct arrayc_wchar {
+    wchar_t const * e;
+    size_t length;
+} ArrayC_wchar;
+
+
+typedef struct arraym_wchar {
+    wchar_t * e;
+    size_t length;
+} ArrayM_wchar;
+
+
+typedef struct vec_wchar {
+    wchar_t * e;
+    size_t length;
+    size_t capacity;
+} Vec_wchar;
+
+
 wchar_t wchar__id( wchar_t x );
 // The identity function; returns `x`.
 
