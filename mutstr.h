@@ -17,8 +17,8 @@
 // along with Libbase. If not, see <https://gnu.org/licenses/>.
 
 
-#ifndef LIBBASE_STR_H
-#define LIBBASE_STR_H
+#ifndef LIBBASE_MUTSTR_H
+#define LIBBASE_MUTSTR_H
 
 
 #include <libtypes/types.h>
@@ -210,5 +210,5 @@ mutstr__clamp( char * lower,
 // @requires lower != NULL, upper != NULL, xs != NULL
 
 
-#endif
+#endif // ifndef LIBBASE_MUTSTR_H
 
