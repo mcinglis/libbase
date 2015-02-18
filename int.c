@@ -142,7 +142,9 @@ int
 int__min_n(
         size_t const n,
         int const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = int__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ int
 int__max_n(
         size_t const n,
         int const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = int__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ int__clamp(
 
 int
 int__succ( int const x )
-{ ASSERT( x != int__max_bound() );
+{
+    ASSERT( x != int__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ int__succ_b( int const x )
 
 int
 int__pred( int const x )
-{ ASSERT( x != int__min_bound() );
+{
+    ASSERT( x != int__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ int
 int__add(
         int const x,
         int const y )
-{ ASSERT( int__can_add( x, y ) );
+{
+    ASSERT( int__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ int
 int__sub(
         int const x,
         int const y )
-{ ASSERT( int__can_sub( x, y ) );
+{
+    ASSERT( int__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ int
 int__mul(
         int const x,
         int const y )
-{ ASSERT( int__can_mul( x, y ) );
+{
+    ASSERT( int__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ int
 int__div(
         int const x,
         int const y )
-{ ASSERT( int__can_div( x, y ) );
+{
+    ASSERT( int__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ int
 int__mod(
         int const x,
         int const y )
-{ ASSERT( int__can_div( x, y ) );
+{
+    ASSERT( int__can_div( x, y ) );
+
     return x % y;
 }
 
 
 int
 int__negate( int const x )
-{ ASSERT( x != int__min_bound() );
+{
+    ASSERT( x != int__min_bound() );
+
     return -x;
 }
 
 
 int
 int__abs( int const x )
-{ ASSERT( x != int__min_bound() );
+{
+    ASSERT( x != int__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

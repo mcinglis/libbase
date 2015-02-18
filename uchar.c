@@ -142,7 +142,9 @@ uchar
 uchar__min_n(
         size_t const n,
         uchar const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uchar min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = uchar__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ uchar
 uchar__max_n(
         size_t const n,
         uchar const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uchar max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = uchar__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ uchar__clamp(
 
 uchar
 uchar__succ( uchar const x )
-{ ASSERT( x != uchar__max_bound() );
+{
+    ASSERT( x != uchar__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ uchar__succ_b( uchar const x )
 
 uchar
 uchar__pred( uchar const x )
-{ ASSERT( x != uchar__min_bound() );
+{
+    ASSERT( x != uchar__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ uchar
 uchar__div(
         uchar const x,
         uchar const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ uchar
 uchar__mod(
         uchar const x,
         uchar const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

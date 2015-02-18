@@ -142,7 +142,9 @@ long
 long__min_n(
         size_t const n,
         long const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     long min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = long__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ long
 long__max_n(
         size_t const n,
         long const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     long max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = long__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ long__clamp(
 
 long
 long__succ( long const x )
-{ ASSERT( x != long__max_bound() );
+{
+    ASSERT( x != long__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ long__succ_b( long const x )
 
 long
 long__pred( long const x )
-{ ASSERT( x != long__min_bound() );
+{
+    ASSERT( x != long__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ long
 long__add(
         long const x,
         long const y )
-{ ASSERT( long__can_add( x, y ) );
+{
+    ASSERT( long__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ long
 long__sub(
         long const x,
         long const y )
-{ ASSERT( long__can_sub( x, y ) );
+{
+    ASSERT( long__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ long
 long__mul(
         long const x,
         long const y )
-{ ASSERT( long__can_mul( x, y ) );
+{
+    ASSERT( long__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ long
 long__div(
         long const x,
         long const y )
-{ ASSERT( long__can_div( x, y ) );
+{
+    ASSERT( long__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ long
 long__mod(
         long const x,
         long const y )
-{ ASSERT( long__can_div( x, y ) );
+{
+    ASSERT( long__can_div( x, y ) );
+
     return x % y;
 }
 
 
 long
 long__negate( long const x )
-{ ASSERT( x != long__min_bound() );
+{
+    ASSERT( x != long__min_bound() );
+
     return -x;
 }
 
 
 long
 long__abs( long const x )
-{ ASSERT( x != long__min_bound() );
+{
+    ASSERT( x != long__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

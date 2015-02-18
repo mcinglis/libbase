@@ -142,7 +142,9 @@ char
 char__min_n(
         size_t const n,
         char const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     char min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = char__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ char
 char__max_n(
         size_t const n,
         char const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     char max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = char__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ char__clamp(
 
 char
 char__succ( char const x )
-{ ASSERT( x != char__max_bound() );
+{
+    ASSERT( x != char__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ char__succ_b( char const x )
 
 char
 char__pred( char const x )
-{ ASSERT( x != char__min_bound() );
+{
+    ASSERT( x != char__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ char
 char__add(
         char const x,
         char const y )
-{ ASSERT( char__can_add( x, y ) );
+{
+    ASSERT( char__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ char
 char__sub(
         char const x,
         char const y )
-{ ASSERT( char__can_sub( x, y ) );
+{
+    ASSERT( char__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ char
 char__mul(
         char const x,
         char const y )
-{ ASSERT( char__can_mul( x, y ) );
+{
+    ASSERT( char__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ char
 char__div(
         char const x,
         char const y )
-{ ASSERT( char__can_div( x, y ) );
+{
+    ASSERT( char__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ char
 char__mod(
         char const x,
         char const y )
-{ ASSERT( char__can_div( x, y ) );
+{
+    ASSERT( char__can_div( x, y ) );
+
     return x % y;
 }
 
 
 char
 char__negate( char const x )
-{ ASSERT( x != char__min_bound() );
+{
+    ASSERT( x != char__min_bound() );
+
     return -x;
 }
 
 
 char
 char__abs( char const x )
-{ ASSERT( x != char__min_bound() );
+{
+    ASSERT( x != char__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

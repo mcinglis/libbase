@@ -142,7 +142,9 @@ int32_t
 int32__min_n(
         size_t const n,
         int32_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int32_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = int32__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ int32_t
 int32__max_n(
         size_t const n,
         int32_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int32_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = int32__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ int32__clamp(
 
 int32_t
 int32__succ( int32_t const x )
-{ ASSERT( x != int32__max_bound() );
+{
+    ASSERT( x != int32__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ int32__succ_b( int32_t const x )
 
 int32_t
 int32__pred( int32_t const x )
-{ ASSERT( x != int32__min_bound() );
+{
+    ASSERT( x != int32__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ int32_t
 int32__add(
         int32_t const x,
         int32_t const y )
-{ ASSERT( int32__can_add( x, y ) );
+{
+    ASSERT( int32__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ int32_t
 int32__sub(
         int32_t const x,
         int32_t const y )
-{ ASSERT( int32__can_sub( x, y ) );
+{
+    ASSERT( int32__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ int32_t
 int32__mul(
         int32_t const x,
         int32_t const y )
-{ ASSERT( int32__can_mul( x, y ) );
+{
+    ASSERT( int32__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ int32_t
 int32__div(
         int32_t const x,
         int32_t const y )
-{ ASSERT( int32__can_div( x, y ) );
+{
+    ASSERT( int32__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ int32_t
 int32__mod(
         int32_t const x,
         int32_t const y )
-{ ASSERT( int32__can_div( x, y ) );
+{
+    ASSERT( int32__can_div( x, y ) );
+
     return x % y;
 }
 
 
 int32_t
 int32__negate( int32_t const x )
-{ ASSERT( x != int32__min_bound() );
+{
+    ASSERT( x != int32__min_bound() );
+
     return -x;
 }
 
 
 int32_t
 int32__abs( int32_t const x )
-{ ASSERT( x != int32__min_bound() );
+{
+    ASSERT( x != int32__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

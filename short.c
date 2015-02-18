@@ -142,7 +142,9 @@ short
 short__min_n(
         size_t const n,
         short const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     short min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = short__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ short
 short__max_n(
         size_t const n,
         short const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     short max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = short__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ short__clamp(
 
 short
 short__succ( short const x )
-{ ASSERT( x != short__max_bound() );
+{
+    ASSERT( x != short__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ short__succ_b( short const x )
 
 short
 short__pred( short const x )
-{ ASSERT( x != short__min_bound() );
+{
+    ASSERT( x != short__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ short
 short__add(
         short const x,
         short const y )
-{ ASSERT( short__can_add( x, y ) );
+{
+    ASSERT( short__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ short
 short__sub(
         short const x,
         short const y )
-{ ASSERT( short__can_sub( x, y ) );
+{
+    ASSERT( short__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ short
 short__mul(
         short const x,
         short const y )
-{ ASSERT( short__can_mul( x, y ) );
+{
+    ASSERT( short__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ short
 short__div(
         short const x,
         short const y )
-{ ASSERT( short__can_div( x, y ) );
+{
+    ASSERT( short__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ short
 short__mod(
         short const x,
         short const y )
-{ ASSERT( short__can_div( x, y ) );
+{
+    ASSERT( short__can_div( x, y ) );
+
     return x % y;
 }
 
 
 short
 short__negate( short const x )
-{ ASSERT( x != short__min_bound() );
+{
+    ASSERT( x != short__min_bound() );
+
     return -x;
 }
 
 
 short
 short__abs( short const x )
-{ ASSERT( x != short__min_bound() );
+{
+    ASSERT( x != short__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

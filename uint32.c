@@ -142,7 +142,9 @@ uint32_t
 uint32__min_n(
         size_t const n,
         uint32_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uint32_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = uint32__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ uint32_t
 uint32__max_n(
         size_t const n,
         uint32_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uint32_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = uint32__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ uint32__clamp(
 
 uint32_t
 uint32__succ( uint32_t const x )
-{ ASSERT( x != uint32__max_bound() );
+{
+    ASSERT( x != uint32__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ uint32__succ_b( uint32_t const x )
 
 uint32_t
 uint32__pred( uint32_t const x )
-{ ASSERT( x != uint32__min_bound() );
+{
+    ASSERT( x != uint32__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ uint32_t
 uint32__div(
         uint32_t const x,
         uint32_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ uint32_t
 uint32__mod(
         uint32_t const x,
         uint32_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

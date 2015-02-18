@@ -142,7 +142,9 @@ uintmax_t
 uintmax__min_n(
         size_t const n,
         uintmax_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uintmax_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = uintmax__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ uintmax_t
 uintmax__max_n(
         size_t const n,
         uintmax_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uintmax_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = uintmax__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ uintmax__clamp(
 
 uintmax_t
 uintmax__succ( uintmax_t const x )
-{ ASSERT( x != uintmax__max_bound() );
+{
+    ASSERT( x != uintmax__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ uintmax__succ_b( uintmax_t const x )
 
 uintmax_t
 uintmax__pred( uintmax_t const x )
-{ ASSERT( x != uintmax__min_bound() );
+{
+    ASSERT( x != uintmax__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ uintmax_t
 uintmax__div(
         uintmax_t const x,
         uintmax_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ uintmax_t
 uintmax__mod(
         uintmax_t const x,
         uintmax_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

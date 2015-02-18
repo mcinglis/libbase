@@ -142,7 +142,9 @@ ptrdiff_t
 ptrdiff__min_n(
         size_t const n,
         ptrdiff_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ptrdiff_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = ptrdiff__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ ptrdiff_t
 ptrdiff__max_n(
         size_t const n,
         ptrdiff_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ptrdiff_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = ptrdiff__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ ptrdiff__clamp(
 
 ptrdiff_t
 ptrdiff__succ( ptrdiff_t const x )
-{ ASSERT( x != ptrdiff__max_bound() );
+{
+    ASSERT( x != ptrdiff__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ ptrdiff__succ_b( ptrdiff_t const x )
 
 ptrdiff_t
 ptrdiff__pred( ptrdiff_t const x )
-{ ASSERT( x != ptrdiff__min_bound() );
+{
+    ASSERT( x != ptrdiff__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ ptrdiff_t
 ptrdiff__add(
         ptrdiff_t const x,
         ptrdiff_t const y )
-{ ASSERT( ptrdiff__can_add( x, y ) );
+{
+    ASSERT( ptrdiff__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ ptrdiff_t
 ptrdiff__sub(
         ptrdiff_t const x,
         ptrdiff_t const y )
-{ ASSERT( ptrdiff__can_sub( x, y ) );
+{
+    ASSERT( ptrdiff__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ ptrdiff_t
 ptrdiff__mul(
         ptrdiff_t const x,
         ptrdiff_t const y )
-{ ASSERT( ptrdiff__can_mul( x, y ) );
+{
+    ASSERT( ptrdiff__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ ptrdiff_t
 ptrdiff__div(
         ptrdiff_t const x,
         ptrdiff_t const y )
-{ ASSERT( ptrdiff__can_div( x, y ) );
+{
+    ASSERT( ptrdiff__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ ptrdiff_t
 ptrdiff__mod(
         ptrdiff_t const x,
         ptrdiff_t const y )
-{ ASSERT( ptrdiff__can_div( x, y ) );
+{
+    ASSERT( ptrdiff__can_div( x, y ) );
+
     return x % y;
 }
 
 
 ptrdiff_t
 ptrdiff__negate( ptrdiff_t const x )
-{ ASSERT( x != ptrdiff__min_bound() );
+{
+    ASSERT( x != ptrdiff__min_bound() );
+
     return -x;
 }
 
 
 ptrdiff_t
 ptrdiff__abs( ptrdiff_t const x )
-{ ASSERT( x != ptrdiff__min_bound() );
+{
+    ASSERT( x != ptrdiff__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

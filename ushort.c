@@ -142,7 +142,9 @@ ushort
 ushort__min_n(
         size_t const n,
         ushort const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ushort min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = ushort__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ ushort
 ushort__max_n(
         size_t const n,
         ushort const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ushort max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = ushort__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ ushort__clamp(
 
 ushort
 ushort__succ( ushort const x )
-{ ASSERT( x != ushort__max_bound() );
+{
+    ASSERT( x != ushort__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ ushort__succ_b( ushort const x )
 
 ushort
 ushort__pred( ushort const x )
-{ ASSERT( x != ushort__min_bound() );
+{
+    ASSERT( x != ushort__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ ushort
 ushort__div(
         ushort const x,
         ushort const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ ushort
 ushort__mod(
         ushort const x,
         ushort const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

@@ -142,7 +142,9 @@ size_t
 size__min_n(
         size_t const n,
         size_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     size_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = size__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ size_t
 size__max_n(
         size_t const n,
         size_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     size_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = size__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ size__clamp(
 
 size_t
 size__succ( size_t const x )
-{ ASSERT( x != size__max_bound() );
+{
+    ASSERT( x != size__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ size__succ_b( size_t const x )
 
 size_t
 size__pred( size_t const x )
-{ ASSERT( x != size__min_bound() );
+{
+    ASSERT( x != size__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ size_t
 size__div(
         size_t const x,
         size_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ size_t
 size__mod(
         size_t const x,
         size_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

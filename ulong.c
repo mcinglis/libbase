@@ -142,7 +142,9 @@ ulong
 ulong__min_n(
         size_t const n,
         ulong const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ulong min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = ulong__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ ulong
 ulong__max_n(
         size_t const n,
         ulong const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ulong max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = ulong__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ ulong__clamp(
 
 ulong
 ulong__succ( ulong const x )
-{ ASSERT( x != ulong__max_bound() );
+{
+    ASSERT( x != ulong__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ ulong__succ_b( ulong const x )
 
 ulong
 ulong__pred( ulong const x )
-{ ASSERT( x != ulong__min_bound() );
+{
+    ASSERT( x != ulong__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ ulong
 ulong__div(
         ulong const x,
         ulong const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ ulong
 ulong__mod(
         ulong const x,
         ulong const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

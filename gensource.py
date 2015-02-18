@@ -105,7 +105,6 @@ def read_num(strtox, return_type):
 # Mappings of typeclass names to the prototypes and macros they represent:
 TYPECLASSES = {
 
-
     'BOUNDED': {
         'BOOL': '''
 {type} {funcname}__min_bound( void ) {{ return false; }}
@@ -232,7 +231,9 @@ bool
 {funcname}__min_n(
         size_t const n,
         {type} const * const xs )
-{{ ASSERT( n != 0, xs != NULL );
+{{
+    ASSERT( n != 0, xs != NULL );
+
     {type} min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {{
         min = {funcname}__min2( min, xs[ i ] );
@@ -245,7 +246,9 @@ bool
 {funcname}__max_n(
         size_t const n,
         {type} const * const xs )
-{{ ASSERT( n != 0, xs != NULL );
+{{
+    ASSERT( n != 0, xs != NULL );
+
     {type} max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {{
         max = {funcname}__max2( max, xs[ i ] );
@@ -275,7 +278,9 @@ bool
 
 {type}
 {funcname}__succ( {type} const x )
-{{ ASSERT( x != {funcname}__max_bound() );
+{{
+    ASSERT( x != {funcname}__max_bound() );
+
     return x + 1;
 }}
 
@@ -289,7 +294,9 @@ bool
 
 {type}
 {funcname}__pred( {type} const x )
-{{ ASSERT( x != {funcname}__min_bound() );
+{{
+    ASSERT( x != {funcname}__min_bound() );
+
     return x - 1;
 }}
 
@@ -300,6 +307,7 @@ bool
     return ( x == {funcname}__min_bound() ) ? x : ( x - 1 );
 }}
 '''
+
     },
 
 
@@ -428,7 +436,9 @@ bool
 {funcname}__add(
         {type} const x,
         {type} const y )
-{{ ASSERT( {funcname}__can_add( x, y ) );
+{{
+    ASSERT( {funcname}__can_add( x, y ) );
+
     return x + y;
 }}
 
@@ -437,7 +447,9 @@ bool
 {funcname}__sub(
         {type} const x,
         {type} const y )
-{{ ASSERT( {funcname}__can_sub( x, y ) );
+{{
+    ASSERT( {funcname}__can_sub( x, y ) );
+
     return x - y;
 }}
 
@@ -446,7 +458,9 @@ bool
 {funcname}__mul(
         {type} const x,
         {type} const y )
-{{ ASSERT( {funcname}__can_mul( x, y ) );
+{{
+    ASSERT( {funcname}__can_mul( x, y ) );
+
     return x * y;
 }}
 
@@ -455,7 +469,9 @@ bool
 {funcname}__div(
         {type} const x,
         {type} const y )
-{{ ASSERT( {funcname}__can_div( x, y ) );
+{{
+    ASSERT( {funcname}__can_div( x, y ) );
+
     return x / y;
 }}
 
@@ -464,21 +480,27 @@ bool
 {funcname}__mod(
         {type} const x,
         {type} const y )
-{{ ASSERT( {funcname}__can_div( x, y ) );
+{{
+    ASSERT( {funcname}__can_div( x, y ) );
+
     return x % y;
 }}
 
 
 {type}
 {funcname}__negate( {type} const x )
-{{ ASSERT( x != {funcname}__min_bound() );
+{{
+    ASSERT( x != {funcname}__min_bound() );
+
     return -x;
 }}
 
 
 {type}
 {funcname}__abs( {type} const x )
-{{ ASSERT( x != {funcname}__min_bound() );
+{{
+    ASSERT( x != {funcname}__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }}
 
@@ -784,7 +806,9 @@ bool
 {funcname}__div(
         {type} const x,
         {type} const y )
-{{ ASSERT( y != 0 );
+{{
+    ASSERT( y != 0 );
+
     return x / y;
 }}
 
@@ -793,7 +817,9 @@ bool
 {funcname}__mod(
         {type} const x,
         {type} const y )
-{{ ASSERT( y != 0 );
+{{
+    ASSERT( y != 0 );
+
     return x % y;
 }}
 

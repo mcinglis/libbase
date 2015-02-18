@@ -142,7 +142,9 @@ int8_t
 int8__min_n(
         size_t const n,
         int8_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int8_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = int8__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ int8_t
 int8__max_n(
         size_t const n,
         int8_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int8_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = int8__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ int8__clamp(
 
 int8_t
 int8__succ( int8_t const x )
-{ ASSERT( x != int8__max_bound() );
+{
+    ASSERT( x != int8__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ int8__succ_b( int8_t const x )
 
 int8_t
 int8__pred( int8_t const x )
-{ ASSERT( x != int8__min_bound() );
+{
+    ASSERT( x != int8__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ int8_t
 int8__add(
         int8_t const x,
         int8_t const y )
-{ ASSERT( int8__can_add( x, y ) );
+{
+    ASSERT( int8__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ int8_t
 int8__sub(
         int8_t const x,
         int8_t const y )
-{ ASSERT( int8__can_sub( x, y ) );
+{
+    ASSERT( int8__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ int8_t
 int8__mul(
         int8_t const x,
         int8_t const y )
-{ ASSERT( int8__can_mul( x, y ) );
+{
+    ASSERT( int8__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ int8_t
 int8__div(
         int8_t const x,
         int8_t const y )
-{ ASSERT( int8__can_div( x, y ) );
+{
+    ASSERT( int8__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ int8_t
 int8__mod(
         int8_t const x,
         int8_t const y )
-{ ASSERT( int8__can_div( x, y ) );
+{
+    ASSERT( int8__can_div( x, y ) );
+
     return x % y;
 }
 
 
 int8_t
 int8__negate( int8_t const x )
-{ ASSERT( x != int8__min_bound() );
+{
+    ASSERT( x != int8__min_bound() );
+
     return -x;
 }
 
 
 int8_t
 int8__abs( int8_t const x )
-{ ASSERT( x != int8__min_bound() );
+{
+    ASSERT( x != int8__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

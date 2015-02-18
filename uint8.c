@@ -142,7 +142,9 @@ uint8_t
 uint8__min_n(
         size_t const n,
         uint8_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uint8_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = uint8__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ uint8_t
 uint8__max_n(
         size_t const n,
         uint8_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uint8_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = uint8__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ uint8__clamp(
 
 uint8_t
 uint8__succ( uint8_t const x )
-{ ASSERT( x != uint8__max_bound() );
+{
+    ASSERT( x != uint8__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ uint8__succ_b( uint8_t const x )
 
 uint8_t
 uint8__pred( uint8_t const x )
-{ ASSERT( x != uint8__min_bound() );
+{
+    ASSERT( x != uint8__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ uint8_t
 uint8__div(
         uint8_t const x,
         uint8_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ uint8_t
 uint8__mod(
         uint8_t const x,
         uint8_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

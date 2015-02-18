@@ -142,7 +142,9 @@ int16_t
 int16__min_n(
         size_t const n,
         int16_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int16_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = int16__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ int16_t
 int16__max_n(
         size_t const n,
         int16_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     int16_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = int16__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ int16__clamp(
 
 int16_t
 int16__succ( int16_t const x )
-{ ASSERT( x != int16__max_bound() );
+{
+    ASSERT( x != int16__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ int16__succ_b( int16_t const x )
 
 int16_t
 int16__pred( int16_t const x )
-{ ASSERT( x != int16__min_bound() );
+{
+    ASSERT( x != int16__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ int16_t
 int16__add(
         int16_t const x,
         int16_t const y )
-{ ASSERT( int16__can_add( x, y ) );
+{
+    ASSERT( int16__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ int16_t
 int16__sub(
         int16_t const x,
         int16_t const y )
-{ ASSERT( int16__can_sub( x, y ) );
+{
+    ASSERT( int16__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ int16_t
 int16__mul(
         int16_t const x,
         int16_t const y )
-{ ASSERT( int16__can_mul( x, y ) );
+{
+    ASSERT( int16__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ int16_t
 int16__div(
         int16_t const x,
         int16_t const y )
-{ ASSERT( int16__can_div( x, y ) );
+{
+    ASSERT( int16__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ int16_t
 int16__mod(
         int16_t const x,
         int16_t const y )
-{ ASSERT( int16__can_div( x, y ) );
+{
+    ASSERT( int16__can_div( x, y ) );
+
     return x % y;
 }
 
 
 int16_t
 int16__negate( int16_t const x )
-{ ASSERT( x != int16__min_bound() );
+{
+    ASSERT( x != int16__min_bound() );
+
     return -x;
 }
 
 
 int16_t
 int16__abs( int16_t const x )
-{ ASSERT( x != int16__min_bound() );
+{
+    ASSERT( x != int16__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

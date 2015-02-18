@@ -142,7 +142,9 @@ uint16_t
 uint16__min_n(
         size_t const n,
         uint16_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uint16_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = uint16__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ uint16_t
 uint16__max_n(
         size_t const n,
         uint16_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     uint16_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = uint16__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ uint16__clamp(
 
 uint16_t
 uint16__succ( uint16_t const x )
-{ ASSERT( x != uint16__max_bound() );
+{
+    ASSERT( x != uint16__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ uint16__succ_b( uint16_t const x )
 
 uint16_t
 uint16__pred( uint16_t const x )
-{ ASSERT( x != uint16__min_bound() );
+{
+    ASSERT( x != uint16__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ uint16_t
 uint16__div(
         uint16_t const x,
         uint16_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ uint16_t
 uint16__mod(
         uint16_t const x,
         uint16_t const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

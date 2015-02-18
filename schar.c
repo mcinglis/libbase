@@ -142,7 +142,9 @@ schar
 schar__min_n(
         size_t const n,
         schar const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     schar min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = schar__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ schar
 schar__max_n(
         size_t const n,
         schar const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     schar max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = schar__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ schar__clamp(
 
 schar
 schar__succ( schar const x )
-{ ASSERT( x != schar__max_bound() );
+{
+    ASSERT( x != schar__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ schar__succ_b( schar const x )
 
 schar
 schar__pred( schar const x )
-{ ASSERT( x != schar__min_bound() );
+{
+    ASSERT( x != schar__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ schar
 schar__add(
         schar const x,
         schar const y )
-{ ASSERT( schar__can_add( x, y ) );
+{
+    ASSERT( schar__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ schar
 schar__sub(
         schar const x,
         schar const y )
-{ ASSERT( schar__can_sub( x, y ) );
+{
+    ASSERT( schar__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ schar
 schar__mul(
         schar const x,
         schar const y )
-{ ASSERT( schar__can_mul( x, y ) );
+{
+    ASSERT( schar__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ schar
 schar__div(
         schar const x,
         schar const y )
-{ ASSERT( schar__can_div( x, y ) );
+{
+    ASSERT( schar__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ schar
 schar__mod(
         schar const x,
         schar const y )
-{ ASSERT( schar__can_div( x, y ) );
+{
+    ASSERT( schar__can_div( x, y ) );
+
     return x % y;
 }
 
 
 schar
 schar__negate( schar const x )
-{ ASSERT( x != schar__min_bound() );
+{
+    ASSERT( x != schar__min_bound() );
+
     return -x;
 }
 
 
 schar
 schar__abs( schar const x )
-{ ASSERT( x != schar__min_bound() );
+{
+    ASSERT( x != schar__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

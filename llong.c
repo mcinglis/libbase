@@ -142,7 +142,9 @@ llong
 llong__min_n(
         size_t const n,
         llong const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     llong min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = llong__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ llong
 llong__max_n(
         size_t const n,
         llong const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     llong max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = llong__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ llong__clamp(
 
 llong
 llong__succ( llong const x )
-{ ASSERT( x != llong__max_bound() );
+{
+    ASSERT( x != llong__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ llong__succ_b( llong const x )
 
 llong
 llong__pred( llong const x )
-{ ASSERT( x != llong__min_bound() );
+{
+    ASSERT( x != llong__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ llong
 llong__add(
         llong const x,
         llong const y )
-{ ASSERT( llong__can_add( x, y ) );
+{
+    ASSERT( llong__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ llong
 llong__sub(
         llong const x,
         llong const y )
-{ ASSERT( llong__can_sub( x, y ) );
+{
+    ASSERT( llong__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ llong
 llong__mul(
         llong const x,
         llong const y )
-{ ASSERT( llong__can_mul( x, y ) );
+{
+    ASSERT( llong__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ llong
 llong__div(
         llong const x,
         llong const y )
-{ ASSERT( llong__can_div( x, y ) );
+{
+    ASSERT( llong__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ llong
 llong__mod(
         llong const x,
         llong const y )
-{ ASSERT( llong__can_div( x, y ) );
+{
+    ASSERT( llong__can_div( x, y ) );
+
     return x % y;
 }
 
 
 llong
 llong__negate( llong const x )
-{ ASSERT( x != llong__min_bound() );
+{
+    ASSERT( x != llong__min_bound() );
+
     return -x;
 }
 
 
 llong
 llong__abs( llong const x )
-{ ASSERT( x != llong__min_bound() );
+{
+    ASSERT( x != llong__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

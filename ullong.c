@@ -142,7 +142,9 @@ ullong
 ullong__min_n(
         size_t const n,
         ullong const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ullong min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = ullong__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ ullong
 ullong__max_n(
         size_t const n,
         ullong const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     ullong max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = ullong__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ ullong__clamp(
 
 ullong
 ullong__succ( ullong const x )
-{ ASSERT( x != ullong__max_bound() );
+{
+    ASSERT( x != ullong__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ ullong__succ_b( ullong const x )
 
 ullong
 ullong__pred( ullong const x )
-{ ASSERT( x != ullong__min_bound() );
+{
+    ASSERT( x != ullong__min_bound() );
+
     return x - 1;
 }
 
@@ -361,7 +369,9 @@ ullong
 ullong__div(
         ullong const x,
         ullong const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x / y;
 }
 
@@ -370,7 +380,9 @@ ullong
 ullong__mod(
         ullong const x,
         ullong const y )
-{ ASSERT( y != 0 );
+{
+    ASSERT( y != 0 );
+
     return x % y;
 }
 

@@ -142,7 +142,9 @@ wchar_t
 wchar__min_n(
         size_t const n,
         wchar_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     wchar_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = wchar__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ wchar_t
 wchar__max_n(
         size_t const n,
         wchar_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     wchar_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = wchar__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ wchar__clamp(
 
 wchar_t
 wchar__succ( wchar_t const x )
-{ ASSERT( x != wchar__max_bound() );
+{
+    ASSERT( x != wchar__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ wchar__succ_b( wchar_t const x )
 
 wchar_t
 wchar__pred( wchar_t const x )
-{ ASSERT( x != wchar__min_bound() );
+{
+    ASSERT( x != wchar__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ wchar_t
 wchar__add(
         wchar_t const x,
         wchar_t const y )
-{ ASSERT( wchar__can_add( x, y ) );
+{
+    ASSERT( wchar__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ wchar_t
 wchar__sub(
         wchar_t const x,
         wchar_t const y )
-{ ASSERT( wchar__can_sub( x, y ) );
+{
+    ASSERT( wchar__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ wchar_t
 wchar__mul(
         wchar_t const x,
         wchar_t const y )
-{ ASSERT( wchar__can_mul( x, y ) );
+{
+    ASSERT( wchar__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ wchar_t
 wchar__div(
         wchar_t const x,
         wchar_t const y )
-{ ASSERT( wchar__can_div( x, y ) );
+{
+    ASSERT( wchar__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ wchar_t
 wchar__mod(
         wchar_t const x,
         wchar_t const y )
-{ ASSERT( wchar__can_div( x, y ) );
+{
+    ASSERT( wchar__can_div( x, y ) );
+
     return x % y;
 }
 
 
 wchar_t
 wchar__negate( wchar_t const x )
-{ ASSERT( x != wchar__min_bound() );
+{
+    ASSERT( x != wchar__min_bound() );
+
     return -x;
 }
 
 
 wchar_t
 wchar__abs( wchar_t const x )
-{ ASSERT( x != wchar__min_bound() );
+{
+    ASSERT( x != wchar__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

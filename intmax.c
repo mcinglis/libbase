@@ -142,7 +142,9 @@ intmax_t
 intmax__min_n(
         size_t const n,
         intmax_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     intmax_t min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = intmax__min2( min, xs[ i ] );
@@ -155,7 +157,9 @@ intmax_t
 intmax__max_n(
         size_t const n,
         intmax_t const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     intmax_t max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = intmax__max2( max, xs[ i ] );
@@ -187,7 +191,9 @@ intmax__clamp(
 
 intmax_t
 intmax__succ( intmax_t const x )
-{ ASSERT( x != intmax__max_bound() );
+{
+    ASSERT( x != intmax__max_bound() );
+
     return x + 1;
 }
 
@@ -201,7 +207,9 @@ intmax__succ_b( intmax_t const x )
 
 intmax_t
 intmax__pred( intmax_t const x )
-{ ASSERT( x != intmax__min_bound() );
+{
+    ASSERT( x != intmax__min_bound() );
+
     return x - 1;
 }
 
@@ -341,7 +349,9 @@ intmax_t
 intmax__add(
         intmax_t const x,
         intmax_t const y )
-{ ASSERT( intmax__can_add( x, y ) );
+{
+    ASSERT( intmax__can_add( x, y ) );
+
     return x + y;
 }
 
@@ -350,7 +360,9 @@ intmax_t
 intmax__sub(
         intmax_t const x,
         intmax_t const y )
-{ ASSERT( intmax__can_sub( x, y ) );
+{
+    ASSERT( intmax__can_sub( x, y ) );
+
     return x - y;
 }
 
@@ -359,7 +371,9 @@ intmax_t
 intmax__mul(
         intmax_t const x,
         intmax_t const y )
-{ ASSERT( intmax__can_mul( x, y ) );
+{
+    ASSERT( intmax__can_mul( x, y ) );
+
     return x * y;
 }
 
@@ -368,7 +382,9 @@ intmax_t
 intmax__div(
         intmax_t const x,
         intmax_t const y )
-{ ASSERT( intmax__can_div( x, y ) );
+{
+    ASSERT( intmax__can_div( x, y ) );
+
     return x / y;
 }
 
@@ -377,21 +393,27 @@ intmax_t
 intmax__mod(
         intmax_t const x,
         intmax_t const y )
-{ ASSERT( intmax__can_div( x, y ) );
+{
+    ASSERT( intmax__can_div( x, y ) );
+
     return x % y;
 }
 
 
 intmax_t
 intmax__negate( intmax_t const x )
-{ ASSERT( x != intmax__min_bound() );
+{
+    ASSERT( x != intmax__min_bound() );
+
     return -x;
 }
 
 
 intmax_t
 intmax__abs( intmax_t const x )
-{ ASSERT( x != intmax__min_bound() );
+{
+    ASSERT( x != intmax__min_bound() );
+
     return ( x < 0 ) ? -x : x;
 }
 

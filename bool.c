@@ -140,7 +140,9 @@ bool
 bool__min_n(
         size_t const n,
         bool const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     bool min = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         min = bool__min2( min, xs[ i ] );
@@ -153,7 +155,9 @@ bool
 bool__max_n(
         size_t const n,
         bool const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+{
+    ASSERT( n != 0, xs != NULL );
+
     bool max = xs[ 0 ];
     for ( size_t i = 1; i < n; i++ ) {
         max = bool__max2( max, xs[ i ] );
@@ -185,7 +189,9 @@ bool__clamp(
 
 bool
 bool__succ( bool const x )
-{ ASSERT( x != bool__max_bound() );
+{
+    ASSERT( x != bool__max_bound() );
+
     return x + 1;
 }
 
@@ -199,7 +205,9 @@ bool__succ_b( bool const x )
 
 bool
 bool__pred( bool const x )
-{ ASSERT( x != bool__min_bound() );
+{
+    ASSERT( x != bool__min_bound() );
+
     return x - 1;
 }
 
