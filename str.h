@@ -24,150 +24,191 @@
 #include <libtypes/types.h>
 
 
-// A "str" is an array of `char`s terminated by the null character `\0`.
-
-
-typedef struct maybe_conststr {
-    char const * value;
-    bool nothing;
-} Maybe_conststr;
-
-
-typedef struct result_conststr {
-    char const * value;
-    int error;
-} Result_conststr;
-
-
-typedef struct arrayc_conststr {
-    char const * const * e;
-    size_t capacity;
-} ArrayC_conststr;
-
-
-typedef struct arraym_conststr {
-    char const * * e;
-    size_t capacity;
-} ArrayM_conststr;
-
-
-typedef struct vec_conststr {
-    char const * * e;
-    size_t length;
-    size_t capacity;
-} Vec_conststr;
+// A "str" is a constant `char` array terminated by a null character.
 
 
 typedef struct maybe_str {
-    char * value;
+    char const * value;
     bool nothing;
 } Maybe_str;
 
 
 typedef struct result_str {
-    char * value;
+    char const * value;
     int error;
 } Result_str;
 
 
 typedef struct arrayc_str {
-    char * const * e;
+    char const * const * e;
     size_t capacity;
 } ArrayC_str;
 
 
 typedef struct arraym_str {
-    char * * e;
+    char const * * e;
     size_t capacity;
 } ArrayM_str;
 
 
 typedef struct vec_str {
-    char * * e;
+    char const * * e;
     size_t length;
     size_t capacity;
 } Vec_str;
 
 
-char const * str__id( char const * xs );
+char const *
+str__id( char const * xs );
 // The identity function; returns `xs`.
 
 
-size_t str__length( char const * xs );
+size_t
+str__length( char const * xs );
 // Returns the index of the first `'\0'` byte in `xs`.
+// @require xs != NULL
 
-size_t str__size( char const * xs );
+
+size_t
+str__size( char const * xs );
 // Returns the byte size of `xs` - i.e. `str__length( xs ) + 1`.
+// @require xs != NULL
 
 
-bool str__equal( char const * xs, char const * ys );
+bool
+str__equal( char const * xs,
+            char const * ys );
 // Returns `true` if every `i`th character in `xs` is equal to the `i`th
 // character in `ys`, including the null byte.
+// @require xs != NULL, ys != NULL
 
-bool str__not_equal( char const * xs, char const * ys );
+
+bool
+str__not_equal( char const * xs,
+                char const * ys );
 // Returns `!str__equal( xs, ys )`.
+// @require xs != NULL, ys != NULL
 
-bool str__equal_i( char const * xs, char const * ys );
+
+bool
+str__equal_i( char const * xs,
+              char const * ys );
 // Like `str__equal()`, except case-insensitive.
+// @require xs != NULL, ys != NULL
 
-bool str__not_equal_i( char const * xs, char const * ys );
+
+bool
+str__not_equal_i( char const * xs,
+                  char const * ys );
 // Returns `!str__equal_i( xs, ys )`.
+// @require xs != NULL, ys != NULL
 
 
-ord str__compare( char const * xs, char const * ys );
+bool
+str__starts_with( char const * xs,
+                  char const * prefix );
+// Returns `true` if `prefix` is a prefix of `xs`, or `false` otherwise.
+// @require xs != NULL, prefix != NULL
+
+
+bool
+str__ends_with( char const * xs,
+                char const * suffix );
+// Returns `true` if `suffix` is a suffix of `xs`, or `false` otherwise.
+// @require xs != NULL, suffix != NULL
+
+
+ord
+str__compare( char const * xs,
+              char const * ys );
 // Returns the lexicographical comparison of `xs` and `ys`.
+// @require xs != NULL, ys != NULL
 
-ord str__compare_i( char const * xs, char const * ys );
+
+ord
+str__compare_i( char const * xs,
+                char const * ys );
 // Returns the lexicographical comparison of `xs` and `ys`.
+// @require xs != NULL, ys != NULL
 
-bool str__less_than( char const * xs, char const * ys );
+
+bool
+str__less_than( char const * xs,
+                char const * ys );
 // Returns `str__compare( xs, ys ) == LT`.
+// @require xs != NULL, ys != NULL
 
-bool str__less_than_or_eq( char const * xs, char const * ys );
+
+bool
+str__less_than_or_eq( char const * xs,
+                      char const * ys );
 // Returns `str__compare( xs, ys ) <= EQ`.
+// @require xs != NULL, ys != NULL
 
-bool str__greater_than_or_eq( char const * xs, char const * ys );
+
+bool
+str__greater_than_or_eq( char const * xs,
+                         char const * ys );
 // Returns `str__compare( xs, ys ) >= EQ`.
+// @require xs != NULL, ys != NULL
 
-bool str__greater_than( char const * xs, char const * ys );
+
+bool
+str__greater_than( char const * xs,
+                   char const * ys );
 // Returns `str__compare( xs, ys ) == GT`.
+// @require xs != NULL, ys != NULL
 
-char const * str__min2( char const * xs, char const * ys );
+
+char const *
+str__min2( char const * xs,
+           char const * ys );
 // If `str__less_than( xs, ys )`, returns `xs`, otherwise returns `ys`.
+// @require xs != NULL, ys != NULL
 
-char const * str__max2( char const * xs, char const * ys );
+
+char const *
+str__max2( char const * xs,
+           char const * ys );
 // If `str__greater_than( xs, ys )`, returns `xs`, otherwise returns `ys`.
+// @require xs != NULL, ys != NULL
 
-char const * str__min_n( size_t n, char const * const * xss );
+
+char const *
+str__min_n( size_t n,
+            char const * const * xss );
 // Returns the minimum str of the first `n` elements in the array `xss`.
-// @requires n > 0, xss != NULL, xss[ i ] != NULL for i in 0..n-1
+// @requires n != 0, xss != NULL, xss[ i ] != NULL for i in 0..n-1
 
-char const * str__max_n( size_t n, char const * const * xss );
+
+char const *
+str__max_n( size_t n,
+            char const * const * xss );
 // Returns the maximum str of the first `n` elements in the array `xss`.
-// @requires n > 0, xss != NULL
+// @requires n != 0, xss != NULL, xss[ i ] != NULL for i in 0..n-1
+
 
 // @public
 #define str__min( ... ) \
-    str__min_n( PP_COUNT( __VA_ARGS__ ), ( char const * [] ){ __VA_ARGS__ } )
+    str__min_n( PP_COUNT( __VA_ARGS__ ), \
+                ( char const * [] ){ __VA_ARGS__ } )
+
 
 // @public
 #define str__max( ... ) \
-    str__max_n( PP_COUNT( __VA_ARGS__ ), ( char const * [] ){ __VA_ARGS__ } )
+    str__max_n( PP_COUNT( __VA_ARGS__ ), \
+                ( char const * [] ){ __VA_ARGS__ } )
 
-char const * str__clamp( char const * lower,
-                         char const * upper,
-                         char const * xs );
+
+char const *
+str__clamp( char const * lower,
+            char const * upper,
+            char const * xs );
 // Returns: - `lower` if `str__greater_than( lower, xs )`;
 //          - `upper` if `str__less_than( upper, xs )`;
 //          - `xs` otherwise
+// @requires lower != NULL, upper != NULL, xs != NULL
 
 
-bool str__starts_with( char const * xs, char const * prefix );
-// Returns `true` if `prefix` is a prefix of `xs`, or `false` otherwise.
-
-bool str__ends_with( char const * xs, char const * suffix );
-// Returns `true` if `suffix` is a suffix of `xs`, or `false` otherwise.
-
-
-#endif
+#endif // ifndef LIBBASE_STR_H
 
