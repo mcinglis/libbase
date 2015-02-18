@@ -21,7 +21,7 @@ PYTHON ?= python
 
 gen_types := bool char schar uchar short ushort int uint long ulong \
              llong ullong int8 uint8 int16 uint16 int32 uint32 \
-             intmax uintmax ptrdiff wchar size
+             intmax uintmax ptrdiff wchar size ptr constptr
 gen_sources := $(addsuffix .c,$(gen_types))
 gen_headers := $(addsuffix .h,$(gen_types))
 
@@ -123,6 +123,12 @@ wchar_typeclasses   := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOIMAX
 
 size_names          := size_t SIZE size size
 size_typeclasses    := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUMAX
+
+ptr_names           := "void *" PTR ptr ptr
+ptr_typeclasses     := EQ ORD
+
+constptr_names       := "void const *" CONSTPTR constptr constptr
+constptr_typeclasses := EQ ORD
 
 .PHONY: clean
 clean:
