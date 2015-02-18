@@ -44,13 +44,13 @@ typedef struct result_size {
 
 typedef struct arrayc_size {
     size_t const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_size;
 
 
 typedef struct arraym_size {
     size_t * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_size;
 
 

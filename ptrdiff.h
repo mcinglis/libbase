@@ -44,13 +44,13 @@ typedef struct result_ptrdiff {
 
 typedef struct arrayc_ptrdiff {
     ptrdiff_t const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_ptrdiff;
 
 
 typedef struct arraym_ptrdiff {
     ptrdiff_t * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_ptrdiff;
 
 

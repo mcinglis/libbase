@@ -44,13 +44,13 @@ typedef struct result_bool {
 
 typedef struct arrayc_bool {
     bool const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_bool;
 
 
 typedef struct arraym_bool {
     bool * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_bool;
 
 

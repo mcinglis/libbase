@@ -44,13 +44,13 @@ typedef struct result_int8 {
 
 typedef struct arrayc_int8 {
     int8_t const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_int8;
 
 
 typedef struct arraym_int8 {
     int8_t * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_int8;
 
 

@@ -44,13 +44,13 @@ typedef struct result_ushort {
 
 typedef struct arrayc_ushort {
     ushort const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_ushort;
 
 
 typedef struct arraym_ushort {
     ushort * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_ushort;
 
 

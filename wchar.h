@@ -44,13 +44,13 @@ typedef struct result_wchar {
 
 typedef struct arrayc_wchar {
     wchar_t const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_wchar;
 
 
 typedef struct arraym_wchar {
     wchar_t * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_wchar;
 
 

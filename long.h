@@ -44,13 +44,13 @@ typedef struct result_long {
 
 typedef struct arrayc_long {
     long const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_long;
 
 
 typedef struct arraym_long {
     long * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_long;
 
 

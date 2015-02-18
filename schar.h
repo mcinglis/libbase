@@ -44,13 +44,13 @@ typedef struct result_schar {
 
 typedef struct arrayc_schar {
     schar const * e;
-    size_t length;
+    size_t capacity;
 } ArrayC_schar;
 
 
 typedef struct arraym_schar {
     schar * e;
-    size_t length;
+    size_t capacity;
 } ArrayM_schar;
 
 

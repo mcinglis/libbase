@@ -27,10 +27,66 @@
 // A "str" is an array of `char`s terminated by the null character `\0`.
 
 
-typedef struct maybe_str {
+typedef struct maybe_conststr {
     char const * value;
     bool nothing;
+} Maybe_conststr;
+
+
+typedef struct result_conststr {
+    char const * value;
+    int error;
+} Result_conststr;
+
+
+typedef struct arrayc_conststr {
+    char const * const * e;
+    size_t capacity;
+} ArrayC_conststr;
+
+
+typedef struct arraym_conststr {
+    char const * * e;
+    size_t capacity;
+} ArrayM_conststr;
+
+
+typedef struct vec_conststr {
+    char const * * e;
+    size_t length;
+    size_t capacity;
+} Vec_conststr;
+
+
+typedef struct maybe_str {
+    char * value;
+    bool nothing;
 } Maybe_str;
+
+
+typedef struct result_str {
+    char * value;
+    int error;
+} Result_str;
+
+
+typedef struct arrayc_str {
+    char * const * e;
+    size_t capacity;
+} ArrayC_str;
+
+
+typedef struct arraym_str {
+    char * * e;
+    size_t capacity;
+} ArrayM_str;
+
+
+typedef struct vec_str {
+    char * * e;
+    size_t length;
+    size_t capacity;
+} Vec_str;
 
 
 char const * str__id( char const * xs );

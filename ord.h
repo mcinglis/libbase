@@ -36,6 +36,31 @@ typedef struct maybe_ord {
 } Maybe_ord;
 
 
+typedef struct result_ord {
+    ord value;
+    int error;
+} Result_ord;
+
+
+typedef struct arrayc_ord {
+    ord const * e;
+    size_t capacity;
+} ArrayC_ord;
+
+
+typedef struct arraym_ord {
+    ord * e;
+    size_t capacity;
+} ArrayM_ord;
+
+
+typedef struct vec_ord {
+    ord * e;
+    size_t length;
+    size_t capacity;
+} Vec_ord;
+
+
 ord ord__id( ord x );
 // The identity function; returns `x`.
 
