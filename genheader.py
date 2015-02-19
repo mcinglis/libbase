@@ -74,13 +74,13 @@ typedef struct result_{typename} {{
 
 typedef struct arrayc_{typename} {{
     {type} const * e;
-    size_t capacity;
+    size_t length;
 }} ArrayC_{typename};
 
 
 typedef struct arraym_{typename} {{
     {type} * e;
-    size_t capacity;
+    size_t length;
 }} ArrayM_{typename};
 
 

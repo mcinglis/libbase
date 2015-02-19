@@ -44,13 +44,13 @@ typedef struct result_intmax {
 
 typedef struct arrayc_intmax {
     intmax_t const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_intmax;
 
 
 typedef struct arraym_intmax {
     intmax_t * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_intmax;
 
 

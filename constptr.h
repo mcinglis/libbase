@@ -44,13 +44,13 @@ typedef struct result_constptr {
 
 typedef struct arrayc_constptr {
     void const * const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_constptr;
 
 
 typedef struct arraym_constptr {
     void const * * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_constptr;
 
 

@@ -44,13 +44,13 @@ typedef struct result_int32 {
 
 typedef struct arrayc_int32 {
     int32_t const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_int32;
 
 
 typedef struct arraym_int32 {
     int32_t * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_int32;
 
 

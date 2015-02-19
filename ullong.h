@@ -44,13 +44,13 @@ typedef struct result_ullong {
 
 typedef struct arrayc_ullong {
     ullong const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_ullong;
 
 
 typedef struct arraym_ullong {
     ullong * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_ullong;
 
 

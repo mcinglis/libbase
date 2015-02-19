@@ -44,13 +44,13 @@ typedef struct result_ptr {
 
 typedef struct arrayc_ptr {
     void * const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_ptr;
 
 
 typedef struct arraym_ptr {
     void * * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_ptr;
 
 

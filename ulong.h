@@ -44,13 +44,13 @@ typedef struct result_ulong {
 
 typedef struct arrayc_ulong {
     ulong const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_ulong;
 
 
 typedef struct arraym_ulong {
     ulong * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_ulong;
 
 
