@@ -41,13 +41,13 @@ typedef struct result_str {
 
 typedef struct arrayc_str {
     char const * const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_str;
 
 
 typedef struct arraym_str {
     char const * * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_str;
 
 

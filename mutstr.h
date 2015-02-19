@@ -41,13 +41,13 @@ typedef struct result_mutstr {
 
 typedef struct arrayc_mutstr {
     char * const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_mutstr;
 
 
 typedef struct arraym_mutstr {
     char * * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_mutstr;
 
 

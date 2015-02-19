@@ -44,13 +44,13 @@ typedef struct result_ord {
 
 typedef struct arrayc_ord {
     ord const * e;
-    size_t capacity;
+    size_t length;
 } ArrayC_ord;
 
 
 typedef struct arraym_ord {
     ord * e;
-    size_t capacity;
+    size_t length;
 } ArrayM_ord;
 
 
