@@ -496,6 +496,7 @@ uint16__same_sign(
 bool uint16__is_negative   ( uint16_t const x ) { return false; }
 bool uint16__is_nonpositive( uint16_t const x ) { return x == 0; }
 bool uint16__is_zero       ( uint16_t const x ) { return x == 0; }
+bool uint16__is_nonzero    ( uint16_t const x ) { return x != 0; }
 bool uint16__is_nonnegative( uint16_t const x ) { return true; }
 bool uint16__is_positive   ( uint16_t const x ) { return x != 0; }
 

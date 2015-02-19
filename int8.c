@@ -533,6 +533,7 @@ int8__same_sign(
 bool int8__is_negative   ( int8_t const x ) { return x < 0; }
 bool int8__is_nonpositive( int8_t const x ) { return x <= 0; }
 bool int8__is_zero       ( int8_t const x ) { return x == 0; }
+bool int8__is_nonzero    ( int8_t const x ) { return x != 0; }
 bool int8__is_nonnegative( int8_t const x ) { return x >= 0; }
 bool int8__is_positive   ( int8_t const x ) { return x > 0; }
 

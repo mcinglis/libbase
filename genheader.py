@@ -306,6 +306,7 @@ bool {funcname}__same_sign( {type} x, {type} y );
 bool {funcname}__is_negative( {type} x );     // Returns `x < 0`.
 bool {funcname}__is_nonpositive( {type} x );  // Returns `x <= 0`.
 bool {funcname}__is_zero( {type} x );         // Returns `x == 0`.
+bool {funcname}__is_nonzero( {type} x );      // Returns `x != 0`.
 bool {funcname}__is_nonnegative( {type} x );  // Returns `x >= 0`.
 bool {funcname}__is_positive( {type} x );     // Returns `x > 0`.
 
@@ -414,6 +415,7 @@ bool {funcname}__same_sign( {type}, {type} );
 bool {funcname}__is_negative( {type} x );     // Returns `false`.
 bool {funcname}__is_nonpositive( {type} x );  // Returns `x == 0`.
 bool {funcname}__is_zero( {type} x );         // Returns `x == 0`.
+bool {funcname}__is_nonzero( {type} x );      // Returns `x != 0`.
 bool {funcname}__is_nonnegative( {type} x );  // Returns `true`.
 bool {funcname}__is_positive( {type} x );     // Returns `x != 0`.
 

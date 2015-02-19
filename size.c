@@ -496,6 +496,7 @@ size__same_sign(
 bool size__is_negative   ( size_t const x ) { return false; }
 bool size__is_nonpositive( size_t const x ) { return x == 0; }
 bool size__is_zero       ( size_t const x ) { return x == 0; }
+bool size__is_nonzero    ( size_t const x ) { return x != 0; }
 bool size__is_nonnegative( size_t const x ) { return true; }
 bool size__is_positive   ( size_t const x ) { return x != 0; }
 

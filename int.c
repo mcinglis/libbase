@@ -533,6 +533,7 @@ int__same_sign(
 bool int__is_negative   ( int const x ) { return x < 0; }
 bool int__is_nonpositive( int const x ) { return x <= 0; }
 bool int__is_zero       ( int const x ) { return x == 0; }
+bool int__is_nonzero    ( int const x ) { return x != 0; }
 bool int__is_nonnegative( int const x ) { return x >= 0; }
 bool int__is_positive   ( int const x ) { return x > 0; }
 

@@ -249,6 +249,7 @@ bool uint__same_sign( uint, uint );
 bool uint__is_negative( uint x );     // Returns `false`.
 bool uint__is_nonpositive( uint x );  // Returns `x == 0`.
 bool uint__is_zero( uint x );         // Returns `x == 0`.
+bool uint__is_nonzero( uint x );      // Returns `x != 0`.
 bool uint__is_nonnegative( uint x );  // Returns `true`.
 bool uint__is_positive( uint x );     // Returns `x != 0`.
 

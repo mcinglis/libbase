@@ -249,6 +249,7 @@ bool uintmax__same_sign( uintmax_t, uintmax_t );
 bool uintmax__is_negative( uintmax_t x );     // Returns `false`.
 bool uintmax__is_nonpositive( uintmax_t x );  // Returns `x == 0`.
 bool uintmax__is_zero( uintmax_t x );         // Returns `x == 0`.
+bool uintmax__is_nonzero( uintmax_t x );      // Returns `x != 0`.
 bool uintmax__is_nonnegative( uintmax_t x );  // Returns `true`.
 bool uintmax__is_positive( uintmax_t x );     // Returns `x != 0`.
 

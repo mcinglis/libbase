@@ -533,6 +533,7 @@ int16__same_sign(
 bool int16__is_negative   ( int16_t const x ) { return x < 0; }
 bool int16__is_nonpositive( int16_t const x ) { return x <= 0; }
 bool int16__is_zero       ( int16_t const x ) { return x == 0; }
+bool int16__is_nonzero    ( int16_t const x ) { return x != 0; }
 bool int16__is_nonnegative( int16_t const x ) { return x >= 0; }
 bool int16__is_positive   ( int16_t const x ) { return x > 0; }
 

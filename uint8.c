@@ -496,6 +496,7 @@ uint8__same_sign(
 bool uint8__is_negative   ( uint8_t const x ) { return false; }
 bool uint8__is_nonpositive( uint8_t const x ) { return x == 0; }
 bool uint8__is_zero       ( uint8_t const x ) { return x == 0; }
+bool uint8__is_nonzero    ( uint8_t const x ) { return x != 0; }
 bool uint8__is_nonnegative( uint8_t const x ) { return true; }
 bool uint8__is_positive   ( uint8_t const x ) { return x != 0; }
 

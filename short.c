@@ -533,6 +533,7 @@ short__same_sign(
 bool short__is_negative   ( short const x ) { return x < 0; }
 bool short__is_nonpositive( short const x ) { return x <= 0; }
 bool short__is_zero       ( short const x ) { return x == 0; }
+bool short__is_nonzero    ( short const x ) { return x != 0; }
 bool short__is_nonnegative( short const x ) { return x >= 0; }
 bool short__is_positive   ( short const x ) { return x > 0; }
 

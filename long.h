@@ -264,6 +264,7 @@ bool long__same_sign( long x, long y );
 bool long__is_negative( long x );     // Returns `x < 0`.
 bool long__is_nonpositive( long x );  // Returns `x <= 0`.
 bool long__is_zero( long x );         // Returns `x == 0`.
+bool long__is_nonzero( long x );      // Returns `x != 0`.
 bool long__is_nonnegative( long x );  // Returns `x >= 0`.
 bool long__is_positive( long x );     // Returns `x > 0`.
 

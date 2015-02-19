@@ -533,6 +533,7 @@ schar__same_sign(
 bool schar__is_negative   ( schar const x ) { return x < 0; }
 bool schar__is_nonpositive( schar const x ) { return x <= 0; }
 bool schar__is_zero       ( schar const x ) { return x == 0; }
+bool schar__is_nonzero    ( schar const x ) { return x != 0; }
 bool schar__is_nonnegative( schar const x ) { return x >= 0; }
 bool schar__is_positive   ( schar const x ) { return x > 0; }
 

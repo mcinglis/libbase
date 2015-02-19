@@ -496,6 +496,7 @@ uintmax__same_sign(
 bool uintmax__is_negative   ( uintmax_t const x ) { return false; }
 bool uintmax__is_nonpositive( uintmax_t const x ) { return x == 0; }
 bool uintmax__is_zero       ( uintmax_t const x ) { return x == 0; }
+bool uintmax__is_nonzero    ( uintmax_t const x ) { return x != 0; }
 bool uintmax__is_nonnegative( uintmax_t const x ) { return true; }
 bool uintmax__is_positive   ( uintmax_t const x ) { return x != 0; }
 

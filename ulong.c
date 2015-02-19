@@ -496,6 +496,7 @@ ulong__same_sign(
 bool ulong__is_negative   ( ulong const x ) { return false; }
 bool ulong__is_nonpositive( ulong const x ) { return x == 0; }
 bool ulong__is_zero       ( ulong const x ) { return x == 0; }
+bool ulong__is_nonzero    ( ulong const x ) { return x != 0; }
 bool ulong__is_nonnegative( ulong const x ) { return true; }
 bool ulong__is_positive   ( ulong const x ) { return x != 0; }
 

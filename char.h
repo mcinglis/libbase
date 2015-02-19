@@ -264,6 +264,7 @@ bool char__same_sign( char x, char y );
 bool char__is_negative( char x );     // Returns `x < 0`.
 bool char__is_nonpositive( char x );  // Returns `x <= 0`.
 bool char__is_zero( char x );         // Returns `x == 0`.
+bool char__is_nonzero( char x );      // Returns `x != 0`.
 bool char__is_nonnegative( char x );  // Returns `x >= 0`.
 bool char__is_positive( char x );     // Returns `x > 0`.
 

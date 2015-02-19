@@ -264,6 +264,7 @@ bool short__same_sign( short x, short y );
 bool short__is_negative( short x );     // Returns `x < 0`.
 bool short__is_nonpositive( short x );  // Returns `x <= 0`.
 bool short__is_zero( short x );         // Returns `x == 0`.
+bool short__is_nonzero( short x );      // Returns `x != 0`.
 bool short__is_nonnegative( short x );  // Returns `x >= 0`.
 bool short__is_positive( short x );     // Returns `x > 0`.
 

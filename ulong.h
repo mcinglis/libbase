@@ -249,6 +249,7 @@ bool ulong__same_sign( ulong, ulong );
 bool ulong__is_negative( ulong x );     // Returns `false`.
 bool ulong__is_nonpositive( ulong x );  // Returns `x == 0`.
 bool ulong__is_zero( ulong x );         // Returns `x == 0`.
+bool ulong__is_nonzero( ulong x );      // Returns `x != 0`.
 bool ulong__is_nonnegative( ulong x );  // Returns `true`.
 bool ulong__is_positive( ulong x );     // Returns `x != 0`.
 

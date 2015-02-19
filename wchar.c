@@ -533,6 +533,7 @@ wchar__same_sign(
 bool wchar__is_negative   ( wchar_t const x ) { return x < 0; }
 bool wchar__is_nonpositive( wchar_t const x ) { return x <= 0; }
 bool wchar__is_zero       ( wchar_t const x ) { return x == 0; }
+bool wchar__is_nonzero    ( wchar_t const x ) { return x != 0; }
 bool wchar__is_nonnegative( wchar_t const x ) { return x >= 0; }
 bool wchar__is_positive   ( wchar_t const x ) { return x > 0; }
 

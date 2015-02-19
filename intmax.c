@@ -533,6 +533,7 @@ intmax__same_sign(
 bool intmax__is_negative   ( intmax_t const x ) { return x < 0; }
 bool intmax__is_nonpositive( intmax_t const x ) { return x <= 0; }
 bool intmax__is_zero       ( intmax_t const x ) { return x == 0; }
+bool intmax__is_nonzero    ( intmax_t const x ) { return x != 0; }
 bool intmax__is_nonnegative( intmax_t const x ) { return x >= 0; }
 bool intmax__is_positive   ( intmax_t const x ) { return x > 0; }
 

@@ -264,6 +264,7 @@ bool int__same_sign( int x, int y );
 bool int__is_negative( int x );     // Returns `x < 0`.
 bool int__is_nonpositive( int x );  // Returns `x <= 0`.
 bool int__is_zero( int x );         // Returns `x == 0`.
+bool int__is_nonzero( int x );      // Returns `x != 0`.
 bool int__is_nonnegative( int x );  // Returns `x >= 0`.
 bool int__is_positive( int x );     // Returns `x > 0`.
 

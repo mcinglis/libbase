@@ -264,6 +264,7 @@ bool ptrdiff__same_sign( ptrdiff_t x, ptrdiff_t y );
 bool ptrdiff__is_negative( ptrdiff_t x );     // Returns `x < 0`.
 bool ptrdiff__is_nonpositive( ptrdiff_t x );  // Returns `x <= 0`.
 bool ptrdiff__is_zero( ptrdiff_t x );         // Returns `x == 0`.
+bool ptrdiff__is_nonzero( ptrdiff_t x );      // Returns `x != 0`.
 bool ptrdiff__is_nonnegative( ptrdiff_t x );  // Returns `x >= 0`.
 bool ptrdiff__is_positive( ptrdiff_t x );     // Returns `x > 0`.
 

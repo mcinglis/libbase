@@ -249,6 +249,7 @@ bool uchar__same_sign( uchar, uchar );
 bool uchar__is_negative( uchar x );     // Returns `false`.
 bool uchar__is_nonpositive( uchar x );  // Returns `x == 0`.
 bool uchar__is_zero( uchar x );         // Returns `x == 0`.
+bool uchar__is_nonzero( uchar x );      // Returns `x != 0`.
 bool uchar__is_nonnegative( uchar x );  // Returns `true`.
 bool uchar__is_positive( uchar x );     // Returns `x != 0`.
 

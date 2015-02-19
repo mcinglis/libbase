@@ -249,6 +249,7 @@ bool ullong__same_sign( ullong, ullong );
 bool ullong__is_negative( ullong x );     // Returns `false`.
 bool ullong__is_nonpositive( ullong x );  // Returns `x == 0`.
 bool ullong__is_zero( ullong x );         // Returns `x == 0`.
+bool ullong__is_nonzero( ullong x );      // Returns `x != 0`.
 bool ullong__is_nonnegative( ullong x );  // Returns `true`.
 bool ullong__is_positive( ullong x );     // Returns `x != 0`.
 

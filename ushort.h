@@ -249,6 +249,7 @@ bool ushort__same_sign( ushort, ushort );
 bool ushort__is_negative( ushort x );     // Returns `false`.
 bool ushort__is_nonpositive( ushort x );  // Returns `x == 0`.
 bool ushort__is_zero( ushort x );         // Returns `x == 0`.
+bool ushort__is_nonzero( ushort x );      // Returns `x != 0`.
 bool ushort__is_nonnegative( ushort x );  // Returns `true`.
 bool ushort__is_positive( ushort x );     // Returns `x != 0`.
 

@@ -264,6 +264,7 @@ bool wchar__same_sign( wchar_t x, wchar_t y );
 bool wchar__is_negative( wchar_t x );     // Returns `x < 0`.
 bool wchar__is_nonpositive( wchar_t x );  // Returns `x <= 0`.
 bool wchar__is_zero( wchar_t x );         // Returns `x == 0`.
+bool wchar__is_nonzero( wchar_t x );      // Returns `x != 0`.
 bool wchar__is_nonnegative( wchar_t x );  // Returns `x >= 0`.
 bool wchar__is_positive( wchar_t x );     // Returns `x > 0`.
 

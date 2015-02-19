@@ -533,6 +533,7 @@ llong__same_sign(
 bool llong__is_negative   ( llong const x ) { return x < 0; }
 bool llong__is_nonpositive( llong const x ) { return x <= 0; }
 bool llong__is_zero       ( llong const x ) { return x == 0; }
+bool llong__is_nonzero    ( llong const x ) { return x != 0; }
 bool llong__is_nonnegative( llong const x ) { return x >= 0; }
 bool llong__is_positive   ( llong const x ) { return x > 0; }
 

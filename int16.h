@@ -264,6 +264,7 @@ bool int16__same_sign( int16_t x, int16_t y );
 bool int16__is_negative( int16_t x );     // Returns `x < 0`.
 bool int16__is_nonpositive( int16_t x );  // Returns `x <= 0`.
 bool int16__is_zero( int16_t x );         // Returns `x == 0`.
+bool int16__is_nonzero( int16_t x );      // Returns `x != 0`.
 bool int16__is_nonnegative( int16_t x );  // Returns `x >= 0`.
 bool int16__is_positive( int16_t x );     // Returns `x > 0`.
 

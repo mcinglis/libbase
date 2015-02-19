@@ -249,6 +249,7 @@ bool size__same_sign( size_t, size_t );
 bool size__is_negative( size_t x );     // Returns `false`.
 bool size__is_nonpositive( size_t x );  // Returns `x == 0`.
 bool size__is_zero( size_t x );         // Returns `x == 0`.
+bool size__is_nonzero( size_t x );      // Returns `x != 0`.
 bool size__is_nonnegative( size_t x );  // Returns `true`.
 bool size__is_positive( size_t x );     // Returns `x != 0`.
 

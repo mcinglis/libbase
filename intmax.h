@@ -264,6 +264,7 @@ bool intmax__same_sign( intmax_t x, intmax_t y );
 bool intmax__is_negative( intmax_t x );     // Returns `x < 0`.
 bool intmax__is_nonpositive( intmax_t x );  // Returns `x <= 0`.
 bool intmax__is_zero( intmax_t x );         // Returns `x == 0`.
+bool intmax__is_nonzero( intmax_t x );      // Returns `x != 0`.
 bool intmax__is_nonnegative( intmax_t x );  // Returns `x >= 0`.
 bool intmax__is_positive( intmax_t x );     // Returns `x > 0`.
 

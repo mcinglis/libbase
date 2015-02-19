@@ -496,6 +496,7 @@ ushort__same_sign(
 bool ushort__is_negative   ( ushort const x ) { return false; }
 bool ushort__is_nonpositive( ushort const x ) { return x == 0; }
 bool ushort__is_zero       ( ushort const x ) { return x == 0; }
+bool ushort__is_nonzero    ( ushort const x ) { return x != 0; }
 bool ushort__is_nonnegative( ushort const x ) { return true; }
 bool ushort__is_positive   ( ushort const x ) { return x != 0; }
 

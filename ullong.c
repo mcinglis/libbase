@@ -496,6 +496,7 @@ ullong__same_sign(
 bool ullong__is_negative   ( ullong const x ) { return false; }
 bool ullong__is_nonpositive( ullong const x ) { return x == 0; }
 bool ullong__is_zero       ( ullong const x ) { return x == 0; }
+bool ullong__is_nonzero    ( ullong const x ) { return x != 0; }
 bool ullong__is_nonnegative( ullong const x ) { return true; }
 bool ullong__is_positive   ( ullong const x ) { return x != 0; }
 

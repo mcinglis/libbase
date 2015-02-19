@@ -533,6 +533,7 @@ char__same_sign(
 bool char__is_negative   ( char const x ) { return x < 0; }
 bool char__is_nonpositive( char const x ) { return x <= 0; }
 bool char__is_zero       ( char const x ) { return x == 0; }
+bool char__is_nonzero    ( char const x ) { return x != 0; }
 bool char__is_nonnegative( char const x ) { return x >= 0; }
 bool char__is_positive   ( char const x ) { return x > 0; }
 

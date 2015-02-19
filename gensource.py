@@ -620,6 +620,7 @@ bool
 bool {funcname}__is_negative   ( {type} const x ) {{ return x < 0; }}
 bool {funcname}__is_nonpositive( {type} const x ) {{ return x <= 0; }}
 bool {funcname}__is_zero       ( {type} const x ) {{ return x == 0; }}
+bool {funcname}__is_nonzero    ( {type} const x ) {{ return x != 0; }}
 bool {funcname}__is_nonnegative( {type} const x ) {{ return x >= 0; }}
 bool {funcname}__is_positive   ( {type} const x ) {{ return x > 0; }}
 
@@ -933,6 +934,7 @@ bool
 bool {funcname}__is_negative   ( {type} const x ) {{ return false; }}
 bool {funcname}__is_nonpositive( {type} const x ) {{ return x == 0; }}
 bool {funcname}__is_zero       ( {type} const x ) {{ return x == 0; }}
+bool {funcname}__is_nonzero    ( {type} const x ) {{ return x != 0; }}
 bool {funcname}__is_nonnegative( {type} const x ) {{ return true; }}
 bool {funcname}__is_positive   ( {type} const x ) {{ return x != 0; }}
 

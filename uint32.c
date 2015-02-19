@@ -496,6 +496,7 @@ uint32__same_sign(
 bool uint32__is_negative   ( uint32_t const x ) { return false; }
 bool uint32__is_nonpositive( uint32_t const x ) { return x == 0; }
 bool uint32__is_zero       ( uint32_t const x ) { return x == 0; }
+bool uint32__is_nonzero    ( uint32_t const x ) { return x != 0; }
 bool uint32__is_nonnegative( uint32_t const x ) { return true; }
 bool uint32__is_positive   ( uint32_t const x ) { return x != 0; }
 

@@ -249,6 +249,7 @@ bool uint8__same_sign( uint8_t, uint8_t );
 bool uint8__is_negative( uint8_t x );     // Returns `false`.
 bool uint8__is_nonpositive( uint8_t x );  // Returns `x == 0`.
 bool uint8__is_zero( uint8_t x );         // Returns `x == 0`.
+bool uint8__is_nonzero( uint8_t x );      // Returns `x != 0`.
 bool uint8__is_nonnegative( uint8_t x );  // Returns `true`.
 bool uint8__is_positive( uint8_t x );     // Returns `x != 0`.
 

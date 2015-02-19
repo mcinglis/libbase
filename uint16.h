@@ -249,6 +249,7 @@ bool uint16__same_sign( uint16_t, uint16_t );
 bool uint16__is_negative( uint16_t x );     // Returns `false`.
 bool uint16__is_nonpositive( uint16_t x );  // Returns `x == 0`.
 bool uint16__is_zero( uint16_t x );         // Returns `x == 0`.
+bool uint16__is_nonzero( uint16_t x );      // Returns `x != 0`.
 bool uint16__is_nonnegative( uint16_t x );  // Returns `true`.
 bool uint16__is_positive( uint16_t x );     // Returns `x != 0`.
 

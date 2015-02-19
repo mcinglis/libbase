@@ -249,6 +249,7 @@ bool uint32__same_sign( uint32_t, uint32_t );
 bool uint32__is_negative( uint32_t x );     // Returns `false`.
 bool uint32__is_nonpositive( uint32_t x );  // Returns `x == 0`.
 bool uint32__is_zero( uint32_t x );         // Returns `x == 0`.
+bool uint32__is_nonzero( uint32_t x );      // Returns `x != 0`.
 bool uint32__is_nonnegative( uint32_t x );  // Returns `true`.
 bool uint32__is_positive( uint32_t x );     // Returns `x != 0`.
 

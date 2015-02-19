@@ -533,6 +533,7 @@ ptrdiff__same_sign(
 bool ptrdiff__is_negative   ( ptrdiff_t const x ) { return x < 0; }
 bool ptrdiff__is_nonpositive( ptrdiff_t const x ) { return x <= 0; }
 bool ptrdiff__is_zero       ( ptrdiff_t const x ) { return x == 0; }
+bool ptrdiff__is_nonzero    ( ptrdiff_t const x ) { return x != 0; }
 bool ptrdiff__is_nonnegative( ptrdiff_t const x ) { return x >= 0; }
 bool ptrdiff__is_positive   ( ptrdiff_t const x ) { return x > 0; }
 

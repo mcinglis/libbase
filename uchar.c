@@ -496,6 +496,7 @@ uchar__same_sign(
 bool uchar__is_negative   ( uchar const x ) { return false; }
 bool uchar__is_nonpositive( uchar const x ) { return x == 0; }
 bool uchar__is_zero       ( uchar const x ) { return x == 0; }
+bool uchar__is_nonzero    ( uchar const x ) { return x != 0; }
 bool uchar__is_nonnegative( uchar const x ) { return true; }
 bool uchar__is_positive   ( uchar const x ) { return x != 0; }
 

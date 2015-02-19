@@ -533,6 +533,7 @@ int32__same_sign(
 bool int32__is_negative   ( int32_t const x ) { return x < 0; }
 bool int32__is_nonpositive( int32_t const x ) { return x <= 0; }
 bool int32__is_zero       ( int32_t const x ) { return x == 0; }
+bool int32__is_nonzero    ( int32_t const x ) { return x != 0; }
 bool int32__is_nonnegative( int32_t const x ) { return x >= 0; }
 bool int32__is_positive   ( int32_t const x ) { return x > 0; }
 

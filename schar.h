@@ -264,6 +264,7 @@ bool schar__same_sign( schar x, schar y );
 bool schar__is_negative( schar x );     // Returns `x < 0`.
 bool schar__is_nonpositive( schar x );  // Returns `x <= 0`.
 bool schar__is_zero( schar x );         // Returns `x == 0`.
+bool schar__is_nonzero( schar x );      // Returns `x != 0`.
 bool schar__is_nonnegative( schar x );  // Returns `x >= 0`.
 bool schar__is_positive( schar x );     // Returns `x > 0`.
 
