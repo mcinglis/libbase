@@ -138,6 +138,12 @@ uintmax_t uintmax__clamp( uintmax_t lower, uintmax_t upper, uintmax_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool uintmax__in_range( uintmax_t lower, uintmax_t upper, uintmax_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool uintmax__in_range_x( uintmax_t lower, uintmax_t upper, uintmax_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

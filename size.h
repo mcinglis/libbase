@@ -138,6 +138,12 @@ size_t size__clamp( size_t lower, size_t upper, size_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool size__in_range( size_t lower, size_t upper, size_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool size__in_range_x( size_t lower, size_t upper, size_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

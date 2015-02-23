@@ -138,6 +138,12 @@ schar schar__clamp( schar lower, schar upper, schar x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool schar__in_range( schar lower, schar upper, schar x );
+// Returns `lower <= x && x <= upper`.
+
+bool schar__in_range_x( schar lower, schar upper, schar x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ schar schar__abs_b( schar x );
 
 bool schar__same_sign( schar x, schar y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool schar__in_delta( schar x, schar delta, schar y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool schar__in_delta_x( schar x, schar delta, schar y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool schar__is_negative( schar x );     // Returns `x < 0`.
 bool schar__is_nonpositive( schar x );  // Returns `x <= 0`.

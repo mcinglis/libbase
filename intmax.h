@@ -138,6 +138,12 @@ intmax_t intmax__clamp( intmax_t lower, intmax_t upper, intmax_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool intmax__in_range( intmax_t lower, intmax_t upper, intmax_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool intmax__in_range_x( intmax_t lower, intmax_t upper, intmax_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ intmax_t intmax__abs_b( intmax_t x );
 
 bool intmax__same_sign( intmax_t x, intmax_t y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool intmax__in_delta( intmax_t x, intmax_t delta, intmax_t y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool intmax__in_delta_x( intmax_t x, intmax_t delta, intmax_t y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool intmax__is_negative( intmax_t x );     // Returns `x < 0`.
 bool intmax__is_nonpositive( intmax_t x );  // Returns `x <= 0`.

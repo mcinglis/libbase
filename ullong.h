@@ -138,6 +138,12 @@ ullong ullong__clamp( ullong lower, ullong upper, ullong x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool ullong__in_range( ullong lower, ullong upper, ullong x );
+// Returns `lower <= x && x <= upper`.
+
+bool ullong__in_range_x( ullong lower, ullong upper, ullong x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

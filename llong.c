@@ -180,6 +180,26 @@ llong__clamp(
 }
 
 
+bool
+llong__in_range(
+        llong const lower,
+        llong const upper,
+        llong const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+llong__in_range_x(
+        llong const lower,
+        llong const upper,
+        llong const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ llong__same_sign(
         llong const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+llong__in_delta(
+        llong const x,
+        llong const delta,
+        llong const y )
+{
+    return llong__sub_b( x, delta ) <= y
+        && y <= llong__add_b( x, delta );
+}
+
+
+bool
+llong__in_delta_x(
+        llong const x,
+        llong const delta,
+        llong const y )
+{
+    return llong__sub_b( x, delta ) < y
+        && y < llong__add_b( x, delta );
 }
 
 

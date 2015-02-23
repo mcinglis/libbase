@@ -180,6 +180,26 @@ size__clamp(
 }
 
 
+bool
+size__in_range(
+        size_t const lower,
+        size_t const upper,
+        size_t const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+size__in_range_x(
+        size_t const lower,
+        size_t const upper,
+        size_t const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

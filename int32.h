@@ -138,6 +138,12 @@ int32_t int32__clamp( int32_t lower, int32_t upper, int32_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool int32__in_range( int32_t lower, int32_t upper, int32_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool int32__in_range_x( int32_t lower, int32_t upper, int32_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ int32_t int32__abs_b( int32_t x );
 
 bool int32__same_sign( int32_t x, int32_t y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool int32__in_delta( int32_t x, int32_t delta, int32_t y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool int32__in_delta_x( int32_t x, int32_t delta, int32_t y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool int32__is_negative( int32_t x );     // Returns `x < 0`.
 bool int32__is_nonpositive( int32_t x );  // Returns `x <= 0`.

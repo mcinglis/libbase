@@ -180,6 +180,26 @@ short__clamp(
 }
 
 
+bool
+short__in_range(
+        short const lower,
+        short const upper,
+        short const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+short__in_range_x(
+        short const lower,
+        short const upper,
+        short const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ short__same_sign(
         short const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+short__in_delta(
+        short const x,
+        short const delta,
+        short const y )
+{
+    return short__sub_b( x, delta ) <= y
+        && y <= short__add_b( x, delta );
+}
+
+
+bool
+short__in_delta_x(
+        short const x,
+        short const delta,
+        short const y )
+{
+    return short__sub_b( x, delta ) < y
+        && y < short__add_b( x, delta );
 }
 
 

@@ -180,6 +180,26 @@ ptrdiff__clamp(
 }
 
 
+bool
+ptrdiff__in_range(
+        ptrdiff_t const lower,
+        ptrdiff_t const upper,
+        ptrdiff_t const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+ptrdiff__in_range_x(
+        ptrdiff_t const lower,
+        ptrdiff_t const upper,
+        ptrdiff_t const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ ptrdiff__same_sign(
         ptrdiff_t const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+ptrdiff__in_delta(
+        ptrdiff_t const x,
+        ptrdiff_t const delta,
+        ptrdiff_t const y )
+{
+    return ptrdiff__sub_b( x, delta ) <= y
+        && y <= ptrdiff__add_b( x, delta );
+}
+
+
+bool
+ptrdiff__in_delta_x(
+        ptrdiff_t const x,
+        ptrdiff_t const delta,
+        ptrdiff_t const y )
+{
+    return ptrdiff__sub_b( x, delta ) < y
+        && y < ptrdiff__add_b( x, delta );
 }
 
 

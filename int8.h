@@ -138,6 +138,12 @@ int8_t int8__clamp( int8_t lower, int8_t upper, int8_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool int8__in_range( int8_t lower, int8_t upper, int8_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool int8__in_range_x( int8_t lower, int8_t upper, int8_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ int8_t int8__abs_b( int8_t x );
 
 bool int8__same_sign( int8_t x, int8_t y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool int8__in_delta( int8_t x, int8_t delta, int8_t y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool int8__in_delta_x( int8_t x, int8_t delta, int8_t y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool int8__is_negative( int8_t x );     // Returns `x < 0`.
 bool int8__is_nonpositive( int8_t x );  // Returns `x <= 0`.

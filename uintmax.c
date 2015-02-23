@@ -180,6 +180,26 @@ uintmax__clamp(
 }
 
 
+bool
+uintmax__in_range(
+        uintmax_t const lower,
+        uintmax_t const upper,
+        uintmax_t const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+uintmax__in_range_x(
+        uintmax_t const lower,
+        uintmax_t const upper,
+        uintmax_t const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

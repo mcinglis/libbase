@@ -180,6 +180,26 @@ intmax__clamp(
 }
 
 
+bool
+intmax__in_range(
+        intmax_t const lower,
+        intmax_t const upper,
+        intmax_t const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+intmax__in_range_x(
+        intmax_t const lower,
+        intmax_t const upper,
+        intmax_t const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ intmax__same_sign(
         intmax_t const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+intmax__in_delta(
+        intmax_t const x,
+        intmax_t const delta,
+        intmax_t const y )
+{
+    return intmax__sub_b( x, delta ) <= y
+        && y <= intmax__add_b( x, delta );
+}
+
+
+bool
+intmax__in_delta_x(
+        intmax_t const x,
+        intmax_t const delta,
+        intmax_t const y )
+{
+    return intmax__sub_b( x, delta ) < y
+        && y < intmax__add_b( x, delta );
 }
 
 

@@ -138,6 +138,12 @@ bool bool__clamp( bool lower, bool upper, bool x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool bool__in_range( bool lower, bool upper, bool x );
+// Returns `lower <= x && x <= upper`.
+
+bool bool__in_range_x( bool lower, bool upper, bool x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

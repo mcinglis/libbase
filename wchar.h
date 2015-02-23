@@ -138,6 +138,12 @@ wchar_t wchar__clamp( wchar_t lower, wchar_t upper, wchar_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool wchar__in_range( wchar_t lower, wchar_t upper, wchar_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool wchar__in_range_x( wchar_t lower, wchar_t upper, wchar_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ wchar_t wchar__abs_b( wchar_t x );
 
 bool wchar__same_sign( wchar_t x, wchar_t y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool wchar__in_delta( wchar_t x, wchar_t delta, wchar_t y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool wchar__in_delta_x( wchar_t x, wchar_t delta, wchar_t y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool wchar__is_negative( wchar_t x );     // Returns `x < 0`.
 bool wchar__is_nonpositive( wchar_t x );  // Returns `x <= 0`.

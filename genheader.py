@@ -182,6 +182,12 @@ bool {funcname}__greater_than( {type} x, {type} y );
 // Returns: - `lower` if `lower >= x`;
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
+
+bool {funcname}__in_range( {type} lower, {type} upper, {type} x );
+// Returns `lower <= x && x <= upper`.
+
+bool {funcname}__in_range_x( {type} lower, {type} upper, {type} x );
+// Returns `lower < x && x < upper`.
 '''
     },
 
@@ -302,6 +308,14 @@ bool {funcname}__can_div( {type} x, {type} y );
 
 bool {funcname}__same_sign( {type} x, {type} y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool {funcname}__in_delta( {type} x, {type} delta, {type} y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool {funcname}__in_delta_x( {type} x, {type} delta, {type} y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool {funcname}__is_negative( {type} x );     // Returns `x < 0`.
 bool {funcname}__is_nonpositive( {type} x );  // Returns `x <= 0`.

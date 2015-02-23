@@ -178,6 +178,26 @@ bool__clamp(
 }
 
 
+bool
+bool__in_range(
+        bool const lower,
+        bool const upper,
+        bool const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+bool__in_range_x(
+        bool const lower,
+        bool const upper,
+        bool const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

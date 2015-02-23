@@ -126,6 +126,12 @@ void const * constptr__clamp( void const * lower, void const * upper, void const
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool constptr__in_range( void const * lower, void const * upper, void const * x );
+// Returns `lower <= x && x <= upper`.
+
+bool constptr__in_range_x( void const * lower, void const * upper, void const * x );
+// Returns `lower < x && x < upper`.
+
 
 #endif // ifndef LIBBASE_CONSTPTR_H
 

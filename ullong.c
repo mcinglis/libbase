@@ -180,6 +180,26 @@ ullong__clamp(
 }
 
 
+bool
+ullong__in_range(
+        ullong const lower,
+        ullong const upper,
+        ullong const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+ullong__in_range_x(
+        ullong const lower,
+        ullong const upper,
+        ullong const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

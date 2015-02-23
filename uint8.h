@@ -138,6 +138,12 @@ uint8_t uint8__clamp( uint8_t lower, uint8_t upper, uint8_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool uint8__in_range( uint8_t lower, uint8_t upper, uint8_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool uint8__in_range_x( uint8_t lower, uint8_t upper, uint8_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

@@ -180,6 +180,26 @@ ulong__clamp(
 }
 
 
+bool
+ulong__in_range(
+        ulong const lower,
+        ulong const upper,
+        ulong const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+ulong__in_range_x(
+        ulong const lower,
+        ulong const upper,
+        ulong const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

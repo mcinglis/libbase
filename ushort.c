@@ -180,6 +180,26 @@ ushort__clamp(
 }
 
 
+bool
+ushort__in_range(
+        ushort const lower,
+        ushort const upper,
+        ushort const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+ushort__in_range_x(
+        ushort const lower,
+        ushort const upper,
+        ushort const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

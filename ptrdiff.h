@@ -138,6 +138,12 @@ ptrdiff_t ptrdiff__clamp( ptrdiff_t lower, ptrdiff_t upper, ptrdiff_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool ptrdiff__in_range( ptrdiff_t lower, ptrdiff_t upper, ptrdiff_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool ptrdiff__in_range_x( ptrdiff_t lower, ptrdiff_t upper, ptrdiff_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ ptrdiff_t ptrdiff__abs_b( ptrdiff_t x );
 
 bool ptrdiff__same_sign( ptrdiff_t x, ptrdiff_t y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool ptrdiff__in_delta( ptrdiff_t x, ptrdiff_t delta, ptrdiff_t y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool ptrdiff__in_delta_x( ptrdiff_t x, ptrdiff_t delta, ptrdiff_t y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool ptrdiff__is_negative( ptrdiff_t x );     // Returns `x < 0`.
 bool ptrdiff__is_nonpositive( ptrdiff_t x );  // Returns `x <= 0`.

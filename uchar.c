@@ -180,6 +180,26 @@ uchar__clamp(
 }
 
 
+bool
+uchar__in_range(
+        uchar const lower,
+        uchar const upper,
+        uchar const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+uchar__in_range_x(
+        uchar const lower,
+        uchar const upper,
+        uchar const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

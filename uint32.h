@@ -138,6 +138,12 @@ uint32_t uint32__clamp( uint32_t lower, uint32_t upper, uint32_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool uint32__in_range( uint32_t lower, uint32_t upper, uint32_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool uint32__in_range_x( uint32_t lower, uint32_t upper, uint32_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

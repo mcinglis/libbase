@@ -138,6 +138,12 @@ int int__clamp( int lower, int upper, int x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool int__in_range( int lower, int upper, int x );
+// Returns `lower <= x && x <= upper`.
+
+bool int__in_range_x( int lower, int upper, int x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ int int__abs_b( int x );
 
 bool int__same_sign( int x, int y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool int__in_delta( int x, int delta, int y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool int__in_delta_x( int x, int delta, int y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool int__is_negative( int x );     // Returns `x < 0`.
 bool int__is_nonpositive( int x );  // Returns `x <= 0`.

@@ -180,6 +180,26 @@ schar__clamp(
 }
 
 
+bool
+schar__in_range(
+        schar const lower,
+        schar const upper,
+        schar const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+schar__in_range_x(
+        schar const lower,
+        schar const upper,
+        schar const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ schar__same_sign(
         schar const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+schar__in_delta(
+        schar const x,
+        schar const delta,
+        schar const y )
+{
+    return schar__sub_b( x, delta ) <= y
+        && y <= schar__add_b( x, delta );
+}
+
+
+bool
+schar__in_delta_x(
+        schar const x,
+        schar const delta,
+        schar const y )
+{
+    return schar__sub_b( x, delta ) < y
+        && y < schar__add_b( x, delta );
 }
 
 

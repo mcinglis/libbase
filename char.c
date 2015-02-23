@@ -180,6 +180,26 @@ char__clamp(
 }
 
 
+bool
+char__in_range(
+        char const lower,
+        char const upper,
+        char const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+char__in_range_x(
+        char const lower,
+        char const upper,
+        char const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ char__same_sign(
         char const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+char__in_delta(
+        char const x,
+        char const delta,
+        char const y )
+{
+    return char__sub_b( x, delta ) <= y
+        && y <= char__add_b( x, delta );
+}
+
+
+bool
+char__in_delta_x(
+        char const x,
+        char const delta,
+        char const y )
+{
+    return char__sub_b( x, delta ) < y
+        && y < char__add_b( x, delta );
 }
 
 

@@ -138,6 +138,12 @@ uint uint__clamp( uint lower, uint upper, uint x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool uint__in_range( uint lower, uint upper, uint x );
+// Returns `lower <= x && x <= upper`.
+
+bool uint__in_range_x( uint lower, uint upper, uint x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

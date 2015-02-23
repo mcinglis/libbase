@@ -138,6 +138,12 @@ uint16_t uint16__clamp( uint16_t lower, uint16_t upper, uint16_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool uint16__in_range( uint16_t lower, uint16_t upper, uint16_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool uint16__in_range_x( uint16_t lower, uint16_t upper, uint16_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

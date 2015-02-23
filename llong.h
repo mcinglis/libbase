@@ -138,6 +138,12 @@ llong llong__clamp( llong lower, llong upper, llong x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool llong__in_range( llong lower, llong upper, llong x );
+// Returns `lower <= x && x <= upper`.
+
+bool llong__in_range_x( llong lower, llong upper, llong x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ llong llong__abs_b( llong x );
 
 bool llong__same_sign( llong x, llong y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool llong__in_delta( llong x, llong delta, llong y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool llong__in_delta_x( llong x, llong delta, llong y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool llong__is_negative( llong x );     // Returns `x < 0`.
 bool llong__is_nonpositive( llong x );  // Returns `x <= 0`.

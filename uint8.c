@@ -180,6 +180,26 @@ uint8__clamp(
 }
 
 
+bool
+uint8__in_range(
+        uint8_t const lower,
+        uint8_t const upper,
+        uint8_t const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+uint8__in_range_x(
+        uint8_t const lower,
+        uint8_t const upper,
+        uint8_t const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM

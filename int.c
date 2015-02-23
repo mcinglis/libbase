@@ -180,6 +180,26 @@ int__clamp(
 }
 
 
+bool
+int__in_range(
+        int const lower,
+        int const upper,
+        int const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+int__in_range_x(
+        int const lower,
+        int const upper,
+        int const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ int__same_sign(
         int const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+int__in_delta(
+        int const x,
+        int const delta,
+        int const y )
+{
+    return int__sub_b( x, delta ) <= y
+        && y <= int__add_b( x, delta );
+}
+
+
+bool
+int__in_delta_x(
+        int const x,
+        int const delta,
+        int const y )
+{
+    return int__sub_b( x, delta ) < y
+        && y < int__add_b( x, delta );
 }
 
 

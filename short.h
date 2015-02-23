@@ -138,6 +138,12 @@ short short__clamp( short lower, short upper, short x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool short__in_range( short lower, short upper, short x );
+// Returns `lower <= x && x <= upper`.
+
+bool short__in_range_x( short lower, short upper, short x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ short short__abs_b( short x );
 
 bool short__same_sign( short x, short y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool short__in_delta( short x, short delta, short y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool short__in_delta_x( short x, short delta, short y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool short__is_negative( short x );     // Returns `x < 0`.
 bool short__is_nonpositive( short x );  // Returns `x <= 0`.

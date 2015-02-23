@@ -138,6 +138,12 @@ char char__clamp( char lower, char upper, char x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool char__in_range( char lower, char upper, char x );
+// Returns `lower <= x && x <= upper`.
+
+bool char__in_range_x( char lower, char upper, char x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ char char__abs_b( char x );
 
 bool char__same_sign( char x, char y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool char__in_delta( char x, char delta, char y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool char__in_delta_x( char x, char delta, char y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool char__is_negative( char x );     // Returns `x < 0`.
 bool char__is_nonpositive( char x );  // Returns `x <= 0`.

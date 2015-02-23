@@ -138,6 +138,12 @@ ulong ulong__clamp( ulong lower, ulong upper, ulong x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool ulong__in_range( ulong lower, ulong upper, ulong x );
+// Returns `lower <= x && x <= upper`.
+
+bool ulong__in_range_x( ulong lower, ulong upper, ulong x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

@@ -180,6 +180,26 @@ int32__clamp(
 }
 
 
+bool
+int32__in_range(
+        int32_t const lower,
+        int32_t const upper,
+        int32_t const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+int32__in_range_x(
+        int32_t const lower,
+        int32_t const upper,
+        int32_t const x )
+{
+    return lower < x && x < upper;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: ENUM
@@ -527,6 +547,28 @@ int32__same_sign(
         int32_t const y )
 {
     return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+int32__in_delta(
+        int32_t const x,
+        int32_t const delta,
+        int32_t const y )
+{
+    return int32__sub_b( x, delta ) <= y
+        && y <= int32__add_b( x, delta );
+}
+
+
+bool
+int32__in_delta_x(
+        int32_t const x,
+        int32_t const delta,
+        int32_t const y )
+{
+    return int32__sub_b( x, delta ) < y
+        && y < int32__add_b( x, delta );
 }
 
 

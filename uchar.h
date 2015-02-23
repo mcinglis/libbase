@@ -138,6 +138,12 @@ uchar uchar__clamp( uchar lower, uchar upper, uchar x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool uchar__in_range( uchar lower, uchar upper, uchar x );
+// Returns `lower <= x && x <= upper`.
+
+bool uchar__in_range_x( uchar lower, uchar upper, uchar x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////

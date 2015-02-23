@@ -138,6 +138,12 @@ int16_t int16__clamp( int16_t lower, int16_t upper, int16_t x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool int16__in_range( int16_t lower, int16_t upper, int16_t x );
+// Returns `lower <= x && x <= upper`.
+
+bool int16__in_range_x( int16_t lower, int16_t upper, int16_t x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
@@ -260,6 +266,14 @@ int16_t int16__abs_b( int16_t x );
 
 bool int16__same_sign( int16_t x, int16_t y );
 // Returns `true` if `x` and `y` have the same sign, or `false` otherwise.
+
+bool int16__in_delta( int16_t x, int16_t delta, int16_t y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`, with the arithmetic
+// being bounded.
+
+bool int16__in_delta_x( int16_t x, int16_t delta, int16_t y );
+// Returns `( x - delta ) < y && y < ( x + delta )`, with the arithmetic being
+// bounded.
 
 bool int16__is_negative( int16_t x );     // Returns `x < 0`.
 bool int16__is_nonpositive( int16_t x );  // Returns `x <= 0`.

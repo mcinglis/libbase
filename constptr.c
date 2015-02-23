@@ -167,3 +167,23 @@ constptr__clamp(
                           : x;
 }
 
+
+bool
+constptr__in_range(
+        void const * const lower,
+        void const * const upper,
+        void const * const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+constptr__in_range_x(
+        void const * const lower,
+        void const * const upper,
+        void const * const x )
+{
+    return lower < x && x < upper;
+}
+

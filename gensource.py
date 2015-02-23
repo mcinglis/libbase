@@ -267,6 +267,26 @@ bool
          : ( upper <= x ) ? upper
                           : x;
 }}
+
+
+bool
+{funcname}__in_range(
+        {type} const lower,
+        {type} const upper,
+        {type} const x )
+{{
+    return lower <= x && x <= upper;
+}}
+
+
+bool
+{funcname}__in_range_x(
+        {type} const lower,
+        {type} const upper,
+        {type} const x )
+{{
+    return lower < x && x < upper;
+}}
 '''
     },
 
@@ -614,6 +634,28 @@ bool
         {type} const y )
 {{
     return ( x < 0 ) == ( y < 0 );
+}}
+
+
+bool
+{funcname}__in_delta(
+        {type} const x,
+        {type} const delta,
+        {type} const y )
+{{
+    return {funcname}__sub_b( x, delta ) <= y
+        && y <= {funcname}__add_b( x, delta );
+}}
+
+
+bool
+{funcname}__in_delta_x(
+        {type} const x,
+        {type} const delta,
+        {type} const y )
+{{
+    return {funcname}__sub_b( x, delta ) < y
+        && y < {funcname}__add_b( x, delta );
 }}
 
 

@@ -138,6 +138,12 @@ ushort ushort__clamp( ushort lower, ushort upper, ushort x );
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
 
+bool ushort__in_range( ushort lower, ushort upper, ushort x );
+// Returns `lower <= x && x <= upper`.
+
+bool ushort__in_range_x( ushort lower, ushort upper, ushort x );
+// Returns `lower < x && x < upper`.
+
 
 
 ///////////////////////////////////
