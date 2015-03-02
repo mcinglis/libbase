@@ -1,9 +1,4 @@
 
-// This file is the result of executing `genheader.py`. You should make changes
-// to this code by changing the template strings or the build process -- not
-// editing this file.
-
-
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -26,39 +21,8 @@
 #define LIBBASE_ORD_H
 
 
-#include <libpp/count.h>        // PP_COUNT
+#include <libmacro/nelem.h>     // NELEM
 #include <libtypes/types.h>     // bool, ord
-
-
-typedef struct maybe_ord {
-    ord value;
-    bool nothing;
-} Maybe_ord;
-
-
-typedef struct result_ord {
-    ord value;
-    int error;
-} Result_ord;
-
-
-typedef struct arrayc_ord {
-    ord const * e;
-    size_t length;
-} ArrayC_ord;
-
-
-typedef struct arraym_ord {
-    ord * e;
-    size_t length;
-} ArrayM_ord;
-
-
-typedef struct vec_ord {
-    ord * e;
-    size_t length;
-    size_t capacity;
-} Vec_ord;
 
 
 ord ord__id( ord x );
@@ -126,26 +90,34 @@ ord ord__min2( ord x, ord y );
 ord ord__max2( ord x, ord y );
 // Returns `x` if `x > y`, or `y` otherwise.
 
-ord ord__min_n( size_t n, ord const * xs );
+ord ord__min_n( ord const * xs, size_t n );
 // Returns the minimum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
-ord ord__max_n( size_t n, ord const * xs );
+ord ord__max_n( ord const * xs, size_t n );
 // Returns the maximum value of the first `n` elements in the array `xs`.
 // @requires n > 0, xs != NULL
 
 // @public
 #define ord__min( ... ) \
-    ord__min_n( PP_COUNT( __VA_ARGS__ ), ( ord[] ){ __VA_ARGS__ } )
+    ord__min_n( ( ord[] ){ __VA_ARGS__ }, \
+                NELEM( ( ord[] ){ __VA_ARGS__ } ) );
 
 // @public
 #define ord__max( ... ) \
-    ord__max_n( PP_COUNT( __VA_ARGS__ ), ( ord[] ){ __VA_ARGS__ } )
+    ord__max_n( ( ord[] ){ __VA_ARGS__ }, \
+                NELEM( ( ord[] ){ __VA_ARGS__ } ) );
 
 ord ord__clamp( ord lower, ord upper, ord x );
 // Returns: - `lower` if `lower >= x`;
 //          - `upper` if `upper <= x`;
 //          - `x` otherwise, if `lower < x && x < upper`
+
+ord ord__in_range( ord lower, ord upper, ord x );
+// Returns `lower <= x && x <= upper`.
+
+ord ord__in_xrange( ord lower, ord upper, ord x );
+// Returns `lower < x && x < upper`.
 
 
 
@@ -172,7 +144,7 @@ ord ord__pred_b( ord x );
 
 
 ///////////////////////////////////
-/// TYPECLASS: READ
+/// TYPECLASS: FROM_STR
 ///////////////////////////////////
 
 ord ord__from_str( char const * str );
@@ -186,11 +158,11 @@ ord ord__from_str( char const * str );
 
 
 ///////////////////////////////////
-/// TYPECLASS: TO_CONSTSTR
+/// TYPECLASS: STR_FROM
 ///////////////////////////////////
 
 char const *
-ord__to_conststr( ord );
+str__from_ord( ord );
 // Returns `"LT"` if `x == LT`, `"EQ"` if `x == EQ`, or `"GT"` if `x == GT`.
 
 

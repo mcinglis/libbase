@@ -19,11 +19,46 @@ CFLAGS ?= $(cflags_std) -g $(cflags_warnings)
 
 PYTHON ?= python
 
-gen_types := bool char schar uchar short ushort int uint long ulong \
-             llong ullong int8 uint8 int16 uint16 int32 uint32 \
-             intmax uintmax ptrdiff wchar size ptr constptr
-gen_sources := $(addsuffix .c,$(gen_types))
-gen_headers := $(addsuffix .h,$(gen_types))
+RENDER_JINJA_SCRIPT ?= $(DEPS_DIR)/render-jinja/render_jinja.py
+RENDER_JINJA ?= $(PYTHON) $(RENDER_JINJA_SCRIPT)
+
+uc = $(shell echo $1 | tr [:lower:] [:upper:])
+
+signed_types   := char schar short int long llong int8 int16 int32 intmax \
+                  ptrdiff wchar
+unsigned_types := uchar ushort uint ulong ullong uint8 uint16 uint32 \
+                  uintmax size
+types := bool ptr ptrm $(signed_types) $(unsigned_types)
+
+int8_type    := int8_t
+uint8_type   := uint8_t
+int16_type   := int16_t
+uint16_type  := uint16_t
+int32_type   := int32_t
+uint32_type  := uint32_t
+intmax_type  := intmax_t
+uintmax_type := uintmax_t
+ptrdiff_type := ptrdiff_t
+wchar_type   := wchar_t
+size_type    := size_t
+ptr_type     := void const *
+ptrm_type    := void *
+
+typeclasses_default := BOUNDED EQ ORD ENUM NUM FROM_STR
+
+bool_typeclasses := BOUNDED EQ ORD ENUM FROM_STR STR_FROM
+ptr_typeclasses  := EQ ORD
+ptrm_typeclasses := EQ ORD
+
+char_extra  := CHAR
+schar_extra := CHAR
+uchar_extra := CHAR
+
+$(foreach t,$(signed_types),$(eval $(t)_num_type := signed))
+$(foreach t,$(unsigned_types),$(eval $(t)_num_type := unsigned))
+
+gen_sources := $(addsuffix .c,$(types))
+gen_headers := $(addsuffix .h,$(types))
 
 sources := $(wildcard *.c) $(gen_sources)
 objects := $(sources:.c=.o)
@@ -35,108 +70,43 @@ mkdeps  := $(sources:.c=.dep.mk)
 ### BUILDING
 ##############################
 
+
 .PHONY: all
 all: objects
+
 
 .PHONY: fast
 fast: CPPFLAGS += -DNDEBUG -DNO_ASSERT -DNO_REQUIRE -DNO_DEBUG
 fast: CFLAGS = $(cflags_std) -O3 $(cflags_warnings)
 fast: all
 
+
 .PHONY: objects
 objects: $(objects)
 
-$(gen_headers): genheader.py
-$(gen_headers):
-	$(PYTHON) genheader.py $($(basename $@)_names) --typeclasses $($(basename $@)_typeclasses) -o $@
 
 $(gen_sources): %.c: %.h
-$(gen_sources): gensource.py
-$(gen_sources):
-	$(PYTHON) gensource.py $($(basename $@)_names) $(basename $@) --typeclasses $($(basename $@)_typeclasses) -o $@
+$(gen_headers) $(gen_sources): $(RENDER_JINJA_SCRIPT)
 
-bool_names          := bool BOOL bool bool
-bool_typeclasses    := BOUNDED:BOOL EQ ORD ENUM READ:BOOL TO_CONSTSTR:BOOL
+$(gen_headers): %.h: header.h.jinja
+	$(eval n := $*)
+	$(eval N := $(call uc,$n))
+	$(RENDER_JINJA) $< "include_guard=LIBBASE_$N_H" "sys_headers=" "rel_headers=" "extra=$($(n)_extra)" "type=$(or $($(n)_type),$n)" "macroname=$N" "funcname=$n" "typeclasses=$(or $($(n)_typeclasses),$(typeclasses_default))" -o $@
 
-char_names          := char CHAR char char
-char_typeclasses    := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOL
+$(gen_sources): %.c: source.c.jinja
+	$(eval n := $*)
+	$(eval N := $(call uc,$n))
+	$(RENDER_JINJA) $< "header=$n.h" "sys_headers=" "rel_headers=" "extra=$($(n)_extra)" "type=$(or $($(n)_type),$n)" "macroname=$N" "funcname=$n" "typeclasses=$(or $($(n)_typeclasses),$(typeclasses_default))" "num_type=$($(n)_num_type)" -o $@
 
-schar_names         := schar SCHAR schar schar
-schar_typeclasses   := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOL
-
-uchar_names         := uchar UCHAR uchar uchar
-uchar_typeclasses   := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUL
-
-short_names         := short SHORT short short
-short_typeclasses   := BOUNDED:SHORT EQ ORD ENUM NUM:SIGNED READ:STRTOL
-
-ushort_names        := ushort USHORT ushort ushort
-ushort_typeclasses  := BOUNDED:USHORT EQ ORD ENUM NUM:UNSIGNED READ:STRTOUL
-
-int_names           := int INT int int
-int_typeclasses     := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOL
-
-uint_names          := uint UINT uint uint
-uint_typeclasses    := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUL
-
-long_names          := long LONG long long
-long_typeclasses    := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOL
-
-ulong_names         := ulong ULONG ulong ulong
-ulong_typeclasses   := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUL
-
-llong_names         := llong LLONG llong llong
-llong_typeclasses   := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOLL
-
-ullong_names        := ullong ULLONG ullong ullong
-ullong_typeclasses  := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOULL
-
-int8_names          := int8_t INT8 int8 int8
-int8_typeclasses    := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOL
-
-uint8_names         := uint8_t UINT8 uint8 uint8
-uint8_typeclasses   := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUL
-
-int16_names         := int16_t INT16 int16 int16
-int16_typeclasses   := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOL
-
-uint16_names        := uint16_t UINT16 uint16 uint16
-uint16_typeclasses  := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUL
-
-int32_names         := int32_t INT32 int32 int32
-int32_typeclasses   := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOL
-
-uint32_names        := uint32_t UINT32 uint32 uint32
-uint32_typeclasses  := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUL
-
-intmax_names        := intmax_t INTMAX intmax intmax
-intmax_typeclasses  := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOIMAX
-
-uintmax_names       := uintmax_t UINTMAX uintmax uintmax
-uintmax_typeclasses := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUMAX
-
-ptrdiff_names       := ptrdiff_t PTRDIFF ptrdiff ptrdiff
-ptrdiff_typeclasses := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOIMAX
-
-wchar_names         := wchar_t WCHAR wchar wchar
-wchar_typeclasses   := BOUNDED:SIGNED EQ ORD ENUM NUM:SIGNED READ:STRTOIMAX
-
-size_names          := size_t SIZE size size
-size_typeclasses    := BOUNDED:UNSIGNED EQ ORD ENUM NUM:UNSIGNED READ:STRTOUMAX
-
-ptr_names           := "void *" PTR ptr ptr
-ptr_typeclasses     := EQ ORD
-
-constptr_names       := "void const *" CONSTPTR constptr constptr
-constptr_typeclasses := EQ ORD
 
 .PHONY: clean
 clean:
 	rm -rf $(gen_sources) $(gen_headers) $(objects) $(mkdeps)
 
+
 %.o: %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -MMD -MF "$(@:.o=.dep.mk)" -c $< -o $@
 
--include $(mkdeps)
 
+-include $(mkdeps)
 

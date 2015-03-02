@@ -1,0 +1,625 @@
+
+// Copyright 2015  Malcolm Inglis <http://minglis.id.au>
+//
+// This file is part of Libbase.
+//
+// Libbase is free software: you can redistribute it and/or modify it under
+// the terms of the GNU Affero General Public License as published by the
+// Free Software Foundation, either version 3 of the License, or (at your
+// option) any later version.
+//
+// Libbase is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for
+// more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Libbase. If not, see <https://gnu.org/licenses/>.
+
+
+// This file is the result of running:
+//     {{' '.join(argv)}}
+
+
+{% set sys_headers = sys_headers.split() %}
+{% set rel_headers = rel_headers.split() %}
+{% set typeclasses = typeclasses.split() %}
+{% set extra       = extra.split() %}
+
+
+#ifndef {{include_guard}}
+#define {{include_guard}}
+
+
+#include <libmacro/nelem.h>
+#include <libtypes/types.h>
+
+{% for path in sys_headers %}
+#include <{{path}}>
+{% endfor %}
+
+{% for path in rel_headers %}
+#include "{{path}}"
+{% endfor %}
+
+
+{{type}}
+{{funcname}}__id( {{type}} x );
+
+
+{% if 'CHAR' in extra %}
+
+bool
+{{funcname}}__equal_i(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__not_equal_i(
+        {{type}},
+        {{type}} );
+
+
+ord
+{{funcname}}__compare_i(
+        {{type}},
+        {{type}} );
+
+{# TODO: provide classification functions e.g. 'char__is_whitespace()' #}
+
+{% endif %}
+
+
+{% macro typeclass(name) %}
+{% if name in typeclasses %}
+///////////////////////////////////
+/// TYPECLASS: {{name}}
+///////////////////////////////////
+
+{{ caller() }}
+{% endif %}
+{% endmacro %}
+
+
+{% call typeclass('BOUNDED') %}
+
+{{type}}
+{{funcname}}__min_bound( void );
+// Returns the minimum value representable by the `{{type}}` type.
+
+
+{{type}}
+{{funcname}}__max_bound( void );
+// Returns the maximum value representable by the `{{type}}` type.
+
+{% endcall %}
+
+
+{% call typeclass('EQ') %}
+
+bool
+{{funcname}}__equal(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__not_equal(
+        {{type}},
+        {{type}} );
+
+{% endcall %}
+
+
+{% call typeclass('ORD') %}
+
+ord
+{{funcname}}__compare(
+        {{type}} x,
+        {{type}} y );
+// Returns `LT` if `x < y`, `EQ` if `x == y`, or `GT` if `x > y`.
+
+
+bool
+{{funcname}}__less_than(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__less_than_or_eq(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__greater_than_or_eq(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__greater_than(
+        {{type}},
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__min2(
+        {{type}} x,
+        {{type}} y );
+// Returns `x` if `x < y`, or `y` otherwise.
+
+
+{{type}}
+{{funcname}}__max2(
+        {{type}} x,
+        {{type}} y );
+// Returns `x` if `x > y`, or `y` otherwise.
+
+
+{{type}}
+{{funcname}}__min_n(
+        {{type}} const * xs,
+        size_t n );
+// Returns the minimum value of the first `n` elements in the array `xs`.
+// @requires n > 0, xs != NULL
+
+
+{{type}}
+{{funcname}}__max_n(
+        {{type}} const * xs,
+        size_t n );
+// Returns the maximum value of the first `n` elements in the array `xs`.
+// @requires n > 0, xs != NULL
+
+
+// @public
+#define {{funcname}}__min( ... ) \
+    {{funcname}}__min_n( \
+        NELEM( ( {{type}}[] ){ __VA_ARGS__ } ), \
+        ( {{type}}[] ){ __VA_ARGS__ } )
+
+
+// @public
+#define {{funcname}}__max( ... ) \
+    {{funcname}}__max_n( \
+        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ), \
+        ( {{type}} [] ){ __VA_ARGS__ } )
+
+
+{{type}}
+{{funcname}}__clamp(
+        {{type}} lower,
+        {{type}} upper,
+        {{type}} x );
+// Returns `lower` if `lower >= x`, `upper` if `upper <= x`, or `x` otherwise.
+
+
+bool
+{{funcname}}__in_range(
+        {{type}} lower,
+        {{type}} upper,
+        {{type}} x );
+// Returns `lower <= x && x <= upper`.
+
+
+bool
+{{funcname}}__in_xrange(
+        {{type}} lower,
+        {{type}} upper,
+        {{type}} x );
+// Returns `lower < x && x < upper`.
+
+{% endcall %}
+
+
+{% call typeclass('ENUM') %}
+
+{{type}}
+{{funcname}}__succ(
+        {{type}} x );
+// Returns the smallest `y` such that `y > x`.
+
+
+{{type}}
+{{funcname}}__pred(
+        {{type}} x );
+// Returns the largest `y` such that `y < x`.
+
+
+{{type}}
+{{funcname}}__succ_b(
+        {{type}} x );
+// Returns the largest `y` such that `y > x`, or `x` if there exists no
+// such `y` in the `{{type}}` type.
+
+
+{{type}}
+{{funcname}}__pred_b(
+        {{type}} x );
+// Returns the largest `y` such that `y > x`, or `x` if there exists no
+// such `y` in the `{{type}}` type.
+
+{% endcall %}
+
+
+
+{% call typeclass('NUM') %}
+
+bool
+{{funcname}}__is_signed( void );
+// Returns the boolean that `{{type}}` values can be negative.
+
+
+{{type}}
+{{funcname}}__zero( void );
+// Returns the zero value of the `{{type}}` type.
+
+
+bool
+{{funcname}}__add_would_underflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__add_would_overflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__can_add(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__sub_would_underflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__sub_would_overflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__can_sub(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__mul_would_underflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__mul_would_overflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__can_mul(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__div_would_underflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__div_would_overflow(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__can_div(
+        {{type}},
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__add(
+        {{type}} x,
+        {{type}} y );
+// Returns `x + y`.
+// @requires {{funcname}}__can_add( x, y )
+
+
+{{type}}
+{{funcname}}__sub(
+        {{type}} x,
+        {{type}} y );
+// Returns `x - y`.
+// @requires {{funcname}}__can_sub( x, y )
+
+
+{{type}}
+{{funcname}}__mul(
+        {{type}} x,
+        {{type}} y );
+// Returns `x * y`.
+// @requires {{funcname}}__can_mul( x, y )
+
+
+{{type}}
+{{funcname}}__div(
+        {{type}} x,
+        {{type}} y );
+// Returns `x / y`.
+// @requires {{funcname}}__can_div( x, y )
+
+
+{{type}}
+{{funcname}}__mod(
+        {{type}} x,
+        {{type}} y );
+// Returns `x % y`.
+// @requires {{funcname}}__can_div( x, y )
+
+
+{{type}}
+{{funcname}}__negate(
+        {{type}} x );
+// Returns `-x`.
+
+
+{{type}}
+{{funcname}}__abs(
+        {{type}} x );
+// Returns `( x < 0 ) ? -x : x`.
+
+
+{{type}}
+{{funcname}}__add_b(
+        {{type}},
+        {{type}} );
+// Returns: - `x + y` if the `{{type}}` type is unbounded;
+//          - `{{funcname}}__min_bound()` if `x + y` would underflow;
+//          - `{{funcname}}__max_bound()` if `x + y` would overflow.
+
+
+{{type}}
+{{funcname}}__sub_b(
+        {{type}} x,
+        {{type}} y );
+// Returns: - `x - y` if the `{{type}}` type is unbounded;
+//          - `{{funcname}}__min_bound()` if `x - y` would underflow;
+//          - `{{funcname}}__max_bound()` if `x - y` would overflow.
+
+
+{{type}}
+{{funcname}}__mul_b(
+        {{type}} x,
+        {{type}} y );
+// Returns: - `x * y` if the `{{type}}` type is unbounded;
+//          - `{{funcname}}__min_bound()` if `x * y` would underflow;
+//          - `{{funcname}}__max_bound()` if `x * y` would overflow.
+
+
+{{type}}
+{{funcname}}__div_b(
+        {{type}} x,
+        {{type}} y );
+// If `y == 0`, returns:
+//  - `0` if `x == 0` or if the `{{type}}` type is unbounded;
+//  - `{{funcname}}__min_bound()` if `x < 0`;
+//  - `{{funcname}}__max_bound()` if `x > 0`.
+// Otherwise, returns:
+//  - `x / y` if the `{{type}}` type is unbounded;
+//  - `{{funcname}}__min_bound()` if `x / y` would underflow;
+//  - `{{funcname}}__max_bound()` if `x / y` would overflow.
+
+
+{{type}}
+{{funcname}}__mod_b(
+        {{type}} x,
+        {{type}} y );
+// Returns: - `0` if `!{{funcname}}__can_div( x, y )`;
+//          - `x % y` otherwise.
+
+
+{{type}}
+{{funcname}}__negate_b(
+        {{type}} x );
+// Returns the negation of `x`, or the closest representable value.
+
+
+{{type}}
+{{funcname}}__abs_b(
+        {{type}} x );
+// Returns the absolute value of `x`, or the closest representable value.
+
+
+bool
+{{funcname}}__same_sign(
+        {{type}},
+        {{type}} );
+// Returns the boolean that the two values have the same sign.
+
+
+bool
+{{funcname}}__in_delta(
+        {{type}} x,
+        {{type}} delta,
+        {{type}} y );
+// Returns `( x - delta ) <= y && y <= ( x + delta )`.
+
+
+bool
+{{funcname}}__in_xdelta(
+        {{type}} x,
+        {{type}} delta,
+        {{type}} y );
+// Returns `( x - delta ) < y && y < ( x + delta )`.
+
+
+bool
+{{funcname}}__is_negative(
+        {{type}} x );
+// Returns `x < 0`.
+
+
+bool
+{{funcname}}__is_nonpositive(
+        {{type}} x );
+// Returns `x <= 0`.
+
+
+bool
+{{funcname}}__is_zero(
+        {{type}} x );
+// Returns `x == 0`.
+
+
+bool
+{{funcname}}__is_nonzero(
+        {{type}} x );
+// Returns `x != 0`.
+
+
+bool
+{{funcname}}__is_nonnegative(
+        {{type}} x );
+// Returns `x >= 0`.
+
+
+bool
+{{funcname}}__is_positive(
+        {{type}} x );
+// Returns `x > 0`.
+
+
+ord
+{{funcname}}__compare_0(
+        {{type}} x );
+// Returns `{{funcname}}__compare( x, 0 )`.
+
+
+bool
+{{funcname}}__is_even(
+        {{type}} x );
+// Returns `x % 2 == 0`.
+
+
+bool
+{{funcname}}__is_odd(
+        {{type}} x );
+// Returns `x % 2 == 1`.
+
+
+{{type}}
+{{funcname}}__add_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__sub_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__mul_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__div_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__mod_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__mul_10(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__div_10(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__add_b_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__sub_b_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__mul_b_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__div_b_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__mod_b_2(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__mul_b_10(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__div_b_10(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__mod_b_10(
+        {{type}} );
+
+{% endcall %}
+
+
+{% call typeclass('FROM_STR') %}
+
+{{type}}
+{{funcname}}__from_str(
+        char const * str );
+// Parses the given `str` to produce the contained `{{type}}` value.
+// On error, sets `errno` to:
+// - `EINVAL` if `str == NULL` or `str` is `""`;
+// - `EBADMSG` if `str` contains a value but a non-whitespace suffix;
+// - `ERANGE` if the resulting value can't be represented with `{{type}}`.
+
+{% endcall %}
+
+
+{% call typeclass('STR_FROM') %}
+
+char const *
+str__from_{{funcname}}(
+        {{type}} );
+// Returns a pointer to a string representation of the given value.
+
+{% endcall %}
+
+
+#endif // ifndef {{ include_guard }}
+

@@ -1,0 +1,1198 @@
+
+// Copyright 2015  Malcolm Inglis <http://minglis.id.au>
+//
+// This file is part of Libbase.
+//
+// Libbase is free software: you can redistribute it and/or modify it under
+// the terms of the GNU Affero General Public License as published by the
+// Free Software Foundation, either version 3 of the License, or (at your
+// option) any later version.
+//
+// Libbase is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for
+// more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Libbase. If not, see <https://gnu.org/licenses/>.
+
+
+// This file is the result of running:
+//     {{' '.join(argv)}}
+
+
+{% set sys_headers = sys_headers.split() %}
+{% set rel_headers = rel_headers.split() %}
+{% set typeclasses = typeclasses.split() %}
+{% set extra       = extra.split() %}
+
+
+#include "{{header}}"
+
+
+{% for path in sys_headers %}
+#include <{{path}}>
+{% endfor %}
+
+{% for path in rel_headers %}
+#include "{{path}}"
+{% endfor %}
+
+
+{{type}}
+{{funcname}}__id(
+        {{type}} const x )
+{
+    return x;
+}
+
+
+{% if 'CHAR' in extra %}
+
+#include <ctype.h>
+
+#include <libmacro/compare.h>
+
+
+bool
+{{funcname}}__equal_i(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return tolower( ( uchar ) x ) == tolower( ( uchar ) y );
+}
+
+
+bool
+{{funcname}}__not_equal_i(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__equal_i( x, y );
+}
+
+
+ord
+{{funcname}}__compare_i(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return COMPARE( tolower( ( uchar ) x ), tolower( ( uchar ) y ) );
+}
+
+{% endif %}
+
+
+
+{% macro typeclass(name) %}
+{% if typeclasses is defined and name in typeclasses %}
+///////////////////////////////////
+/// TYPECLASS: {{name}}
+///////////////////////////////////
+
+{{ caller() }}
+{% endif %}
+{% endmacro %}
+
+
+{% call typeclass('BOUNDED') %}
+
+{% if min_bound is not defined or max_bound is not defined %}
+#include <libmacro/bound.h>
+{% endif %}
+
+{{type}}
+{{funcname}}__min_bound( void )
+{
+{% if min_bound is defined %}
+    return {{min_bound}};
+{% else %}
+    return MIN_BOUND( ( {{type}} ) 0 );
+{% endif %}
+}
+
+
+{{type}}
+{{funcname}}__max_bound( void )
+{
+{% if max_bound is defined %}
+    return {{max_bound}};
+{% else %}
+    return MAX_BOUND( ( {{type}} ) 0 );
+{% endif %}
+}
+
+{% endcall %}
+
+
+{% call typeclass('EQ') %}
+
+bool
+{{funcname}}__equal(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x == y;
+}
+
+
+bool
+{{funcname}}__not_equal(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x != y;
+}
+
+{% endcall %}
+
+
+{% call typeclass('ORD') %}
+
+#include <libmacro/assert.h>
+#include <libmacro/compare.h>
+
+
+ord
+{{funcname}}__compare(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return COMPARE( x, y );
+}
+
+
+bool
+{{funcname}}__less_than(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x < y;
+}
+
+
+bool
+{{funcname}}__less_than_or_eq(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x <= y;
+}
+
+
+bool
+{{funcname}}__greater_than_or_eq(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x >= y;
+}
+
+
+bool
+{{funcname}}__greater_than(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x > y;
+}
+
+
+{{type}}
+{{funcname}}__min2(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( x < y ) ? x : y;
+}
+
+
+{{type}}
+{{funcname}}__max2(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( x > y ) ? x : y;
+}
+
+
+{{type}}
+{{funcname}}__min_n(
+        {{type}} const * const xs,
+        size_t const n )
+{
+    ASSERT( xs != NULL, n != 0 );
+
+    {{type}} min = xs[ 0 ];
+    for ( size_t i = 0; i < n; i++ ) {
+        if ( xs[ i ] < min ) {
+            min = xs[ i ];
+        }
+    }
+    return min;
+}
+
+
+{{type}}
+{{funcname}}__max_n(
+        {{type}} const * const xs,
+        size_t const n )
+{
+    ASSERT( xs != NULL, n != 0 );
+
+    {{type}} max = xs[ 0 ];
+    for ( size_t i = 0; i < n; i++ ) {
+        if ( xs[ i ] > max ) {
+            max = xs[ i ];
+        }
+    }
+    return max;
+}
+
+
+{{type}}
+{{funcname}}__clamp(
+        {{type}} const lower,
+        {{type}} const upper,
+        {{type}} const x )
+{
+    return ( lower >= x ) ? lower
+         : ( upper <= x ) ? upper
+                          : x;
+}
+
+
+bool
+{{funcname}}__in_range(
+        {{type}} const lower,
+        {{type}} const upper,
+        {{type}} const x )
+{
+    return lower <= x && x <= upper;
+}
+
+
+bool
+{{funcname}}__in_xrange(
+        {{type}} const lower,
+        {{type}} const upper,
+        {{type}} const x )
+{
+    return lower < x && x < upper;
+}
+
+{% endcall %}
+
+
+{% call typeclass('ENUM') %}
+
+{{type}}
+{{funcname}}__succ(
+        {{type}} const x )
+{
+    ASSERT( x != {{funcname}}__max_bound() );
+
+    return x + 1;
+}
+
+
+{{type}}
+{{funcname}}__pred(
+        {{type}} const x )
+{
+    ASSERT( x != {{funcname}}__min_bound() );
+
+    return x - 1;
+}
+
+
+{{type}}
+{{funcname}}__succ_b(
+        {{type}} const x )
+{
+    if ( x == {{funcname}}__max_bound() ) {
+        return x;
+    } else {
+        return x + 1;
+    }
+}
+
+
+{{type}}
+{{funcname}}__pred_b(
+        {{type}} const x )
+{
+    if ( x == {{funcname}}__min_bound() ) {
+        return x;
+    } else {
+        return x - 1;
+    }
+}
+
+{% endcall %}
+
+
+{% call typeclass('NUM') %}
+
+bool
+{{funcname}}__is_signed(
+        void )
+{
+    return {{funcname}}__min_bound() < 0;
+}
+
+
+{{type}}
+{{funcname}}__zero(
+        void )
+{
+    return 0;
+}
+
+
+{% if num_type == 'signed' %}
+
+
+bool
+{{funcname}}__add_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return y < 0 && x < ( {{funcname}}__min_bound() - y );
+}
+
+
+bool
+{{funcname}}__add_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return y > 0 && x > ( {{funcname}}__max_bound() - y );
+}
+
+
+bool
+{{funcname}}__can_add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__add_would_underflow( x, y )
+        && !{{funcname}}__add_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__sub_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return y > 0 && x < ( {{funcname}}__min_bound() + y );
+}
+
+
+bool
+{{funcname}}__sub_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return y < 0 && x > ( {{funcname}}__max_bound() + y );
+}
+
+
+bool
+{{funcname}}__can_sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__sub_would_underflow( x, y )
+        && !{{funcname}}__sub_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__mul_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( x > 0 && y < 0 ) ? ( y < ( {{funcname}}__min_bound() / x ) )
+         : ( x < 0 && y > 0 ) ? ( x < ( {{funcname}}__min_bound() / y ) )
+                              : false;
+}
+
+
+bool
+{{funcname}}__mul_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( x > 0 && y > 0 ) ? ( x > ( {{funcname}}__max_bound() / y ) )
+         : ( x < 0 && y < 0 ) ? ( y < ( {{funcname}}__max_bound() / x ) )
+                              : false;
+}
+
+
+bool
+{{funcname}}__can_mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__mul_would_underflow( x, y )
+        && !{{funcname}}__mul_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__div_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__div_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x == {{funcname}}__min_bound() && y == -1;
+}
+
+
+bool
+{{funcname}}__can_div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( y != 0 && !{{funcname}}__div_would_overflow( x, y ) );
+}
+
+
+{{type}}
+{{funcname}}__add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    ASSERT( {{funcname}}__can_add( x, y ) );
+
+    return x + y;
+}
+
+
+{{type}}
+{{funcname}}__sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    ASSERT( {{funcname}}__can_sub( x, y ) );
+
+    return x - y;
+}
+
+
+{{type}}
+{{funcname}}__mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    ASSERT( {{funcname}}__can_mul( x, y ) );
+
+    return x * y;
+}
+
+
+{{type}}
+{{funcname}}__div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    ASSERT( {{funcname}}__can_div( x, y ) );
+
+    return x / y;
+}
+
+
+{{type}}
+{{funcname}}__mod(
+        {{type}} const x,
+        {{type}} const y )
+{
+    ASSERT( {{funcname}}__can_div( x, y ) );
+
+    return x % y;
+}
+
+
+{{type}}
+{{funcname}}__negate( {{type}} const x )
+{
+    ASSERT( x != {{funcname}}__min_bound() );
+
+    return -x;
+}
+
+
+{{type}}
+{{funcname}}__abs( {{type}} const x )
+{
+    ASSERT( x != {{funcname}}__min_bound() );
+
+    return ( x < 0 ) ? -x : x;
+}
+
+
+{{type}}
+{{funcname}}__add_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__add_would_underflow( x, y ) ) {
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__add_would_overflow( x, y ) ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return x + y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__sub_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__sub_would_underflow( x, y ) ) {
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__sub_would_overflow( x, y ) ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return x - y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mul_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__mul_would_underflow( x, y ) ) {
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__mul_would_overflow( x, y ) ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return x * y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__div_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( y == 0 ) {
+        if ( x < 0 ) {
+            return {{funcname}}__min_bound();
+        } else if ( x == 0 ) {
+            return 0;
+        } else /* x > 0 */ {
+            return {{funcname}}__max_bound();
+        }
+    } else if ( {{funcname}}__div_would_underflow( x, y ) ) {
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__div_would_overflow( x, y ) ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return x / y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mod_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( !{{funcname}}__can_div( x, y ) ) {
+        return 0;
+    } else {
+        return x % y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__negate_b( {{type}} const x )
+{
+    if ( x == {{funcname}}__min_bound() ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return -x;
+    }
+}
+
+
+{{type}}
+{{funcname}}__abs_b( {{type}} const x )
+{
+    if ( x == {{funcname}}__min_bound() ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return {{funcname}}__abs( x );
+    }
+}
+
+
+bool
+{{funcname}}__same_sign(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( x < 0 ) == ( y < 0 );
+}
+
+
+bool
+{{funcname}}__in_delta(
+        {{type}} const x,
+        {{type}} const delta,
+        {{type}} const y )
+{
+    return {{funcname}}__sub_b( x, delta ) <= y
+        && y <= {{funcname}}__add_b( x, delta );
+}
+
+
+bool
+{{funcname}}__in_xdelta(
+        {{type}} const x,
+        {{type}} const delta,
+        {{type}} const y )
+{
+    return {{funcname}}__sub_b( x, delta ) < y
+        && y < {{funcname}}__add_b( x, delta );
+}
+
+
+bool {{funcname}}__is_negative   ( {{type}} const x ) { return x < 0; }
+bool {{funcname}}__is_nonpositive( {{type}} const x ) { return x <= 0; }
+bool {{funcname}}__is_zero       ( {{type}} const x ) { return x == 0; }
+bool {{funcname}}__is_nonzero    ( {{type}} const x ) { return x != 0; }
+bool {{funcname}}__is_nonnegative( {{type}} const x ) { return x >= 0; }
+bool {{funcname}}__is_positive   ( {{type}} const x ) { return x > 0; }
+
+
+ord
+{{funcname}}__compare_0( {{type}} const x )
+{
+    return {{funcname}}__compare( x, 0 );
+}
+
+
+bool {{funcname}}__is_even( {{type}} const x ) { return x % 2 == 0; }
+bool {{funcname}}__is_odd ( {{type}} const x ) { return x % 2 == 1; }
+
+
+{{type}} {{funcname}}__add_2( {{type}} const x )
+        { return {{funcname}}__add( x, 2 ); }
+{{type}} {{funcname}}__sub_2( {{type}} const x )
+        { return {{funcname}}__sub( x, 2 ); }
+{{type}} {{funcname}}__mul_2( {{type}} const x )
+        { return {{funcname}}__mul( x, 2 ); }
+{{type}} {{funcname}}__div_2( {{type}} const x )
+        { return {{funcname}}__div( x, 2 ); }
+{{type}} {{funcname}}__mod_2( {{type}} const x )
+        { return {{funcname}}__mod( x, 2 ); }
+
+
+{{type}} {{funcname}}__mul_10( {{type}} const x )
+        { return {{funcname}}__mul( x, 10 ); }
+{{type}} {{funcname}}__div_10( {{type}} const x )
+        { return {{funcname}}__div( x, 10 ); }
+
+
+{{type}} {{funcname}}__add_b_2( {{type}} const x )
+        { return {{funcname}}__add_b( x, 2 ); }
+{{type}} {{funcname}}__sub_b_2( {{type}} const x )
+        { return {{funcname}}__sub_b( x, 2 ); }
+{{type}} {{funcname}}__mul_b_2( {{type}} const x )
+        { return {{funcname}}__mul_b( x, 2 ); }
+{{type}} {{funcname}}__div_b_2( {{type}} const x )
+        { return {{funcname}}__div_b( x, 2 ); }
+{{type}} {{funcname}}__mod_b_2( {{type}} const x )
+        { return {{funcname}}__mod_b( x, 2 ); }
+{{type}} {{funcname}}__mul_b_10( {{type}} const x )
+        { return {{funcname}}__mul_b( x, 10 ); }
+{{type}} {{funcname}}__div_b_10( {{type}} const x )
+        { return {{funcname}}__div_b( x, 10 ); }
+{{type}} {{funcname}}__mod_b_10( {{type}} const x )
+        { return {{funcname}}__mod_b( x, 10 ); }
+
+{% else %}
+
+bool
+{{funcname}}__add_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__add_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x > ( {{funcname}}__max_bound() - y );
+}
+
+
+bool
+{{funcname}}__can_add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__add_would_underflow( x, y )
+        && !{{funcname}}__add_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__sub_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x < y;
+}
+
+
+bool
+{{funcname}}__sub_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__can_sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__sub_would_underflow( x, y )
+        && !{{funcname}}__sub_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__mul_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__mul_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( y > 0 ) && ( x > ( {{funcname}}__max_bound() / y ) );
+}
+
+
+bool
+{{funcname}}__can_mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__mul_would_underflow( x, y )
+        && !{{funcname}}__mul_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__div_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__div_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__can_div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return y != 0;
+}
+
+
+{{type}}
+{{funcname}}__add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x + y;
+}
+
+
+{{type}}
+{{funcname}}__sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x - y;
+}
+
+
+{{type}}
+{{funcname}}__mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x * y;
+}
+
+
+{{type}}
+{{funcname}}__div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    ASSERT( {{funcname}}__can_div( x, y ) );
+
+    return x / y;
+}
+
+
+{{type}}
+{{funcname}}__mod(
+        {{type}} const x,
+        {{type}} const y )
+{
+    ASSERT( {{funcname}}__can_div( x, y ) );
+
+    return x % y;
+}
+
+
+{{type}}
+{{funcname}}__negate( {{type}} const x )
+{
+    return -x;
+}
+
+
+{{type}}
+{{funcname}}__abs( {{type}} const x )
+{
+    return x;
+}
+
+
+{{type}}
+{{funcname}}__add_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__add_would_overflow( x, y ) ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return x + y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__sub_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__sub_would_underflow( x, y ) ) {
+        return 0;
+    } else {
+        return x - y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mul_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__mul_would_overflow( x, y ) ) {
+        return {{funcname}}__max_bound();
+    } else {
+        return x * y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__div_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( y == 0 ) {
+        if ( x == 0 ) {
+            return 0;
+        } else /* x > 0 */ {
+            return {{funcname}}__max_bound();
+        }
+    } else {
+        return x / y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mod_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( !{{funcname}}__can_div( x, y ) ) {
+        return 0;
+    } else {
+        return x % y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__negate_b( {{type}} const x )
+{
+    return {{funcname}}__negate( x );
+}
+
+
+{{type}}
+{{funcname}}__abs_b( {{type}} const x )
+{
+    return {{funcname}}__abs( x );
+}
+
+
+bool
+{{funcname}}__same_sign(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return true;
+}
+
+
+bool
+{{funcname}}__in_delta(
+        {{type}} const x,
+        {{type}} const delta,
+        {{type}} const y )
+{
+    return {{funcname}}__sub_b( x, delta ) <= y
+        && y <= {{funcname}}__add_b( x, delta );
+}
+
+
+bool
+{{funcname}}__in_xdelta(
+        {{type}} const x,
+        {{type}} const delta,
+        {{type}} const y )
+{
+    return {{funcname}}__sub_b( x, delta ) < y
+        && y < {{funcname}}__add_b( x, delta );
+}
+
+
+bool {{funcname}}__is_negative   ( {{type}} const x ) { return false; }
+bool {{funcname}}__is_nonpositive( {{type}} const x ) { return x == 0; }
+bool {{funcname}}__is_zero       ( {{type}} const x ) { return x == 0; }
+bool {{funcname}}__is_nonzero    ( {{type}} const x ) { return x != 0; }
+bool {{funcname}}__is_nonnegative( {{type}} const x ) { return true; }
+bool {{funcname}}__is_positive   ( {{type}} const x ) { return x != 0; }
+
+
+ord
+{{funcname}}__compare_0( {{type}} const x )
+{
+    return {{funcname}}__compare( x, 0 );
+}
+
+
+bool {{funcname}}__is_even( {{type}} const x ) { return x % 2 == 0; }
+bool {{funcname}}__is_odd ( {{type}} const x ) { return x % 2 == 1; }
+
+
+{{type}} {{funcname}}__add_2( {{type}} const x )
+        { return {{funcname}}__add( x, 2 ); }
+{{type}} {{funcname}}__sub_2( {{type}} const x )
+        { return {{funcname}}__sub( x, 2 ); }
+{{type}} {{funcname}}__mul_2( {{type}} const x )
+        { return {{funcname}}__mul( x, 2 ); }
+{{type}} {{funcname}}__div_2( {{type}} const x )
+        { return {{funcname}}__div( x, 2 ); }
+{{type}} {{funcname}}__mod_2( {{type}} const x )
+        { return {{funcname}}__mod( x, 2 ); }
+
+
+{{type}} {{funcname}}__mul_10( {{type}} const x )
+        { return {{funcname}}__mul( x, 10 ); }
+{{type}} {{funcname}}__div_10( {{type}} const x )
+        { return {{funcname}}__div( x, 10 ); }
+
+
+{{type}} {{funcname}}__add_b_2( {{type}} const x )
+        { return {{funcname}}__add_b( x, 2 ); }
+{{type}} {{funcname}}__sub_b_2( {{type}} const x )
+        { return {{funcname}}__sub_b( x, 2 ); }
+{{type}} {{funcname}}__mul_b_2( {{type}} const x )
+        { return {{funcname}}__mul_b( x, 2 ); }
+{{type}} {{funcname}}__div_b_2( {{type}} const x )
+        { return {{funcname}}__div_b( x, 2 ); }
+{{type}} {{funcname}}__mod_b_2( {{type}} const x )
+        { return {{funcname}}__mod_b( x, 2 ); }
+{{type}} {{funcname}}__mul_b_10( {{type}} const x )
+        { return {{funcname}}__mul_b( x, 10 ); }
+{{type}} {{funcname}}__div_b_10( {{type}} const x )
+        { return {{funcname}}__div_b( x, 10 ); }
+{{type}} {{funcname}}__mod_b_10( {{type}} const x )
+        { return {{funcname}}__mod_b( x, 10 ); }
+
+{% endif %}
+
+{% endcall %}
+
+
+{% call typeclass('FROM_STR') %}
+
+#include <errno.h>
+
+{% if type == 'bool' %}
+
+#include <ctype.h>
+#include <string.h>
+
+
+static
+bool
+prefixi( char const * const xs,
+         char const * const ys )
+{
+    for ( size_t i = 0; xs[ i ] != '\0'; i++ ) {
+        if ( tolower( ( uchar ) xs[ i ] ) != tolower( ( uchar ) ys[ i ] ) ) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+{{type}}
+{{funcname}}__from_str(
+        char const * const str )
+{
+    if ( str == NULL || str[ 0 ] == '\0' ) {
+        errno = EINVAL;
+        return false;
+    }
+    errno = 0;
+    char const * p = str;
+    while ( isspace( *p ) ) {
+        p++;
+    }
+    {{type}} r;
+    if ( prefixi( p, "true" ) ) {
+        r = true;
+        p += strlen( "true" );
+    } else if ( prefixi( p, "false" ) ) {
+        r = false;
+        p += strlen( "false" );
+    } else {
+        errno = EBADMSG;
+        return false;
+    }
+    while ( isspace( *p ) ) {
+        p++;
+    }
+    if ( *p != '\0' ) {
+        errno = EBADMSG;
+        return false;
+    }
+    return r;
+}
+
+{% else %}
+
+#include <ctype.h>
+#include <inttypes.h>
+
+{{type}}
+{{funcname}}__from_str(
+        char const * const str )
+{
+    if ( str == NULL || str[ 0 ] == '\0' ) {
+        errno = EINVAL;
+        return 0;
+    }
+    errno = 0;
+    char * end_ptr;
+{% if num_type == 'signed' %}
+    intmax_t const x = strtoimax( str, &end_ptr, 10 );
+{% else %}
+    uintmax_t const x = strtoumax( str, &end_ptr, 10 );
+{% endif %}
+    if ( errno ) {
+        return 0;
+    }
+    while ( isspace( *end_ptr ) ) {
+        end_ptr++;
+    }
+    if ( *end_ptr != '\0' ) {
+        errno = EBADMSG;
+        return 0;
+    } else if ( x < {{funcname}}__min_bound() ) {
+        errno = ERANGE;
+        return {{funcname}}__min_bound();
+    } else if ( x > {{funcname}}__max_bound() ) {
+        errno = ERANGE;
+        return {{funcname}}__max_bound();
+    } else {
+        return x;
+    }
+}
+
+{% endif %}
+
+{% endcall %}
+
+
+{% call typeclass('STR_FROM') %}
+
+{% if type == 'bool' %}
+
+char const *
+str__from_{{funcname}}(
+        {{type}} const x )
+{
+    return x ? "true" : "false";
+}
+
+{% endif %}
+
+{% endcall %}
+

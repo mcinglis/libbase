@@ -1,9 +1,4 @@
 
-// This file is the result of executing `gensource.py`. You should make changes
-// to this code by changing the template strings or the build process -- not
-// editing this file.
-
-
 // Copyright 2015  Malcolm Inglis <http://minglis.id.au>
 //
 // This file is part of Libbase.
@@ -139,9 +134,11 @@ ord__max2( ord const x,
 
 
 ord
-ord__min_n( size_t const n,
-            ord const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+ord__min_n( ord const * const xs,
+            size_t const n )
+{
+    ASSERT( xs != NULL, n != 0 );
+
     ord min = ord__normalize( xs[ 0 ] );
     for ( size_t i = 1; i < n; i++ ) {
         min = ord__min2( min, ord__normalize( xs[ i ] ) );
@@ -151,9 +148,11 @@ ord__min_n( size_t const n,
 
 
 ord
-ord__max_n( size_t const n,
-            ord const * const xs )
-{ ASSERT( n != 0, xs != NULL );
+ord__max_n( ord const * const xs,
+            size_t const n )
+{
+    ASSERT( xs != NULL, n != 0 );
+
     ord max = ord__normalize( xs[ 0 ] );
     for ( size_t i = 1; i < n; i++ ) {
         max = ord__max2( max, ord__normalize( xs[ i ] ) );
@@ -172,7 +171,27 @@ ord__clamp( ord const lower,
     ord const nx = ord__normalize( x );
     return ( nlower >= nx ) ? nlower
          : ( nupper <= nx ) ? nupper
-                          : nx;
+                            : nx;
+}
+
+
+ord
+ord__in_range( ord const lower,
+               ord const upper,
+               ord const x )
+{
+    ord const nx = ord__normalize( x );
+    return ord__normalize( lower ) <= nx && nx <= ord__normalize( upper );
+}
+
+
+ord
+ord__in_xrange( ord const lower,
+                ord const upper,
+                ord const x )
+{
+    ord const nx = ord__normalize( x );
+    return ord__normalize( lower ) < nx && nx < ord__normalize( upper );
 }
 
 
@@ -184,8 +203,10 @@ ord__clamp( ord const lower,
 
 ord
 ord__succ( ord const x )
-{ ord const nx = ord__normalize( x );
-  ASSERT( nx != ord__max_bound() );
+{
+    ord const nx = ord__normalize( x );
+    ASSERT( nx != ord__max_bound() );
+
     return nx + 1;
 }
 
@@ -199,8 +220,10 @@ ord__succ_b( ord const x )
 
 ord
 ord__pred( ord const x )
-{ ord const nx = ord__normalize( x );
-  ASSERT( nx != ord__min_bound() );
+{
+    ord const nx = ord__normalize( x );
+    ASSERT( nx != ord__min_bound() );
+
     return nx - 1;
 }
 
@@ -214,9 +237,24 @@ ord__pred_b( ord const x )
 
 
 ///////////////////////////////////
-/// TYPECLASS: READ
+/// TYPECLASS: FROM_STR
 ///////////////////////////////////
 
+
+static
+bool
+prefixi( char const * const xs,
+         char const * const ys )
+{
+    ASSERT( xs != NULL, ys != NULL );
+
+    for ( size_t i = 0; xs[ i ] != '\0'; i++ ) {
+        if ( tolower( ( uchar ) xs[ i ] ) != tolower( ( uchar ) ys[ i ] ) ) {
+            return false;
+        }
+    }
+    return true;
+}
 
 ord
 ord__from_str( char const * str )
@@ -226,21 +264,26 @@ ord__from_str( char const * str )
         return EQ;
     }
     errno = 0;
-    while ( isspace( *str ) ) { str++; }
+    char const * p = str;
+    while ( isspace( *p ) ) {
+        p++;
+    }
     ord r;
-    if ( strncmp( str, "LT", 2 ) == 0 ) {
+    if ( prefixi( p, "LT" ) ) {
         r = LT;
-    } else if ( strncmp( str, "EQ", 2 ) == 0 ) {
+    } else if ( prefixi( p, "EQ" ) ) {
         r = EQ;
-    } else if ( strncmp( str, "GT", 2 ) == 0 ) {
+    } else if ( prefixi( p, "GT" ) ) {
         r = GT;
     } else {
         errno = EBADMSG;
         return EQ;
     }
-    str += 2;
-    while ( isspace( *str ) ) { str++; }
-    if ( *str != '\0' ) {
+    p += 2;
+    while ( isspace( *p ) ) {
+        p++;
+    }
+    if ( *p != '\0' ) {
         errno = EBADMSG;
         return EQ;
     }
@@ -250,12 +293,12 @@ ord__from_str( char const * str )
 
 
 ///////////////////////////////////
-/// TYPECLASS: TO_CONSTSTR
+/// TYPECLASS: STR_FROM
 ///////////////////////////////////
 
 
 char const *
-ord__to_conststr( ord const x )
+str__from_ord( ord const x )
 {
     return ( x <= LT )  ? "LT"
          : ( x == EQ )  ? "EQ"
