@@ -97,17 +97,16 @@ ord
 
 {% call typeclass('BOUNDED') %}
 
-{% if min_bound is not defined or max_bound is not defined %}
-#include <libmacro/bound.h>
-{% endif %}
+#include <limits.h>
+
 
 {{type}}
 {{funcname}}__min_bound( void )
 {
-{% if min_bound is defined %}
+{% if min_bound is defined and min_bound != "" %}
     return {{min_bound}};
 {% else %}
-    return MIN_BOUND( ( {{type}} ) 0 );
+    return {{macroname}}_MIN;
 {% endif %}
 }
 
@@ -115,10 +114,10 @@ ord
 {{type}}
 {{funcname}}__max_bound( void )
 {
-{% if max_bound is defined %}
+{% if max_bound is defined and max_bound != "" %}
     return {{max_bound}};
 {% else %}
-    return MAX_BOUND( ( {{type}} ) 0 );
+    return {{macroname}}_MAX;
 {% endif %}
 }
 

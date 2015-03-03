@@ -57,6 +57,13 @@ uchar_extra := CHAR
 $(foreach t,$(signed_types),$(eval $(t)_num_type := signed))
 $(foreach t,$(unsigned_types),$(eval $(t)_num_type := unsigned))
 
+bool_min_bound   := false
+bool_max_bound   := true
+short_min_bound  := SHRT_MIN
+short_max_bound  := SHRT_MAX
+ushort_max_bound := USHRT_MAX
+$(foreach t,$(unsigned_types),$(eval $(t)_min_bound := 0))
+
 gen_sources := $(addsuffix .c,$(types))
 gen_headers := $(addsuffix .h,$(types))
 
@@ -96,7 +103,7 @@ $(gen_headers): %.h: header.h.jinja
 $(gen_sources): %.c: source.c.jinja
 	$(eval n := $*)
 	$(eval N := $(call uc,$n))
-	$(RENDER_JINJA) $< "header=$n.h" "sys_headers=" "rel_headers=" "extra=$($(n)_extra)" "type=$(or $($(n)_type),$n)" "macroname=$N" "funcname=$n" "typeclasses=$(or $($(n)_typeclasses),$(typeclasses_default))" "num_type=$($(n)_num_type)" -o $@
+	$(RENDER_JINJA) $< "header=$n.h" "sys_headers=" "rel_headers=" "extra=$($(n)_extra)" "type=$(or $($(n)_type),$n)" "macroname=$N" "funcname=$n" "typeclasses=$(or $($(n)_typeclasses),$(typeclasses_default))" "num_type=$($(n)_num_type)" "min_bound=$($(n)_min_bound)" "max_bound=$($(n)_max_bound)" -o $@
 
 
 .PHONY: clean
