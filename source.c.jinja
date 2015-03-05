@@ -1175,6 +1175,19 @@ prefixi( char const * const xs,
     }
 }
 
+
+void
+{{funcname}}__arg_parse(
+        char const * const name,
+        char const * const value,
+        void * const vdestination )
+{
+    ASSERT( value != NULL, vdestination != NULL );
+
+    {{type}} * const dest = vdestination;
+    *dest = {{funcname}}__from_str( value );
+}
+
 {% endif %}
 
 {% endcall %}

@@ -608,6 +608,16 @@ bool
 // - `EBADMSG` if `str` contains a value but a non-whitespace suffix;
 // - `ERANGE` if the resulting value can't be represented with `{{type}}`.
 
+
+void
+{{funcname}}__arg_parse(
+        char const * name,
+        char const * value,
+        void * destination );
+// Use with functions from Libargs to parse command-line arguments into
+// values of type `{{type}}`.
+
+
 {% endcall %}
 
 

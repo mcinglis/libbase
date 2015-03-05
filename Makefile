@@ -79,17 +79,21 @@ mkdeps  := $(sources:.c=.dep.mk)
 
 
 .PHONY: all
-all: objects
+all: objects libbase.o
 
 
 .PHONY: fast
-fast: CPPFLAGS += -DNDEBUG -DNO_ASSERT -DNO_REQUIRE -DNO_DEBUG
+fast: CPPFLAGS += -DNDEBUG
 fast: CFLAGS = $(cflags_std) -O3 $(cflags_warnings)
 fast: all
 
 
 .PHONY: objects
 objects: $(objects)
+
+
+libbase.o: $(objects)
+	$(LD) -r $^ -o $@
 
 
 $(gen_sources): %.c: %.h
@@ -108,7 +112,7 @@ $(gen_sources): %.c: source.c.jinja
 
 .PHONY: clean
 clean:
-	rm -rf $(gen_sources) $(gen_headers) $(objects) $(mkdeps)
+	rm -rf $(gen_sources) $(gen_headers) $(objects) libbase.o $(mkdeps)
 
 
 %.o: %.c
