@@ -18,25 +18,18 @@
 
 
 // This file is the result of running:
+//
 //     {{' '.join(argv)}}
+//
+// You should make changes to this file by tuning the build process, or (at a
+// stretch) modifying the template file; not by editing this file as-is.
 
 
-{% set sys_headers = sys_headers.split() %}
-{% set rel_headers = rel_headers.split() %}
 {% set typeclasses = typeclasses.split() %}
 {% set extra       = extra.split() %}
 
 
-#include "{{header}}"
-
-
-{% for path in sys_headers %}
-#include <{{path}}>
-{% endfor %}
-
-{% for path in rel_headers %}
-#include "{{path}}"
-{% endfor %}
+#include "{{header_path}}"
 
 
 {{type}}
@@ -103,7 +96,7 @@ ord
 {{type}}
 {{funcname}}__min_bound( void )
 {
-{% if min_bound is defined and min_bound != "" %}
+{% if min_bound is defined and min_bound %}
     return {{min_bound}};
 {% else %}
     return {{macroname}}_MIN;
@@ -114,7 +107,7 @@ ord
 {{type}}
 {{funcname}}__max_bound( void )
 {
-{% if max_bound is defined and max_bound != "" %}
+{% if max_bound is defined and max_bound %}
     return {{max_bound}};
 {% else %}
     return {{macroname}}_MAX;
@@ -346,6 +339,20 @@ bool
         void )
 {
     return 0;
+}
+
+
+size_t
+{{funcname}}__num_digits(
+        {{type}} const x )
+{
+    size_t count = 0;
+    {{type}} rem = x;
+    do {
+        rem /= 10;
+        count++;
+    } while ( rem != 0 );
+    return count;
 }
 
 
@@ -1175,6 +1182,8 @@ prefixi( char const * const xs,
     }
 }
 
+{% endif %}
+
 
 void
 {{funcname}}__arg_parse(
@@ -1188,23 +1197,161 @@ void
     *dest = {{funcname}}__from_str( value );
 }
 
-{% endif %}
 
 {% endcall %}
 
 
-{% call typeclass('STR_FROM') %}
+{% call typeclass('TO_STR') %}
 
 {% if type == 'bool' %}
 
 char const *
-str__from_{{funcname}}(
+{{funcname}}__to_str(
         {{type}} const x )
 {
     return x ? "true" : "false";
 }
 
+{% else %}
+
+{{no_implementation}}
+
 {% endif %}
+
+{% endcall %}
+
+
+{% call typeclass('TO_STRM') %}
+
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <libmacro/assert.h>
+#include <libmacro/logic.h>
+
+
+static
+void
+reverse( char * const xs )
+{
+    ASSERT( xs != NULL );
+
+    size_t const len = strlen( xs );
+    if ( len == 1 ) {
+        return;
+    }
+    for ( size_t i = 0; i < ( len / 2 ); i++ ) {
+        xs[ i ] = xs[ len - 1 - i ];
+    }
+}
+
+
+{% if num_type == 'signed' %}
+{# signed number #}
+
+
+char *
+{{funcname}}__to_strm(
+        {{type}} const x )
+{
+    size_t const nd = {{funcname}}__num_digits( x );
+    ASSERT( nd < SIZE_MAX - 2 );
+    size_t const size = nd + 1 + ( x < 0 );
+    char * const buf = malloc( size );
+    if ( errno ) { return NULL; }
+    {{funcname}}__into_strm( x, buf, size );
+    return buf;
+}
+
+
+static
+void
+into_strm(
+        {{type}} const x,
+        char * const buf,
+        size_t const size )
+{
+    ASSERT( buf != NULL, size > 0 );
+
+    bool const neg = x < 0;
+    if ( neg ) {
+        buf[ 0 ] = '-';
+    }
+    size_t i = neg;
+    {{type}} r = x;
+    do {
+        if ( i >= size - 1 ) {
+            break;
+        }
+        buf[ i ] = '0' + ( r % 10 );
+        r /= 10;
+        i++;
+    } while ( r != 0 );
+    buf[ i ] = '\0';
+    reverse( buf + neg );
+}
+
+
+{% else %}
+{# unsigned number #}
+
+char *
+{{funcname}}__to_strm(
+        {{type}} const x )
+{
+    size_t const nd = {{funcname}}__num_digits( x );
+    ASSERT( nd < SIZE_MAX - 1 );
+    size_t const size = nd + 1;
+    char * const buf = malloc( size );
+    if ( errno ) { return NULL; }
+    {{funcname}}__into_strm( x, buf, size );
+    return buf;
+}
+
+
+static
+void
+into_strm(
+        {{type}} const x,
+        char * const buf,
+        size_t const size )
+{
+    ASSERT( size > 0 );
+    size_t i = 0;
+    {{type}} r = x;
+    do {
+        if ( i >= size - 1 ) {
+            break;
+        }
+        buf[ i ] = '0' + ( r % 10 );
+        r /= 10;
+        i++;
+    } while ( r != 0 );
+    buf[ i ] = '\0';
+    reverse( buf );
+}
+
+{% endif %}
+
+
+void
+{{funcname}}__into_strm(
+        {{type}} const x,
+        char * const buf,
+        size_t const size )
+{
+    ASSERT( IMPLIES( buf == NULL, size == 0 ) );
+
+    if ( size > 0 ) {
+        // We use a temporary buffer so that reversing in `into_strm` works:
+        char tmp[ 32 ];
+        into_strm( x, tmp, sizeof tmp );
+        strncpy( buf, tmp, size - 1 );
+        buf[ size - 1 ] = '\0';
+    }
+}
+
 
 {% endcall %}
 

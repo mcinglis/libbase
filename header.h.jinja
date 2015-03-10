@@ -18,29 +18,27 @@
 
 
 // This file is the result of running:
+//
 //     {{' '.join(argv)}}
+//
+// You should make changes to this file by tuning the build process, or (at a
+// stretch) modifying the template file; not by editing this file as-is.
 
 
-{% set sys_headers = sys_headers.split() %}
-{% set rel_headers = rel_headers.split() %}
 {% set typeclasses = typeclasses.split() %}
 {% set extra       = extra.split() %}
 
 
-#ifndef {{include_guard}}
-#define {{include_guard}}
+#ifndef LIBBASE_{{macroname}}_H
+#define LIBBASE_{{macroname}}_H
 
 
 #include <libmacro/nelem.h>
 #include <libtypes/types.h>
 
-{% for path in sys_headers %}
-#include <{{path}}>
-{% endfor %}
-
-{% for path in rel_headers %}
-#include "{{path}}"
-{% endfor %}
+{% if type_def_header %}
+#include <{{type_def_header}}>
+{% endif %}
 
 
 {{type}}
@@ -617,19 +615,36 @@ void
 // Use with functions from Libargs to parse command-line arguments into
 // values of type `{{type}}`.
 
-
 {% endcall %}
 
 
-{% call typeclass('STR_FROM') %}
+{% call typeclass('TO_STR') %}
 
 char const *
-str__from_{{funcname}}(
+{{funcname}}__to_str(
         {{type}} );
 // Returns a pointer to a string representation of the given value.
 
 {% endcall %}
 
 
-#endif // ifndef {{ include_guard }}
+{% call typeclass('TO_STRM') %}
+
+void
+{{funcname}}__into_strm(
+        {{type}},
+        char * buf,
+        size_t size );
+
+
+char *
+{{funcname}}__to_strm(
+        {{type}} );
+// Returns a pointer to an allocated buffer of bytes holding the string
+// representation of the given value.
+
+{% endcall %}
+
+
+#endif // ifndef LIBBASE_{{macroname}}_H
 
