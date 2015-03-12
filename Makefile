@@ -20,14 +20,14 @@ CFLAGS ?= $(cflags_std) -g $(cflags_warnings)
 
 TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 
-sources := ord.c
-headers := $(sources:.c=.h)
-objects := $(sources:.c=.o)
-
 test_gen_sources := int.c uchar.c ptrm-short.c
 test_gen_headers := $(test_gen_sources:.c=.h)
 test_gen_objects := $(test_gen_sources:.c=.o)
 test_binaries    := tests/test
+
+sources := $(filter-out $(test_gen_sources),$(wildcard *.c))
+headers := $(sources:.c=.h)
+objects := $(sources:.c=.o)
 
 mkdeps  := $(objects:.o=.dep.mk) $(test_gen_objects:.o=.dep.mk)
 
