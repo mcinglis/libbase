@@ -25,11 +25,11 @@ test_gen_headers := $(test_gen_sources:.c=.h)
 test_gen_objects := $(test_gen_sources:.c=.o)
 test_binaries    := tests/test
 
-sources := $(filter-out $(test_gen_sources),$(wildcard *.c))
+sources := $(wildcard *.c)
 headers := $(sources:.c=.h)
 objects := $(sources:.c=.o)
 
-mkdeps  := $(objects:.o=.dep.mk) $(test_gen_objects:.o=.dep.mk)
+mkdeps  := $(objects:.o=.dep.mk)
 
 
 
@@ -38,7 +38,7 @@ mkdeps  := $(objects:.o=.dep.mk) $(test_gen_objects:.o=.dep.mk)
 ##############################
 
 .PHONY: all
-all: objects tests
+all: objects
 
 .PHONY: fast
 fast: CPPFLAGS += -DNDEBUG
