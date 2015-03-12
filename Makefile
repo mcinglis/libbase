@@ -18,17 +18,18 @@ cflags_warnings := -Wall -Wextra -pedantic \
 
 CFLAGS ?= $(cflags_std) -g $(cflags_warnings)
 
-TPLRENDER = $(DEPS_DIR)/tplrender/tplrender
+TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 
-gen_sources := int.c uchar.c
-gen_headers := $(gen_sources:.c=.h)
-
-sources := ord.c $(gen_sources)
+sources := ord.c
 headers := $(sources:.c=.h)
 objects := $(sources:.c=.o)
-mkdeps  := $(objects:.o=.dep.mk)
 
-test_binaries := tests/test
+test_gen_sources := int.c uchar.c ptrm-short.c
+test_gen_headers := $(test_gen_sources:.c=.h)
+test_gen_objects := $(test_gen_sources:.c=.o)
+test_binaries    := tests/test
+
+mkdeps  := $(objects:.o=.dep.mk) $(test_gen_objects:.o=.dep.mk)
 
 
 
@@ -56,26 +57,38 @@ test: tests/test
 
 .PHONY: clean
 clean:
-	rm -rf $(objects) $(mkdeps) $(gen_sources) $(gen_headers)
+	rm -rf $(objects) \
+	       $(test_gen_sources) \
+	       $(test_gen_headers) \
+	       $(test_gen_objects) \
+	       $(test_binaries) \
+	       $(mkdeps)
 
 
 tests/test: CPPFLAGS += -D_DEFAULT_SOURCE
-tests/test: int.o uchar.o
+tests/test: $(test_gen_objects)
 
 
-int.o: TYPE=int
-int.o: TYPECLASSES=BOUNDED EQ ORD ENUM NUM
-int.o: EXTRA=num_type=signed
+int_type           := int
+int_options        := --typeclasses BOUNDED EQ ORD ENUM NUM \
+                      --extra num_type=signed
 
-uchar.o: TYPE=uchar
-uchar.o: TYPECLASSES=BOUNDED EQ ORD ENUM NUM
-uchar.o: EXTRA=char_funcs=true num_type=unsigned
+uchar_type         := uchar
+uchar_options      := --typeclasses BOUNDED EQ ORD ENUM NUM \
+                      --extra char_funcs=true num_type=unsigned
 
-$(gen_headers): %.h: header.h.jinja
-	$(TPLRENDER) "$<" "$(TYPE)" $(if $(TYPENAME),--typename $(TYPENAME)) $(if $(FUNCNAME),--funcname $(FUNCNAME)) $(if $(MACRONAME), --macroname $(MACRONAME)) $(if $(FILENAME),--filename $(FILENAME)) --typeclasses $(TYPECLASSES) $(if $(REL_HEADERS),--rel-headers $(REL_HEADERS)) $(if $(SYS_HEADERS),--sys-headers $(SYS_HEADERS)) $(if $(EXTRA),--extra $(EXTRA)) --output $@
+ptrm_short_type    := short *
+ptrm_short_options := --typeclasses EQ ORD ENUM
 
-$(gen_sources): %.c: source.c.jinja %.h
-	$(TPLRENDER) "$<" "$(TYPE)" $(if $(TYPENAME),--typename $(TYPENAME)) $(if $(FUNCNAME),--funcname $(FUNCNAME)) $(if $(MACRONAME), --macroname $(MACRONAME)) $(if $(FILENAME),--filename $(FILENAME)) --typeclasses $(TYPECLASSES) $(if $(REL_HEADERS),--rel-headers $(REL_HEADERS)) $(if $(SYS_HEADERS),--sys-headers $(SYS_HEADERS)) $(if $(EXTRA),--extra $(EXTRA)) --output $@
+name_from_path = $(subst -,_,$(basename $1))
+
+$(test_gen_headers): %.h: header.h.jinja
+	$(eval n := $(call name_from_path,$*))
+	$(TPLRENDER) "$<" "$($(n)_type)" $($(n)_options) --output $@
+
+$(test_gen_sources): %.c: source.c.jinja %.h
+	$(eval n := $(call name_from_path,$*))
+	$(TPLRENDER) "$<" "$($(n)_type)" $($(n)_options) --output $@
 
 
 %.o: %.c
