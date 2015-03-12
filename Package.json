@@ -10,9 +10,9 @@
                     "https://gitorious.org/mcinglis/libmacro.git" ],
           "tag":  "v2.*"
         },
-        { "repo": [ "https://bitbucket.org/mcinglis/render-jinja.git",
-                    "https://github.com/mcinglis/render-jinja.git",
-                    "https://gitorious.org/mcinglis/render-jinja.git" ]
+        { "repo": [ "https://bitbucket.org/mcinglis/tplrender.git",
+                    "https://github.com/mcinglis/tplrender.git",
+                    "https://gitorious.org/mcinglis/tplrender.git" ]
         }
     ],
     "commands": {

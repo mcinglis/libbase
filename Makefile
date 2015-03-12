@@ -15,7 +15,7 @@ CFLAGS ?= -std=c11 -g \
           -Wwrite-strings \
           -Wno-override-init -Wno-type-limits -Wno-unused-parameter
 
-TPLRENDER = ~/Projects/tplrender/tplrender
+TPLRENDER = $(DEPS_DIR)/tplrender/tplrender
 
 gen_sources := int.c uchar.c
 gen_headers := $(gen_sources:.c=.h)
