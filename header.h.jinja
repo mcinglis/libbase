@@ -17,35 +17,38 @@
 // along with Libbase. If not, see <https://gnu.org/licenses/>.
 
 
-// This file is the result of running:
+// This file is the result of rendering:
 //
-//     {{' '.join(argv)}}
+//     {{template_path}}
 //
 // You should make changes to this file by tuning the build process, or (at a
-// stretch) modifying the template file; not by editing this file as-is.
-
-
-{% set typeclasses = typeclasses.split() %}
-{% set extra       = extra.split() %}
+// stretch) modifying the generation script or template file; not by editing
+// this file as-is.
 
 
 #ifndef LIBBASE_{{macroname}}_H
 #define LIBBASE_{{macroname}}_H
 
 
-#include <libmacro/nelem.h>
+{% for p in sys_headers %}
+#include <{{p}}>
+{% else %}
 #include <libtypes/types.h>
+#include <libmacro/nelem.h>
+{% endfor %}
 
-{% if type_def_header %}
-#include <{{type_def_header}}>
-{% endif %}
+{% for path in rel_headers %}
+#include "{{p}}"
+{% endfor %}
 
 
 {{type}}
-{{funcname}}__id( {{type}} x );
+{{funcname}}__id(
+        {{type}} );
 
 
-{% if 'CHAR' in extra %}
+
+{% if char_funcs is defined %}
 
 bool
 {{funcname}}__equal_i(
@@ -67,6 +70,7 @@ ord
 {# TODO: provide classification functions e.g. 'char__is_whitespace()' #}
 
 {% endif %}
+
 
 
 {% macro typeclass(name) %}
@@ -176,15 +180,15 @@ bool
 // @public
 #define {{funcname}}__min( ... ) \
     {{funcname}}__min_n( \
-        NELEM( ( {{type}}[] ){ __VA_ARGS__ } ), \
-        ( {{type}}[] ){ __VA_ARGS__ } )
+        ( {{type}}[] ){ __VA_ARGS__ }, \
+        NELEM( ( {{type}}[] ){ __VA_ARGS__ } ) )
 
 
 // @public
 #define {{funcname}}__max( ... ) \
     {{funcname}}__max_n( \
-        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ), \
-        ( {{type}} [] ){ __VA_ARGS__ } )
+        ( {{type}} [] ){ __VA_ARGS__ }, \
+        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
 
 
 {{type}}

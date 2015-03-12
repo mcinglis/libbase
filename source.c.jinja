@@ -17,19 +17,25 @@
 // along with Libbase. If not, see <https://gnu.org/licenses/>.
 
 
-// This file is the result of running:
+// This file is the result of rendering:
 //
-//     {{' '.join(argv)}}
+//     {{template_path}}
 //
 // You should make changes to this file by tuning the build process, or (at a
-// stretch) modifying the template file; not by editing this file as-is.
+// stretch) modifying the generation script or template file; not by editing
+// this file as-is.
 
 
-{% set typeclasses = typeclasses.split() %}
-{% set extra       = extra.split() %}
+{% for p in sys_headers %}
+#include <{{p}}>
+{% endfor %}
 
+{% for path in rel_headers %}
+#include "{{p}}"
+{% else %}
+#include "{{filename}}.h"
+{% endfor %}
 
-#include "{{header_path}}"
 
 
 {{type}}
@@ -40,7 +46,7 @@
 }
 
 
-{% if 'CHAR' in extra %}
+{% if char_funcs is defined %}
 
 #include <ctype.h>
 
@@ -98,6 +104,8 @@ ord
 {
 {% if min_bound is defined and min_bound %}
     return {{min_bound}};
+{% elif num_type == 'unsigned' %}
+    return 0;
 {% else %}
     return {{macroname}}_MIN;
 {% endif %}
@@ -282,7 +290,9 @@ bool
 {{funcname}}__succ(
         {{type}} const x )
 {
+{% if 'BOUNDED' in typeclasses %}
     ASSERT( x != {{funcname}}__max_bound() );
+{% endif %}
 
     return x + 1;
 }
@@ -292,7 +302,9 @@ bool
 {{funcname}}__pred(
         {{type}} const x )
 {
+{% if 'BOUNDED' in typeclasses %}
     ASSERT( x != {{funcname}}__min_bound() );
+{% endif %}
 
     return x - 1;
 }
@@ -302,11 +314,15 @@ bool
 {{funcname}}__succ_b(
         {{type}} const x )
 {
+{% if 'BOUNDED' in typeclasses %}
     if ( x == {{funcname}}__max_bound() ) {
         return x;
     } else {
         return x + 1;
     }
+{% else %}
+    return x + 1;
+{% endif %}
 }
 
 
@@ -314,11 +330,15 @@ bool
 {{funcname}}__pred_b(
         {{type}} const x )
 {
+{% if 'BOUNDED' in typeclasses %}
     if ( x == {{funcname}}__min_bound() ) {
         return x;
     } else {
         return x - 1;
     }
+{% else %}
+    return x - 1;
+{% endif %}
 }
 
 {% endcall %}

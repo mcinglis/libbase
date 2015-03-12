@@ -2,6 +2,8 @@
 *.h
 *.o
 *.dep.mk
+tests/test
 deps
 !ord.c
 !ord.h
+!tests/test.c
