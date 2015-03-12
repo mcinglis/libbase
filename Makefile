@@ -7,13 +7,16 @@ DEPS_DIR ?= ./deps
 
 CPPFLAGS += -I$(DEPS_DIR)
 
-CFLAGS ?= -std=c11 -g \
-          -Wall -Wextra -pedantic \
-          -Wcomments -Wformat=2 -Wlogical-op -Wmissing-include-dirs \
-          -Wnested-externs -Wold-style-definition -Wredundant-decls \
-          -Wshadow -Wstrict-prototypes -Wunused-macros -Wvla \
-          -Wwrite-strings \
-          -Wno-override-init -Wno-type-limits -Wno-unused-parameter
+cflags_std := -std=c11
+cflags_warnings := -Wall -Wextra -pedantic \
+                   -Wcomments -Wformat=2 -Wlogical-op -Wmissing-include-dirs \
+                   -Wnested-externs -Wold-style-definition -Wredundant-decls \
+                   -Wshadow -Wstrict-prototypes -Wunused-macros -Wvla \
+                   -Wwrite-strings \
+                   -Wno-missing-field-initializers -Wno-override-init \
+                   -Wno-unused-parameter
+
+CFLAGS ?= $(cflags_std) -g $(cflags_warnings)
 
 TPLRENDER = $(DEPS_DIR)/tplrender/tplrender
 
@@ -35,6 +38,11 @@ test_binaries := tests/test
 
 .PHONY: all
 all: objects tests
+
+.PHONY: fast
+fast: CPPFLAGS += -DNDEBUG
+fast: CFLAGS = $(cflags_std) -O3 $(cflags_warnings)
+fast: all
 
 .PHONY: objects
 objects: $(objects)

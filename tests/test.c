@@ -18,6 +18,10 @@ main( void )
         int const x = random() % int__max_bound();
         int const y = random() % int__max_bound();
         int const z = random() % int__max_bound();
+        // To avoid warnings when compiling without assertions:
+        ( void ) x;
+        ( void ) y;
+        ( void ) z;
         ASSERT( int__equal( x, x ),
                 int__equal( y, y ),
                 IMPLIES( int__compare( x, y ) == LT,
@@ -38,6 +42,10 @@ main( void )
         uchar const x = random() % uchar__max_bound();
         uchar const y = random() % uchar__max_bound();
         uchar const z = random() % uchar__max_bound();
+        // To avoid warnings when compiling without assertions:
+        ( void ) x;
+        ( void ) y;
+        ( void ) z;
         ASSERT( uchar__equal( x, x ),
                 uchar__equal( y, y ),
                 IMPLIES( uchar__compare( x, y ) == LT,

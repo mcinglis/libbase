@@ -350,7 +350,11 @@ bool
 {{funcname}}__is_signed(
         void )
 {
-    return {{funcname}}__min_bound() < 0;
+{% if num_type == 'signed' %}
+    return true;
+{% else %}
+    return false;
+{% endif %}
 }
 
 
