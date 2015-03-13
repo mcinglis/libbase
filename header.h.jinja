@@ -30,11 +30,10 @@
 #define LIBBASE_{{macroname}}_H
 
 
-{% for p in sys_headers %}
-#include <{{p}}>
-{% else %}
 #include <libtypes/types.h>
 #include <libmacro/nelem.h>
+{% for p in sys_headers %}
+#include <{{p}}>
 {% endfor %}
 
 {% for path in rel_headers %}
