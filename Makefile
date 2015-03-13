@@ -21,7 +21,7 @@ CFLAGS ?= $(cflags_std) -g $(cflags_warnings)
 TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 
 test_types       := int uchar ptrm-short
-test_gen_sources := $(addprefix .c,$(test_types))
+test_gen_sources := $(addsuffix .c,$(test_types))
 test_gen_headers := $(test_gen_sources:.c=.h)
 test_gen_objects := $(test_gen_sources:.c=.o)
 test_binaries    := tests/test
