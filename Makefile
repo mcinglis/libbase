@@ -24,11 +24,6 @@ TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 name_from_path = $(subst -,_,$(basename $1))
 
 
-sources := $(wildcard *.c)
-objects := $(sources:.c=.o)
-
-mkdeps  := $(objects:.o=.dep.mk)
-
 test_binaries    := tests/test
 
 test_types       := int uchar ptrm-short
@@ -46,6 +41,11 @@ uchar_options      := --typeclasses BOUNDED EQ ORD ENUM NUM \
 
 ptrm_short_type    := short *
 ptrm_short_options := --typeclasses EQ ORD ENUM
+
+sources := $(wildcard *.c)
+objects := $(sources:.c=.o)
+
+mkdeps  := $(objects:.o=.dep.mk) $(test_gen_objects:.o=.dep.mk)
 
 
 
