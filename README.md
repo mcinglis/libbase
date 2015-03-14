@@ -1,21 +1,19 @@
 
-**Libbase** defines useful functions for the standard types. The provided functions use the same suffixes for logically equivalent operations, and functions are grouped by typeclasses based on the properties they assume of the involved type. Using the preprocessor, this allows for a crude typeclass system in C. For example, we could say that type `foo` belongs to the `EQ` typeclass if the functions `foo__equal(x, y)` and `foo__not_equal(x, y)` are defined. Using that, we can define equality over collections of `T`.
+**Libbase** provides Jinja templates that can be rendered to C source files providing useful functions for scalar types. Source files for the `ord` type are provided without generation, because the code for `ord` is unique; `ord` values require normalization to `LT`, `EQ` or `GT`.
 
-Most of the source files are generated using [`gensource.py`](gensource.py), and most of the header files are generated using [`genheader.py`](genheader.py). The generated files are being stored in version control to make Libbase more approachable, and to allow people to use the code without having Python installed.
-
-Except for the `ord` type, header files are generated from [`header.h.jinja`](header.h.jinja), and source files are generated from [`source.c.jinja`](source.c.jinja) (requiring Python 2). You can adapt the build process into your own project to generate functions for your own types.
+You can adapt the template rendering into your project's build process in whichever way you prefer. In my projects, I render the templates for types as I need them, with the typeclasses that I require for each type. See the build process of the tests for Libbase as a basic example of how you could handle the rendering in your own project.
 
 
 ## Releases
 
-The releases are tagged according to [semantic versioning](http://semver.org/spec/v2.0.0.html). All the macros preceded by `// @public` are considered public: they'll only change between major versions. The other macros could change any time. Non-preprocessor identifiers defined in header files are always considered public. New identifiers prefixed with the name of the header file will not warrant a major version bump: e.g., a function `uchar__foo()` may be added to `uchar.h` between minor versions.
+The releases are tagged according to [semantic versioning](http://semver.org/spec/v2.0.0.html). All the macros preceded by `// @public` are considered public: they'll only change between major versions. The other macros could change any time. Non-preprocessor identifiers defined in header files are always considered public. New identifiers in the templates prefixed with the `{{funcname}}` value or the `{{macroname}}` value will not warrant a major version bump.
 
 Every version tag will be signed with [my GPG key](http://pool.sks-keyservers.net/pks/lookup?op=vindex&search=0xD020F814) (fingerprint: `0xD020F814`).
 
 
 ## Dependencies
 
-`Package.json` specifies the dependencies of Libbase: where to get them, and what version to use. I've developed a tool called [Puck](https://gitorious.org/mcinglis/puck) that will parse such a `Package.json`, download the specified repositories, check out the specified version, and, if the dependency has its own `Package.json`, repeat that process for *its* dependencies. With `puck` on your PATH, in the directory of Libbase:
+`Package.json` specifies the dependencies of Libbase: where to get them, and what version to use. I've developed a tool called [Puck](https://bitbucket.org/mcinglis/puck) that will parse such a `Package.json`, download the specified repositories, check out the specified version, and, if the dependency has its own `Package.json`, repeat that process for *its* dependencies. With `puck` on your PATH, in the directory of Libbase:
 
 ``` sh
 $ puck update
@@ -27,7 +25,7 @@ There's nothing magic to what Puck does, so if you would prefer, you can set up 
 
 ## Collaboration
 
-Libbase is available at [Gitorious](https://gitorious.org/mcinglis/libbase), [Bitbucket](https://bitbucket.org/mcinglis/libbase), and [GitHub](https://github.com/mcinglis/libbase).
+Libbase is available at [Bitbucket](https://bitbucket.org/mcinglis/libbase) and [GitHub](https://github.com/mcinglis/libbase).
 
 Questions, discussion, bug reports and feature requests are welcome at [the GitHub issue tracker](https://github.com/mcinglis/libbase/issues), or via [emails](mailto:me@minglis.id.au).
 
