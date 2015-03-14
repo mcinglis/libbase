@@ -54,7 +54,7 @@ ptrm_short_options := --typeclasses EQ ORD ENUM
 ##############################
 
 .PHONY: all
-all: objects
+all: objects tests
 
 .PHONY: fast
 fast: CPPFLAGS += -DNDEBUG

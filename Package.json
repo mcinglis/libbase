@@ -11,8 +11,7 @@
           "tag":  "v2.*"
         },
         { "repo": [ "https://bitbucket.org/mcinglis/tplrender.git",
-                    "https://github.com/mcinglis/tplrender.git",
-                    "https://gitorious.org/mcinglis/tplrender.git" ]
+                    "https://github.com/mcinglis/tplrender.git" ]
         }
     ],
     "commands": {
