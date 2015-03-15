@@ -10,13 +10,15 @@
                     "https://gitorious.org/mcinglis/libmacro.git" ],
           "tag":  "v2.*"
         },
-        { "repo": [ "https://bitbucket.org/mcinglis/tplrender.git",
+        { "dev":  true,
+          "repo": [ "https://bitbucket.org/mcinglis/tplrender.git",
                     "https://github.com/mcinglis/tplrender.git" ]
         }
     ],
     "commands": {
         "build": "make",
         "fast":  "make fast",
-        "clean": "make clean"
+        "clean": "make clean",
+        "test":  "make test"
     }
 }
