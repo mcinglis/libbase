@@ -15,9 +15,9 @@ main( void )
 {
     size_t const num_tests = 1000;
     for ( size_t i = 0; i < num_tests; i++ ) {
-        int const x = random() % int__max_bound();
-        int const y = random() % int__max_bound();
-        int const z = random() % int__max_bound();
+        int const x = rand();
+        int const y = rand();
+        int const z = rand();
         // To avoid warnings when compiling without assertions:
         ( void ) x;
         ( void ) y;
@@ -39,9 +39,9 @@ main( void )
     }
     printf( "All `int` assertions passed.\n" );
     for ( size_t i = 0; i < num_tests; i++ ) {
-        uchar const x = random() % uchar__max_bound();
-        uchar const y = random() % uchar__max_bound();
-        uchar const z = random() % uchar__max_bound();
+        uchar const x = rand() % uchar__max_bound();
+        uchar const y = rand() % uchar__max_bound();
+        uchar const z = rand() % uchar__max_bound();
         // To avoid warnings when compiling without assertions:
         ( void ) x;
         ( void ) y;

@@ -3,7 +3,7 @@
 ### VARIABLES
 ##############################
 
-DEPS_DIR ?= ./deps
+DEPS_DIR ?= deps
 
 CPPFLAGS += -I$(DEPS_DIR)
 
@@ -52,7 +52,7 @@ mkdeps  := $(objects:.o=.dep.mk) $(test_gen_objects:.o=.dep.mk)
 ##############################
 
 .PHONY: all
-all: objects
+all: objects tests
 
 .PHONY: objects
 objects: $(objects)
@@ -73,7 +73,6 @@ clean:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -MMD -MF "$(@:.o=.dep.mk)" -c $< -o $@
 
 
-tests/test: CPPFLAGS += -D_DEFAULT_SOURCE
 tests/test: $(test_gen_objects)
 
 name_from_path = $(subst -,_,$1)
