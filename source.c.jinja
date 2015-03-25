@@ -252,9 +252,9 @@ bool
 
 {{type}}
 {{funcname}}__clamp(
+        {{type}} const x,
         {{type}} const lower,
-        {{type}} const upper,
-        {{type}} const x )
+        {{type}} const upper )
 {
     return ( lower >= x ) ? lower
          : ( upper <= x ) ? upper
