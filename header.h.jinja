@@ -335,113 +335,105 @@ bool
 {{funcname}}__add(
         {{type}} x,
         {{type}} y );
-// Returns `x + y`.
-// @requires {{funcname}}__can_add( x, y )
 
 
 {{type}}
 {{funcname}}__sub(
         {{type}} x,
         {{type}} y );
-// Returns `x - y`.
-// @requires {{funcname}}__can_sub( x, y )
 
 
 {{type}}
 {{funcname}}__mul(
         {{type}} x,
         {{type}} y );
-// Returns `x * y`.
-// @requires {{funcname}}__can_mul( x, y )
 
 
 {{type}}
 {{funcname}}__div(
         {{type}} x,
         {{type}} y );
-// Returns `x / y`.
-// @requires {{funcname}}__can_div( x, y )
 
 
 {{type}}
 {{funcname}}__mod(
         {{type}} x,
         {{type}} y );
-// Returns `x % y`.
-// @requires {{funcname}}__can_div( x, y )
 
 
 {{type}}
 {{funcname}}__negate(
         {{type}} x );
-// Returns `-x`.
 
 
 {{type}}
 {{funcname}}__abs(
         {{type}} x );
-// Returns `( x < 0 ) ? -x : x`.
 
 
 {{type}}
 {{funcname}}__add_b(
         {{type}},
         {{type}} );
-// Returns: - `x + y` if the `{{type}}` type is unbounded;
-//          - `{{funcname}}__min_bound()` if `x + y` would underflow;
-//          - `{{funcname}}__max_bound()` if `x + y` would overflow.
 
 
 {{type}}
 {{funcname}}__sub_b(
         {{type}} x,
         {{type}} y );
-// Returns: - `x - y` if the `{{type}}` type is unbounded;
-//          - `{{funcname}}__min_bound()` if `x - y` would underflow;
-//          - `{{funcname}}__max_bound()` if `x - y` would overflow.
 
 
 {{type}}
 {{funcname}}__mul_b(
         {{type}} x,
         {{type}} y );
-// Returns: - `x * y` if the `{{type}}` type is unbounded;
-//          - `{{funcname}}__min_bound()` if `x * y` would underflow;
-//          - `{{funcname}}__max_bound()` if `x * y` would overflow.
 
 
 {{type}}
 {{funcname}}__div_b(
         {{type}} x,
         {{type}} y );
-// If `y == 0`, returns:
-//  - `0` if `x == 0` or if the `{{type}}` type is unbounded;
-//  - `{{funcname}}__min_bound()` if `x < 0`;
-//  - `{{funcname}}__max_bound()` if `x > 0`.
-// Otherwise, returns:
-//  - `x / y` if the `{{type}}` type is unbounded;
-//  - `{{funcname}}__min_bound()` if `x / y` would underflow;
-//  - `{{funcname}}__max_bound()` if `x / y` would overflow.
 
 
 {{type}}
 {{funcname}}__mod_b(
         {{type}} x,
         {{type}} y );
-// Returns: - `0` if `!{{funcname}}__can_div( x, y )`;
-//          - `x % y` otherwise.
 
 
 {{type}}
 {{funcname}}__negate_b(
         {{type}} x );
-// Returns the negation of `x`, or the closest representable value.
 
 
 {{type}}
 {{funcname}}__abs_b(
         {{type}} x );
-// Returns the absolute value of `x`, or the closest representable value.
+
+
+{{type}}
+{{funcname}}__update_average(
+        {{type}} average,
+        intmax_t num,
+        {{type}} value );
+// Given a cumulative `average` over `num` data points, returns the average of
+// those data points and the `value`. This provides a safer way to calculate:
+//
+{% if num_type == 'signed' -%}
+//     average + ( ( value - average ) / ( num + 1 ) )
+{%- else -%}
+//     ( ( average * num ) + value ) / ( num + 1 )
+{%- endif %}
+//
+// If `num <= 0`, then `value` is simply returned as the new average.
+//
+// @error EOVERFLOW if `num == INTMAX_MAX`; returns `average`
+{% if num_type != 'signed' -%}
+// @error EOVERFLOW if `num > {{funcname}}__max_bound() && average > 0`;
+//                  returns average
+{%- endif %}
+// @error EOVERFLOW if arithmetic operations overflow; returns the average of
+//                  the bounded results of those operations
 
 
 bool

@@ -346,6 +346,10 @@ bool
 
 {% call typeclass('NUM') %}
 
+#include <errno.h>
+#include <limits.h>     // INTMAX_MAX
+
+
 bool
 {{funcname}}__is_signed(
         void )
@@ -380,6 +384,298 @@ size_t
 }
 
 
+bool
+{{funcname}}__can_add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__add_would_underflow( x, y )
+        && !{{funcname}}__add_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__can_sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__sub_would_underflow( x, y )
+        && !{{funcname}}__sub_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__can_mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__mul_would_underflow( x, y )
+        && !{{funcname}}__mul_would_overflow( x, y );
+}
+
+
+bool
+{{funcname}}__can_div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return y != 0
+        && !{{funcname}}__div_would_underflow( x, y )
+        && !{{funcname}}__div_would_overflow( x, y );
+}
+
+
+{{type}}
+{{funcname}}__add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__add_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__add_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x + y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__sub_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__sub_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x - y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__mul_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__mul_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x * y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mod(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( {{funcname}}__can_div( x, y ) ) {
+        return x % y;
+    } else {
+        errno = EOVERFLOW;
+        return 0;
+    }
+}
+
+
+{{type}}
+{{funcname}}__add_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    int const saved_errno = errno;
+    {{type}} const r = {{funcname}}__add( x, y );
+    errno = saved_errno;
+    return r;
+}
+
+
+{{type}}
+{{funcname}}__sub_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    int const saved_errno = errno;
+    {{type}} const r = {{funcname}}__sub( x, y );
+    errno = saved_errno;
+    return r;
+}
+
+
+{{type}}
+{{funcname}}__mul_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    int const saved_errno = errno;
+    {{type}} const r = {{funcname}}__mul( x, y );
+    errno = saved_errno;
+    return r;
+}
+
+
+{{type}}
+{{funcname}}__div_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    int const saved_errno = errno;
+    {{type}} const r = {{funcname}}__div( x, y );
+    errno = saved_errno;
+    return r;
+}
+
+
+{{type}}
+{{funcname}}__mod_b(
+        {{type}} const x,
+        {{type}} const y )
+{
+    int const saved_errno = errno;
+    {{type}} const r = {{funcname}}__mod( x, y );
+    errno = saved_errno;
+    return r;
+}
+
+
+{{type}}
+{{funcname}}__negate_b( {{type}} const x )
+{
+    int const saved_errno = errno;
+    {{type}} const r = {{funcname}}__negate( x );
+    errno = saved_errno;
+    return r;
+}
+
+
+{{type}}
+{{funcname}}__abs_b( {{type}} const x )
+{
+    int const saved_errno = errno;
+    {{type}} const r = {{funcname}}__abs( x );
+    errno = saved_errno;
+    return r;
+}
+
+
+bool
+{{funcname}}__in_delta(
+        {{type}} const x,
+        {{type}} const delta,
+        {{type}} const y )
+{
+    return {{funcname}}__sub_b( x, delta ) <= y
+        && y <= {{funcname}}__add_b( x, delta );
+}
+
+
+bool
+{{funcname}}__in_xdelta(
+        {{type}} const x,
+        {{type}} const delta,
+        {{type}} const y )
+{
+    return {{funcname}}__sub_b( x, delta ) < y
+        && y < {{funcname}}__add_b( x, delta );
+}
+
+
+bool
+{{funcname}}__is_zero(
+        {{type}} const x )
+{
+    return x == 0;
+}
+
+
+bool
+{{funcname}}__is_nonzero(
+        {{type}} const x )
+{
+    return x != 0;
+}
+
+
+bool
+{{funcname}}__is_positive(
+        {{type}} const x )
+{
+    return x > 0;
+}
+
+
+ord
+{{funcname}}__compare_0(
+        {{type}} const x )
+{
+    return {{funcname}}__compare( x, 0 );
+}
+
+
+bool
+{{funcname}}__is_even(
+        {{type}} const x )
+{
+    return x % 2 == 0;
+}
+
+
+bool
+{{funcname}}__is_odd(
+        {{type}} const x )
+{
+    return x % 2 == 1;
+}
+
+
+{{type}} {{funcname}}__add_2( {{type}} const x )
+        { return {{funcname}}__add( x, 2 ); }
+{{type}} {{funcname}}__sub_2( {{type}} const x )
+        { return {{funcname}}__sub( x, 2 ); }
+{{type}} {{funcname}}__mul_2( {{type}} const x )
+        { return {{funcname}}__mul( x, 2 ); }
+{{type}} {{funcname}}__div_2( {{type}} const x )
+        { return {{funcname}}__div( x, 2 ); }
+{{type}} {{funcname}}__mod_2( {{type}} const x )
+        { return {{funcname}}__mod( x, 2 ); }
+
+
+{{type}} {{funcname}}__mul_10( {{type}} const x )
+        { return {{funcname}}__mul( x, 10 ); }
+{{type}} {{funcname}}__div_10( {{type}} const x )
+        { return {{funcname}}__div( x, 10 ); }
+
+
+{{type}} {{funcname}}__add_b_2( {{type}} const x )
+        { return {{funcname}}__add_b( x, 2 ); }
+{{type}} {{funcname}}__sub_b_2( {{type}} const x )
+        { return {{funcname}}__sub_b( x, 2 ); }
+{{type}} {{funcname}}__mul_b_2( {{type}} const x )
+        { return {{funcname}}__mul_b( x, 2 ); }
+{{type}} {{funcname}}__div_b_2( {{type}} const x )
+        { return {{funcname}}__div_b( x, 2 ); }
+{{type}} {{funcname}}__mod_b_2( {{type}} const x )
+        { return {{funcname}}__mod_b( x, 2 ); }
+{{type}} {{funcname}}__mul_b_10( {{type}} const x )
+        { return {{funcname}}__mul_b( x, 10 ); }
+{{type}} {{funcname}}__div_b_10( {{type}} const x )
+        { return {{funcname}}__div_b( x, 10 ); }
+{{type}} {{funcname}}__mod_b_10( {{type}} const x )
+        { return {{funcname}}__mod_b( x, 10 ); }
+
+
 {% if num_type == 'signed' %}
 
 
@@ -402,16 +698,6 @@ bool
 
 
 bool
-{{funcname}}__can_add(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return !{{funcname}}__add_would_underflow( x, y )
-        && !{{funcname}}__add_would_overflow( x, y );
-}
-
-
-bool
 {{funcname}}__sub_would_underflow(
         {{type}} const x,
         {{type}} const y )
@@ -426,16 +712,6 @@ bool
         {{type}} const y )
 {
     return y < 0 && x > ( {{funcname}}__max_bound() + y );
-}
-
-
-bool
-{{funcname}}__can_sub(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return !{{funcname}}__sub_would_underflow( x, y )
-        && !{{funcname}}__sub_would_overflow( x, y );
 }
 
 
@@ -462,16 +738,6 @@ bool
 
 
 bool
-{{funcname}}__can_mul(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return !{{funcname}}__mul_would_underflow( x, y )
-        && !{{funcname}}__mul_would_overflow( x, y );
-}
-
-
-bool
 {{funcname}}__div_would_underflow(
         {{type}} const x,
         {{type}} const y )
@@ -489,149 +755,19 @@ bool
 }
 
 
-bool
-{{funcname}}__can_div(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return ( y != 0 && !{{funcname}}__div_would_overflow( x, y ) );
-}
-
-
-{{type}}
-{{funcname}}__add(
-        {{type}} const x,
-        {{type}} const y )
-{
-    ASSERT( {{funcname}}__can_add( x, y ) );
-
-    return x + y;
-}
-
-
-{{type}}
-{{funcname}}__sub(
-        {{type}} const x,
-        {{type}} const y )
-{
-    ASSERT( {{funcname}}__can_sub( x, y ) );
-
-    return x - y;
-}
-
-
-{{type}}
-{{funcname}}__mul(
-        {{type}} const x,
-        {{type}} const y )
-{
-    ASSERT( {{funcname}}__can_mul( x, y ) );
-
-    return x * y;
-}
-
-
 {{type}}
 {{funcname}}__div(
         {{type}} const x,
         {{type}} const y )
 {
-    ASSERT( {{funcname}}__can_div( x, y ) );
-
-    return x / y;
-}
-
-
-{{type}}
-{{funcname}}__mod(
-        {{type}} const x,
-        {{type}} const y )
-{
-    ASSERT( {{funcname}}__can_div( x, y ) );
-
-    return x % y;
-}
-
-
-{{type}}
-{{funcname}}__negate( {{type}} const x )
-{
-    ASSERT( x != {{funcname}}__min_bound() );
-
-    return -x;
-}
-
-
-{{type}}
-{{funcname}}__abs( {{type}} const x )
-{
-    ASSERT( x != {{funcname}}__min_bound() );
-
-    return ( x < 0 ) ? -x : x;
-}
-
-
-{{type}}
-{{funcname}}__add_b(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__add_would_underflow( x, y ) ) {
-        return {{funcname}}__min_bound();
-    } else if ( {{funcname}}__add_would_overflow( x, y ) ) {
-        return {{funcname}}__max_bound();
-    } else {
-        return x + y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__sub_b(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__sub_would_underflow( x, y ) ) {
-        return {{funcname}}__min_bound();
-    } else if ( {{funcname}}__sub_would_overflow( x, y ) ) {
-        return {{funcname}}__max_bound();
-    } else {
-        return x - y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__mul_b(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__mul_would_underflow( x, y ) ) {
-        return {{funcname}}__min_bound();
-    } else if ( {{funcname}}__mul_would_overflow( x, y ) ) {
-        return {{funcname}}__max_bound();
-    } else {
-        return x * y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__div_b(
-        {{type}} const x,
-        {{type}} const y )
-{
     if ( y == 0 ) {
-        if ( x < 0 ) {
-            return {{funcname}}__min_bound();
-        } else if ( x == 0 ) {
-            return 0;
-        } else /* x > 0 */ {
-            return {{funcname}}__max_bound();
-        }
-    } else if ( {{funcname}}__div_would_underflow( x, y ) ) {
-        return {{funcname}}__min_bound();
+        errno = EDOM;
+        // We return the maximum value as `y` approaches `0` from positive:
+        return ( x < 0 ) ? {{funcname}}__min_bound()
+             : ( x > 0 ) ? {{funcname}}__max_bound()
+                         : 0;
     } else if ( {{funcname}}__div_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
         return {{funcname}}__max_bound();
     } else {
         return x / y;
@@ -640,36 +776,50 @@ bool
 
 
 {{type}}
-{{funcname}}__mod_b(
-        {{type}} const x,
-        {{type}} const y )
+{{funcname}}__negate(
+        {{type}} const x )
 {
-    if ( !{{funcname}}__can_div( x, y ) ) {
-        return 0;
-    } else {
-        return x % y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__negate_b( {{type}} const x )
-{
-    if ( x == {{funcname}}__min_bound() ) {
-        return {{funcname}}__max_bound();
-    } else {
+    if ( x != {{funcname}}__min_bound() ) {
         return -x;
+    } else {
+        errno = EOVERFLOW;
+        return 0;
     }
 }
 
 
 {{type}}
-{{funcname}}__abs_b( {{type}} const x )
+{{funcname}}__abs(
+        {{type}} const x )
 {
-    if ( x == {{funcname}}__min_bound() ) {
-        return {{funcname}}__max_bound();
+    return ( x < 0 ) ? {{funcname}}__negate( x ) : x;
+}
+
+
+{{type}}
+{{funcname}}__update_average(
+        {{type}} const average,
+        intmax_t const num,
+        {{type}} const value )
+{
+    if ( num <= 0 ) {
+        return value;
+    } else if ( num == INTMAX_MAX ) {
+        errno = EOVERFLOW;
+        return average;
+    }
+    int const saved_errno = errno;
+    errno = 0;
+    // `num + 1 > 0`, so dividing a `{{type}}` value by that quantity will
+    // not produce a value that overflows for `{{type}}`:
+    {{type}} const new = {{funcname}}__add(
+                           average,
+                           {{funcname}}__sub( value, average ) / ( num + 1 ) );
+    if ( errno ) {
+        return average;
     } else {
-        return {{funcname}}__abs( x );
+        errno = saved_errno;
+        return new;
     }
 }
 
@@ -684,82 +834,33 @@ bool
 
 
 bool
-{{funcname}}__in_delta(
-        {{type}} const x,
-        {{type}} const delta,
-        {{type}} const y )
+{{funcname}}__is_negative(
+        {{type}} const x )
 {
-    return {{funcname}}__sub_b( x, delta ) <= y
-        && y <= {{funcname}}__add_b( x, delta );
+    return x < 0;
 }
 
 
 bool
-{{funcname}}__in_xdelta(
-        {{type}} const x,
-        {{type}} const delta,
-        {{type}} const y )
+{{funcname}}__is_nonpositive(
+        {{type}} const x )
 {
-    return {{funcname}}__sub_b( x, delta ) < y
-        && y < {{funcname}}__add_b( x, delta );
+    return x <= 0;
 }
 
 
-bool {{funcname}}__is_negative   ( {{type}} const x ) { return x < 0; }
-bool {{funcname}}__is_nonpositive( {{type}} const x ) { return x <= 0; }
-bool {{funcname}}__is_zero       ( {{type}} const x ) { return x == 0; }
-bool {{funcname}}__is_nonzero    ( {{type}} const x ) { return x != 0; }
-bool {{funcname}}__is_nonnegative( {{type}} const x ) { return x >= 0; }
-bool {{funcname}}__is_positive   ( {{type}} const x ) { return x > 0; }
-
-
-ord
-{{funcname}}__compare_0( {{type}} const x )
+bool
+{{funcname}}__is_nonnegative(
+        {{type}} const x )
 {
-    return {{funcname}}__compare( x, 0 );
+    return x >= 0;
 }
 
 
-bool {{funcname}}__is_even( {{type}} const x ) { return x % 2 == 0; }
-bool {{funcname}}__is_odd ( {{type}} const x ) { return x % 2 == 1; }
+{% else %} {# unsigned type #}
 
+#include <libmacro/minmax.h>    // MIN
 
-{{type}} {{funcname}}__add_2( {{type}} const x )
-        { return {{funcname}}__add( x, 2 ); }
-{{type}} {{funcname}}__sub_2( {{type}} const x )
-        { return {{funcname}}__sub( x, 2 ); }
-{{type}} {{funcname}}__mul_2( {{type}} const x )
-        { return {{funcname}}__mul( x, 2 ); }
-{{type}} {{funcname}}__div_2( {{type}} const x )
-        { return {{funcname}}__div( x, 2 ); }
-{{type}} {{funcname}}__mod_2( {{type}} const x )
-        { return {{funcname}}__mod( x, 2 ); }
-
-
-{{type}} {{funcname}}__mul_10( {{type}} const x )
-        { return {{funcname}}__mul( x, 10 ); }
-{{type}} {{funcname}}__div_10( {{type}} const x )
-        { return {{funcname}}__div( x, 10 ); }
-
-
-{{type}} {{funcname}}__add_b_2( {{type}} const x )
-        { return {{funcname}}__add_b( x, 2 ); }
-{{type}} {{funcname}}__sub_b_2( {{type}} const x )
-        { return {{funcname}}__sub_b( x, 2 ); }
-{{type}} {{funcname}}__mul_b_2( {{type}} const x )
-        { return {{funcname}}__mul_b( x, 2 ); }
-{{type}} {{funcname}}__div_b_2( {{type}} const x )
-        { return {{funcname}}__div_b( x, 2 ); }
-{{type}} {{funcname}}__mod_b_2( {{type}} const x )
-        { return {{funcname}}__mod_b( x, 2 ); }
-{{type}} {{funcname}}__mul_b_10( {{type}} const x )
-        { return {{funcname}}__mul_b( x, 10 ); }
-{{type}} {{funcname}}__div_b_10( {{type}} const x )
-        { return {{funcname}}__div_b( x, 10 ); }
-{{type}} {{funcname}}__mod_b_10( {{type}} const x )
-        { return {{funcname}}__mod_b( x, 10 ); }
-
-{% else %}
 
 bool
 {{funcname}}__add_would_underflow(
@@ -776,16 +877,6 @@ bool
         {{type}} const y )
 {
     return x > ( {{funcname}}__max_bound() - y );
-}
-
-
-bool
-{{funcname}}__can_add(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return !{{funcname}}__add_would_underflow( x, y )
-        && !{{funcname}}__add_would_overflow( x, y );
 }
 
 
@@ -808,16 +899,6 @@ bool
 
 
 bool
-{{funcname}}__can_sub(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return !{{funcname}}__sub_would_underflow( x, y )
-        && !{{funcname}}__sub_would_overflow( x, y );
-}
-
-
-bool
 {{funcname}}__mul_would_underflow(
         {{type}} const x,
         {{type}} const y )
@@ -832,16 +913,6 @@ bool
         {{type}} const y )
 {
     return ( y > 0 ) && ( x > ( {{funcname}}__max_bound() / y ) );
-}
-
-
-bool
-{{funcname}}__can_mul(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return !{{funcname}}__mul_would_underflow( x, y )
-        && !{{funcname}}__mul_would_overflow( x, y );
 }
 
 
@@ -863,61 +934,17 @@ bool
 }
 
 
-bool
-{{funcname}}__can_div(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return y != 0;
-}
-
-
-{{type}}
-{{funcname}}__add(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return x + y;
-}
-
-
-{{type}}
-{{funcname}}__sub(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return x - y;
-}
-
-
-{{type}}
-{{funcname}}__mul(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return x * y;
-}
-
-
 {{type}}
 {{funcname}}__div(
         {{type}} const x,
         {{type}} const y )
 {
-    ASSERT( {{funcname}}__can_div( x, y ) );
-
-    return x / y;
-}
-
-
-{{type}}
-{{funcname}}__mod(
-        {{type}} const x,
-        {{type}} const y )
-{
-    ASSERT( {{funcname}}__can_div( x, y ) );
-
-    return x % y;
+    if ( y == 0 ) {
+        errno = EDOM;
+        return ( x == 0 ) ? 0 : {{funcname}}__max_bound();
+    } else {
+        return x / y;
+    }
 }
 
 
@@ -936,85 +963,29 @@ bool
 
 
 {{type}}
-{{funcname}}__add_b(
-        {{type}} const x,
-        {{type}} const y )
+{{funcname}}__update_average(
+        {{type}} const average,
+        intmax_t const num,
+        {{type}} const value )
 {
-    if ( {{funcname}}__add_would_overflow( x, y ) ) {
-        return {{funcname}}__max_bound();
-    } else {
-        return x + y;
+    if ( num <= 0 ) {
+        return value;
+    } else if ( num == INTMAX_MAX ||
+                ( num > {{funcname}}__max_bound() && average > 0 ) ) {
+        errno = EOVERFLOW;
+        return average;
     }
-}
-
-
-{{type}}
-{{funcname}}__sub_b(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__sub_would_underflow( x, y ) ) {
-        return 0;
+    int const saved_errno = errno;
+    errno = 0;
+    {{type}} const new = {{funcname}}__add( {{funcname}}__mul( num, average ),
+                                            value )
+                         / ( num + 1 );
+    if ( errno ) {
+        return average;
     } else {
-        return x - y;
+        errno = saved_errno;
+        return new;
     }
-}
-
-
-{{type}}
-{{funcname}}__mul_b(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__mul_would_overflow( x, y ) ) {
-        return {{funcname}}__max_bound();
-    } else {
-        return x * y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__div_b(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( y == 0 ) {
-        if ( x == 0 ) {
-            return 0;
-        } else /* x > 0 */ {
-            return {{funcname}}__max_bound();
-        }
-    } else {
-        return x / y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__mod_b(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( !{{funcname}}__can_div( x, y ) ) {
-        return 0;
-    } else {
-        return x % y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__negate_b( {{type}} const x )
-{
-    return {{funcname}}__negate( x );
-}
-
-
-{{type}}
-{{funcname}}__abs_b( {{type}} const x )
-{
-    return {{funcname}}__abs( x );
 }
 
 
@@ -1028,80 +999,27 @@ bool
 
 
 bool
-{{funcname}}__in_delta(
-        {{type}} const x,
-        {{type}} const delta,
-        {{type}} const y )
+{{funcname}}__is_negative(
+        {{type}} const x )
 {
-    return {{funcname}}__sub_b( x, delta ) <= y
-        && y <= {{funcname}}__add_b( x, delta );
+    return false;
 }
 
 
 bool
-{{funcname}}__in_xdelta(
-        {{type}} const x,
-        {{type}} const delta,
-        {{type}} const y )
+{{funcname}}__is_nonpositive(
+        {{type}} const x )
 {
-    return {{funcname}}__sub_b( x, delta ) < y
-        && y < {{funcname}}__add_b( x, delta );
+    return x == 0;
 }
 
 
-bool {{funcname}}__is_negative   ( {{type}} const x ) { return false; }
-bool {{funcname}}__is_nonpositive( {{type}} const x ) { return x == 0; }
-bool {{funcname}}__is_zero       ( {{type}} const x ) { return x == 0; }
-bool {{funcname}}__is_nonzero    ( {{type}} const x ) { return x != 0; }
-bool {{funcname}}__is_nonnegative( {{type}} const x ) { return true; }
-bool {{funcname}}__is_positive   ( {{type}} const x ) { return x != 0; }
-
-
-ord
-{{funcname}}__compare_0( {{type}} const x )
+bool
+{{funcname}}__is_nonnegative(
+        {{type}} const x )
 {
-    return {{funcname}}__compare( x, 0 );
+    return true;
 }
-
-
-bool {{funcname}}__is_even( {{type}} const x ) { return x % 2 == 0; }
-bool {{funcname}}__is_odd ( {{type}} const x ) { return x % 2 == 1; }
-
-
-{{type}} {{funcname}}__add_2( {{type}} const x )
-        { return {{funcname}}__add( x, 2 ); }
-{{type}} {{funcname}}__sub_2( {{type}} const x )
-        { return {{funcname}}__sub( x, 2 ); }
-{{type}} {{funcname}}__mul_2( {{type}} const x )
-        { return {{funcname}}__mul( x, 2 ); }
-{{type}} {{funcname}}__div_2( {{type}} const x )
-        { return {{funcname}}__div( x, 2 ); }
-{{type}} {{funcname}}__mod_2( {{type}} const x )
-        { return {{funcname}}__mod( x, 2 ); }
-
-
-{{type}} {{funcname}}__mul_10( {{type}} const x )
-        { return {{funcname}}__mul( x, 10 ); }
-{{type}} {{funcname}}__div_10( {{type}} const x )
-        { return {{funcname}}__div( x, 10 ); }
-
-
-{{type}} {{funcname}}__add_b_2( {{type}} const x )
-        { return {{funcname}}__add_b( x, 2 ); }
-{{type}} {{funcname}}__sub_b_2( {{type}} const x )
-        { return {{funcname}}__sub_b( x, 2 ); }
-{{type}} {{funcname}}__mul_b_2( {{type}} const x )
-        { return {{funcname}}__mul_b( x, 2 ); }
-{{type}} {{funcname}}__div_b_2( {{type}} const x )
-        { return {{funcname}}__div_b( x, 2 ); }
-{{type}} {{funcname}}__mod_b_2( {{type}} const x )
-        { return {{funcname}}__mod_b( x, 2 ); }
-{{type}} {{funcname}}__mul_b_10( {{type}} const x )
-        { return {{funcname}}__mul_b( x, 10 ); }
-{{type}} {{funcname}}__div_b_10( {{type}} const x )
-        { return {{funcname}}__div_b( x, 10 ); }
-{{type}} {{funcname}}__mod_b_10( {{type}} const x )
-        { return {{funcname}}__mod_b( x, 10 ); }
 
 {% endif %}
 
@@ -1140,7 +1058,6 @@ prefixi( char const * const xs,
         errno = EINVAL;
         return false;
     }
-    errno = 0;
     char const * p = str;
     while ( isspace( *p ) ) {
         p++;
@@ -1179,6 +1096,7 @@ prefixi( char const * const xs,
         errno = EINVAL;
         return 0;
     }
+    int const saved_errno = errno;
     errno = 0;
     char * end_ptr;
 {% if num_type == 'signed' %}
@@ -1202,6 +1120,7 @@ prefixi( char const * const xs,
         errno = ERANGE;
         return {{funcname}}__max_bound();
     } else {
+        errno = saved_errno;
         return x;
     }
 }
@@ -1247,6 +1166,7 @@ char const *
 
 {% call typeclass('TO_STRM') %}
 
+#include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1282,9 +1202,12 @@ char *
     size_t const nd = {{funcname}}__num_digits( x );
     ASSERT( nd < SIZE_MAX - 2 );
     size_t const size = nd + 1 + ( x < 0 );
+    int const saved_errno = errno;
+    errno = 0;
     char * const buf = malloc( size );
     if ( errno ) { return NULL; }
     {{funcname}}__into_strm( x, buf, size );
+    errno = saved_errno;
     return buf;
 }
 
@@ -1327,9 +1250,12 @@ char *
     size_t const nd = {{funcname}}__num_digits( x );
     ASSERT( nd < SIZE_MAX - 1 );
     size_t const size = nd + 1;
+    int const saved_errno = errno;
+    errno = 0;
     char * const buf = malloc( size );
     if ( errno ) { return NULL; }
     {{funcname}}__into_strm( x, buf, size );
+    errno = saved_errno;
     return buf;
 }
 

@@ -11,9 +11,33 @@
 #include "../uchar.h"
 
 
+static
+void
+test_update_average( void )
+{
+    int average = 100;
+    intmax_t num = 0;
+    average = int__update_average( average, num++, 3 );
+    ASSERT( average == 3 );
+    average = int__update_average( average, num++, 5 );
+    ASSERT( average == 4 );
+    average = int__update_average( average, num++, 7 );
+    ASSERT( average == 5 );
+    average = int__update_average( average, num++, 25 );
+    ASSERT( average == 10 );
+    average = int__update_average( average, num++, 11 );
+    ASSERT( average == 10 );
+    average = int__update_average( average, num++, 2 );
+    ASSERT( average == 9 );
+}
+
+
 int
 main( void )
 {
+
+    printf( "Running tests...\n" );
+
     size_t const num_tests = 1000;
 
     for ( size_t i = 0; i < num_tests; i++ ) {
@@ -39,7 +63,7 @@ main( void )
                 int__min( x, y, z ) == int__min2( x, int__min2( y, z ) ),
                 int__min( x, y, z ) <= int__max( x, y, z ) );
     }
-    printf( "`int` assertions passed.\n" );
+    printf( "  int assertions passed\n" );
 
     for ( size_t i = 0; i < num_tests; i++ ) {
         uchar const x = rand() % uchar__max_bound();
@@ -67,7 +91,7 @@ main( void )
                 uchar__compare_i( 'x', 'X' ) == EQ,
                 uchar__compare_i( 'x', 'Y' ) == LT );
     }
-    printf( "`uchar` assertions passed.\n" );
+    printf( "  uchar assertions passed\n" );
 
     ASSERT( int__clamp( 5, 0, 10 ) == 5,
             int__clamp( 0, 0, 10 ) == 0,
@@ -85,7 +109,11 @@ main( void )
             uchar__clamp( 10, 0, 10 ) == 10,
             uchar__clamp( 11, 0, 10 ) == 10,
             uchar__clamp( UCHAR_MAX, 0, 10 ) == 10 );
-    printf( "`clamp()` assertions passed.\n" );
+    printf( "  clamp assertions passed\n" );
+
+
+    test_update_average();
+    printf( "  update_average assertions passed\n" );
 
 }
 
