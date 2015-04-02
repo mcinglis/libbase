@@ -7,13 +7,35 @@
 #include <libmacro/assert.h>
 #include <libmacro/logic.h>
 
-#include "../int.h"
 #include "../uchar.h"
+#include "../int.h"
+#include "../ulong.h"
 
 
 static
 void
-test_update_average( void )
+test_update_average_unsigned( void )
+{
+    ulong average = 100;
+    intmax_t num = 0;
+    average = ulong__update_average( average, num++, 3 );
+    ASSERT( average == 3 );
+    average = ulong__update_average( average, num++, 5 );
+    ASSERT( average == 4 );
+    average = ulong__update_average( average, num++, 7 );
+    ASSERT( average == 5 );
+    average = ulong__update_average( average, num++, 25 );
+    ASSERT( average == 10 );
+    average = ulong__update_average( average, num++, 11 );
+    ASSERT( average == 10 );
+    average = ulong__update_average( average, num++, 2 );
+    ASSERT( average == 8 );
+}
+
+
+static
+void
+test_update_average_signed( void )
 {
     int average = 100;
     intmax_t num = 0;
@@ -28,7 +50,22 @@ test_update_average( void )
     average = int__update_average( average, num++, 11 );
     ASSERT( average == 10 );
     average = int__update_average( average, num++, 2 );
-    ASSERT( average == 9 );
+    ASSERT( average == 8 );
+    average = int__update_average( average, num++, -20 );
+    ASSERT( average == 4 );
+    average = int__update_average( average, num++, -50 );
+    ASSERT( average == -2 );
+    average = int__update_average( average, num++, -100 );
+    ASSERT( average == -12 );
+}
+
+
+static
+void
+test_update_average( void )
+{
+    test_update_average_unsigned();
+    test_update_average_signed();
 }
 
 

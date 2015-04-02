@@ -13,20 +13,24 @@ CFLAGS ?= -std=c11 -g \
           -Wnested-externs -Wold-style-definition -Wredundant-decls \
           -Wshadow -Wstrict-prototypes -Wunused-macros -Wvla -Wwrite-strings \
           -Wno-missing-field-initializers -Wno-override-init \
-          -Wno-unused-parameter
+          -Wno-type-limits -Wno-unused-parameter
 
 TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 
 
-test_types   := int uchar ptrm-short
+test_types   := uchar int ulong ptrm-short
 
-int_type           := int
-int_options        := --typeclasses BOUNDED EQ ORD ENUM NUM \
-                      --extra num_type=signed
+uchar_type    := uchar
+uchar_options := --typeclasses BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+                 --extra char_funcs=true num_type=unsigned
 
-uchar_type         := uchar
-uchar_options      := --typeclasses BOUNDED EQ ORD ENUM NUM \
-                      --extra char_funcs=true num_type=unsigned
+int_type    := int
+int_options := --typeclasses BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+               --extra num_type=signed
+
+ulong_type    := ulong
+ulong_options := --typeclasses BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+                 --extra num_type=unsigned
 
 ptrm_short_type    := short *
 ptrm_short_options := --typeclasses EQ ORD ENUM

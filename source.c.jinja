@@ -477,6 +477,29 @@ bool
 
 
 {{type}}
+{{funcname}}__div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    if ( y == 0 ) {
+        errno = EDOM;
+        // We return the maximum value as `y` approaches `0` from positive:
+        return ( x < 0 ) ? {{funcname}}__min_bound()
+             : ( x > 0 ) ? {{funcname}}__max_bound()
+                         : 0;
+    } else if ( {{funcname}}__div_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__div_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x / y;
+    }
+}
+
+
+{{type}}
 {{funcname}}__mod(
         {{type}} const x,
         {{type}} const y )
@@ -487,6 +510,14 @@ bool
         errno = EOVERFLOW;
         return 0;
     }
+}
+
+
+{{type}}
+{{funcname}}__abs(
+        {{type}} const x )
+{
+    return ( x < 0 ) ? {{funcname}}__negate( x ) : x;
 }
 
 
@@ -571,6 +602,46 @@ bool
 
 
 bool
+{{funcname}}__same_sign(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( x < 0 ) == ( y < 0 );
+}
+
+
+{{type}}
+{{funcname}}__update_average(
+        {{type}} const average,
+        intmax_t const num,
+        {{type}} const value )
+{
+    if ( num <= 0 ) {
+        return value;
+    } else if ( num == INTMAX_MAX
+             || ( average > 0
+               && {{funcname}}__max_bound() <= INTMAX_MAX
+               && num > ( intmax_t ) {{funcname}}__max_bound() ) ) {
+        errno = EOVERFLOW;
+        return average;
+    }
+    int const saved_errno = errno;
+    errno = 0;
+    // `num + 1 > 0`, so dividing a `{{type}}` value by that quantity will
+    // not produce a value that overflows for `{{type}}`:
+    {{type}} const new = {{funcname}}__add( {{funcname}}__mul( num, average ),
+                                            value )
+                         / ( num + 1 );
+    if ( errno ) {
+        return average;
+    } else {
+        errno = saved_errno;
+        return new;
+    }
+}
+
+
+bool
 {{funcname}}__in_delta(
         {{type}} const x,
         {{type}} const delta,
@@ -592,52 +663,20 @@ bool
 }
 
 
-bool
-{{funcname}}__is_zero(
-        {{type}} const x )
-{
-    return x == 0;
-}
+bool {{funcname}}__is_negative   ( {{type}} const x ) { return x < 0; }
+bool {{funcname}}__is_nonpositive( {{type}} const x ) { return x <= 0; }
+bool {{funcname}}__is_zero       ( {{type}} const x ) { return x == 0; }
+bool {{funcname}}__is_nonzero    ( {{type}} const x ) { return x != 0; }
+bool {{funcname}}__is_nonnegative( {{type}} const x ) { return x >= 0; }
+bool {{funcname}}__is_positive   ( {{type}} const x ) { return x > 0; }
 
 
-bool
-{{funcname}}__is_nonzero(
-        {{type}} const x )
-{
-    return x != 0;
-}
+bool {{funcname}}__is_even( {{type}} const x ) { return x % 2 == 0; }
+bool {{funcname}}__is_odd ( {{type}} const x ) { return x % 2 == 1; }
 
 
-bool
-{{funcname}}__is_positive(
-        {{type}} const x )
-{
-    return x > 0;
-}
-
-
-ord
-{{funcname}}__compare_0(
-        {{type}} const x )
-{
-    return {{funcname}}__compare( x, 0 );
-}
-
-
-bool
-{{funcname}}__is_even(
-        {{type}} const x )
-{
-    return x % 2 == 0;
-}
-
-
-bool
-{{funcname}}__is_odd(
-        {{type}} const x )
-{
-    return x % 2 == 1;
-}
+ord {{funcname}}__compare_0( {{type}} const x )
+    { return {{funcname}}__compare( x, 0 ); }
 
 
 {{type}} {{funcname}}__add_2( {{type}} const x )
@@ -756,26 +795,6 @@ bool
 
 
 {{type}}
-{{funcname}}__div(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( y == 0 ) {
-        errno = EDOM;
-        // We return the maximum value as `y` approaches `0` from positive:
-        return ( x < 0 ) ? {{funcname}}__min_bound()
-             : ( x > 0 ) ? {{funcname}}__max_bound()
-                         : 0;
-    } else if ( {{funcname}}__div_would_overflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__max_bound();
-    } else {
-        return x / y;
-    }
-}
-
-
-{{type}}
 {{funcname}}__negate(
         {{type}} const x )
 {
@@ -788,78 +807,7 @@ bool
 }
 
 
-{{type}}
-{{funcname}}__abs(
-        {{type}} const x )
-{
-    return ( x < 0 ) ? {{funcname}}__negate( x ) : x;
-}
-
-
-{{type}}
-{{funcname}}__update_average(
-        {{type}} const average,
-        intmax_t const num,
-        {{type}} const value )
-{
-    if ( num <= 0 ) {
-        return value;
-    } else if ( num == INTMAX_MAX ) {
-        errno = EOVERFLOW;
-        return average;
-    }
-    int const saved_errno = errno;
-    errno = 0;
-    // `num + 1 > 0`, so dividing a `{{type}}` value by that quantity will
-    // not produce a value that overflows for `{{type}}`:
-    {{type}} const new = {{funcname}}__add(
-                           average,
-                           {{funcname}}__sub( value, average ) / ( num + 1 ) );
-    if ( errno ) {
-        return average;
-    } else {
-        errno = saved_errno;
-        return new;
-    }
-}
-
-
-bool
-{{funcname}}__same_sign(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return ( x < 0 ) == ( y < 0 );
-}
-
-
-bool
-{{funcname}}__is_negative(
-        {{type}} const x )
-{
-    return x < 0;
-}
-
-
-bool
-{{funcname}}__is_nonpositive(
-        {{type}} const x )
-{
-    return x <= 0;
-}
-
-
-bool
-{{funcname}}__is_nonnegative(
-        {{type}} const x )
-{
-    return x >= 0;
-}
-
-
 {% else %} {# unsigned type #}
-
-#include <libmacro/minmax.h>    // MIN
 
 
 bool
@@ -935,91 +883,11 @@ bool
 
 
 {{type}}
-{{funcname}}__div(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( y == 0 ) {
-        errno = EDOM;
-        return ( x == 0 ) ? 0 : {{funcname}}__max_bound();
-    } else {
-        return x / y;
-    }
-}
-
-
-{{type}}
 {{funcname}}__negate( {{type}} const x )
 {
     return -x;
 }
 
-
-{{type}}
-{{funcname}}__abs( {{type}} const x )
-{
-    return x;
-}
-
-
-{{type}}
-{{funcname}}__update_average(
-        {{type}} const average,
-        intmax_t const num,
-        {{type}} const value )
-{
-    if ( num <= 0 ) {
-        return value;
-    } else if ( num == INTMAX_MAX ||
-                ( num > {{funcname}}__max_bound() && average > 0 ) ) {
-        errno = EOVERFLOW;
-        return average;
-    }
-    int const saved_errno = errno;
-    errno = 0;
-    {{type}} const new = {{funcname}}__add( {{funcname}}__mul( num, average ),
-                                            value )
-                         / ( num + 1 );
-    if ( errno ) {
-        return average;
-    } else {
-        errno = saved_errno;
-        return new;
-    }
-}
-
-
-bool
-{{funcname}}__same_sign(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return true;
-}
-
-
-bool
-{{funcname}}__is_negative(
-        {{type}} const x )
-{
-    return false;
-}
-
-
-bool
-{{funcname}}__is_nonpositive(
-        {{type}} const x )
-{
-    return x == 0;
-}
-
-
-bool
-{{funcname}}__is_nonnegative(
-        {{type}} const x )
-{
-    return true;
-}
 
 {% endif %}
 
