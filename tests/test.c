@@ -2,6 +2,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <libtypes/types.h>
 #include <libmacro/assert.h>
@@ -10,6 +11,15 @@
 #include "../uchar.h"
 #include "../int.h"
 #include "../ulong.h"
+
+
+static
+bool
+streq( char const * const xs,
+       char const * const ys )
+{
+    return strcmp( xs, ys ) == 0;
+}
 
 
 static
@@ -66,6 +76,36 @@ test_update_average( void )
 {
     test_update_average_unsigned();
     test_update_average_signed();
+}
+
+
+static
+void
+test_to_str( void )
+{
+    char x[ 32 ];
+    int__into_strm( 0, x, sizeof x );
+    ASSERT( streq( x, "0" ) );
+    int__into_strm( 5, x, sizeof x );
+    ASSERT( streq( x, "5" ) );
+    int__into_strm( 10, x, sizeof x );
+    ASSERT( streq( x, "10" ) );
+    int__into_strm( 20, x, sizeof x );
+    ASSERT( streq( x, "20" ) );
+    int__into_strm( 100, x, sizeof x );
+    ASSERT( streq( x, "100" ) );
+    int__into_strm( 123456789, x, sizeof x );
+    ASSERT( streq( x, "123456789" ) );
+    int__into_strm( -5, x, sizeof x );
+    ASSERT( streq( x, "-5" ) );
+    int__into_strm( -10, x, sizeof x );
+    ASSERT( streq( x, "-10" ) );
+    int__into_strm( -20, x, sizeof x );
+    ASSERT( streq( x, "-20" ) );
+    int__into_strm( -100, x, sizeof x );
+    ASSERT( streq( x, "-100" ) );
+    int__into_strm( -123456789, x, sizeof x );
+    ASSERT( streq( x, "-123456789" ) );
 }
 
 
@@ -148,9 +188,11 @@ main( void )
             uchar__clamp( UCHAR_MAX, 0, 10 ) == 10 );
     printf( "  clamp assertions passed\n" );
 
-
     test_update_average();
     printf( "  update_average assertions passed\n" );
+
+    test_to_str();
+    printf( "  to_str assertions passed\n" );
 
 }
 

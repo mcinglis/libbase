@@ -1054,7 +1054,11 @@ reverse( char * const xs )
         return;
     }
     for ( size_t i = 0; i < ( len / 2 ); i++ ) {
-        xs[ i ] = xs[ len - 1 - i ];
+        char * const l = xs + i;
+        char * const r = xs + ( len - 1 - i );
+        char const tmp = *l;
+        *l = *r;
+        *r = tmp;
     }
 }
 
@@ -1094,7 +1098,7 @@ into_strm(
         buf[ 0 ] = '-';
     }
     size_t i = neg;
-    {{type}} r = x;
+    {{type}} r = {{funcname}}__abs( x );
     do {
         if ( i >= size - 1 ) {
             break;
