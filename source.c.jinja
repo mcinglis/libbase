@@ -154,6 +154,18 @@ bool
     return x != y;
 }
 
+
+{% if 'NULL' in typeclasses %}
+
+bool
+{{funcname}}__is_null(
+        {{type}} const x )
+{
+    return {{funcname}}__equal( x, {{funcname}}__null() );
+}
+
+{% endif %}
+
 {% endcall %}
 
 

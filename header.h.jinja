@@ -119,6 +119,15 @@ bool
         {{type}},
         {{type}} );
 
+
+{% if 'NULL' in typeclasses %}
+
+bool
+{{funcname}}__is_null(
+        {{type}} );
+
+{% endif %}
+
 {% endcall %}
 
 
