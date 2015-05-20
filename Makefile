@@ -21,19 +21,19 @@ TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 test_types   := uchar int ulong ptrm-short
 
 uchar_type    := uchar
-uchar_options := --typeclasses BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+uchar_options := --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
                  --extra char_funcs=true num_type=unsigned
 
 int_type    := int
-int_options := --typeclasses BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+int_options := --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
                --extra num_type=signed
 
 ulong_type    := ulong
-ulong_options := --typeclasses BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+ulong_options := --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
                  --extra num_type=unsigned
 
 ptrm_short_type    := short *
-ptrm_short_options := --typeclasses EQ ORD ENUM
+ptrm_short_options := --typeclasses NULL EQ ORD ENUM
 
 test_gen_sources := $(addsuffix .c,$(test_types))
 test_gen_headers := $(test_gen_sources:.c=.h)

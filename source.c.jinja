@@ -94,9 +94,21 @@ ord
 {% endmacro %}
 
 
+{% call typeclass('NULL') %}
+
+{{type}}
+{{funcname}}__null(
+        void )
+{
+    return 0;
+}
+
+{% endcall %}
+
+
 {% call typeclass('BOUNDED') %}
 
-#include <limits.h>
+#include <libmacro/bound.h>
 
 
 {{type}}
@@ -104,10 +116,8 @@ ord
 {
 {% if min_bound is defined and min_bound %}
     return {{min_bound}};
-{% elif num_type == 'unsigned' %}
-    return 0;
 {% else %}
-    return {{macroname}}_MIN;
+    return MIN_BOUND( ( {{type}} ) 0 );
 {% endif %}
 }
 
@@ -118,7 +128,7 @@ ord
 {% if max_bound is defined and max_bound %}
     return {{max_bound}};
 {% else %}
-    return {{macroname}}_MAX;
+    return MAX_BOUND( ( {{type}} ) 0 );
 {% endif %}
 }
 
@@ -347,7 +357,15 @@ bool
 {% call typeclass('NUM') %}
 
 #include <errno.h>
-#include <limits.h>     // INTMAX_MAX
+#include <limits.h>     // SIZE_MAX
+
+
+{{type}}
+{{funcname}}__zero(
+        void )
+{
+    return 0;
+}
 
 
 bool
@@ -359,14 +377,6 @@ bool
 {% else %}
     return false;
 {% endif %}
-}
-
-
-{{type}}
-{{funcname}}__zero(
-        void )
-{
-    return 0;
 }
 
 
@@ -582,7 +592,8 @@ bool
 
 
 {{type}}
-{{funcname}}__negate_b( {{type}} const x )
+{{funcname}}__negate_b(
+        {{type}} const x )
 {
     int const saved_errno = errno;
     {{type}} const r = {{funcname}}__negate( x );
@@ -592,7 +603,8 @@ bool
 
 
 {{type}}
-{{funcname}}__abs_b( {{type}} const x )
+{{funcname}}__abs_b(
+        {{type}} const x )
 {
     int const saved_errno = errno;
     {{type}} const r = {{funcname}}__abs( x );
@@ -607,37 +619,6 @@ bool
         {{type}} const y )
 {
     return ( x < 0 ) == ( y < 0 );
-}
-
-
-{{type}}
-{{funcname}}__update_average(
-        {{type}} const average,
-        intmax_t const num,
-        {{type}} const value )
-{
-    if ( num <= 0 ) {
-        return value;
-    } else if ( num == INTMAX_MAX
-             || ( average > 0
-               && {{funcname}}__max_bound() <= INTMAX_MAX
-               && num > ( intmax_t ) {{funcname}}__max_bound() ) ) {
-        errno = EOVERFLOW;
-        return average;
-    }
-    int const saved_errno = errno;
-    errno = 0;
-    // `num + 1 > 0`, so dividing a `{{type}}` value by that quantity will
-    // not produce a value that overflows for `{{type}}`:
-    {{type}} const new = {{funcname}}__add( {{funcname}}__mul( num, average ),
-                                            value )
-                         / ( num + 1 );
-    if ( errno ) {
-        return average;
-    } else {
-        errno = saved_errno;
-        return new;
-    }
 }
 
 
@@ -1073,6 +1054,7 @@ char *
 {
     size_t const nd = {{funcname}}__num_digits( x );
     ASSERT( nd < SIZE_MAX - 2 );
+
     size_t const size = nd + 1 + ( x < 0 );
     int const saved_errno = errno;
     errno = 0;
@@ -1121,6 +1103,7 @@ char *
 {
     size_t const nd = {{funcname}}__num_digits( x );
     ASSERT( nd < SIZE_MAX - 1 );
+
     size_t const size = nd + 1;
     int const saved_errno = errno;
     errno = 0;
@@ -1140,6 +1123,7 @@ into_strm(
         size_t const size )
 {
     ASSERT( size > 0 );
+
     size_t i = 0;
     {{type}} r = x;
     do {

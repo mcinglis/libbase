@@ -24,63 +24,6 @@ streq( char const * const xs,
 
 static
 void
-test_update_average_unsigned( void )
-{
-    ulong average = 100;
-    intmax_t num = 0;
-    average = ulong__update_average( average, num++, 3 );
-    ASSERT( average == 3 );
-    average = ulong__update_average( average, num++, 5 );
-    ASSERT( average == 4 );
-    average = ulong__update_average( average, num++, 7 );
-    ASSERT( average == 5 );
-    average = ulong__update_average( average, num++, 25 );
-    ASSERT( average == 10 );
-    average = ulong__update_average( average, num++, 11 );
-    ASSERT( average == 10 );
-    average = ulong__update_average( average, num++, 2 );
-    ASSERT( average == 8 );
-}
-
-
-static
-void
-test_update_average_signed( void )
-{
-    int average = 100;
-    intmax_t num = 0;
-    average = int__update_average( average, num++, 3 );
-    ASSERT( average == 3 );
-    average = int__update_average( average, num++, 5 );
-    ASSERT( average == 4 );
-    average = int__update_average( average, num++, 7 );
-    ASSERT( average == 5 );
-    average = int__update_average( average, num++, 25 );
-    ASSERT( average == 10 );
-    average = int__update_average( average, num++, 11 );
-    ASSERT( average == 10 );
-    average = int__update_average( average, num++, 2 );
-    ASSERT( average == 8 );
-    average = int__update_average( average, num++, -20 );
-    ASSERT( average == 4 );
-    average = int__update_average( average, num++, -50 );
-    ASSERT( average == -2 );
-    average = int__update_average( average, num++, -100 );
-    ASSERT( average == -12 );
-}
-
-
-static
-void
-test_update_average( void )
-{
-    test_update_average_unsigned();
-    test_update_average_signed();
-}
-
-
-static
-void
 test_to_str( void )
 {
     char x[ 32 ];
@@ -187,9 +130,6 @@ main( void )
             uchar__clamp( 11, 0, 10 ) == 10,
             uchar__clamp( UCHAR_MAX, 0, 10 ) == 10 );
     printf( "  clamp assertions passed\n" );
-
-    test_update_average();
-    printf( "  update_average assertions passed\n" );
 
     test_to_str();
     printf( "  to_str assertions passed\n" );
