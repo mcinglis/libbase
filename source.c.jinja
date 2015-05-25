@@ -46,41 +46,6 @@
 }
 
 
-{% if char_funcs is defined %}
-
-#include <ctype.h>
-
-#include <libmacro/compare.h>
-
-
-bool
-{{funcname}}__equal_i(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return tolower( ( uchar ) x ) == tolower( ( uchar ) y );
-}
-
-
-bool
-{{funcname}}__not_equal_i(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return !{{funcname}}__equal_i( x, y );
-}
-
-
-ord
-{{funcname}}__compare_i(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return COMPARE( tolower( ( uchar ) x ), tolower( ( uchar ) y ) );
-}
-
-{% endif %}
-
 
 
 {% macro typeclass(name) %}
@@ -362,6 +327,74 @@ bool
     return x - 1;
 {% endif %}
 }
+
+{% endcall %}
+
+
+{% call typeclass('CHAR') %}
+
+#include <libmacro/compare.h>
+
+
+{{type}}
+{{funcname}}__to_lower(
+        {{type}} const x )
+{
+    switch ( x ) {
+    case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+    case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+    case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
+    case 'V': case 'W': case 'X': case 'Y': case 'Z':
+        return x + 32;
+    default:
+        return x;
+    }
+}
+
+
+{{type}}
+{{funcname}}__to_upper(
+        {{type}} const x )
+{
+    switch ( x ) {
+    case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
+    case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
+    case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
+    case 'v': case 'w': case 'x': case 'y': case 'z':
+        return x - 32;
+    default:
+        return x;
+    }
+}
+
+
+bool
+{{funcname}}__equal_i(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return {{funcname}}__to_lower( x ) == {{funcname}}__to_lower( y );
+}
+
+
+bool
+{{funcname}}__not_equal_i(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return !{{funcname}}__equal_i( x, y );
+}
+
+
+ord
+{{funcname}}__compare_i(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return COMPARE( {{funcname}}__to_lower( x ),
+                    {{funcname}}__to_lower( y ) );
+}
+
 
 {% endcall %}
 
@@ -1163,7 +1196,7 @@ void
 
     if ( size > 0 ) {
         // We use a temporary buffer so that reversing in `into_strm` works:
-        char tmp[ 32 ];
+        char tmp[ 64 ];
         into_strm( x, tmp, sizeof tmp );
         strncpy( buf, tmp, size - 1 );
         buf[ size - 1 ] = '\0';

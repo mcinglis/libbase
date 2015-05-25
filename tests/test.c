@@ -1,4 +1,5 @@
 
+#include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +28,7 @@ void
 test_to_str( void )
 {
     char x[ 32 ];
+
     int__into_strm( 0, x, sizeof x );
     ASSERT( streq( x, "0" ) );
     int__into_strm( 5, x, sizeof x );
@@ -49,6 +51,43 @@ test_to_str( void )
     ASSERT( streq( x, "-100" ) );
     int__into_strm( -123456789, x, sizeof x );
     ASSERT( streq( x, "-123456789" ) );
+
+    ulong__into_strm( 0, x, sizeof x );
+    ASSERT( streq( x, "0" ) );
+    ulong__into_strm( 5, x, sizeof x );
+    ASSERT( streq( x, "5" ) );
+    ulong__into_strm( 10, x, sizeof x );
+    ASSERT( streq( x, "10" ) );
+    ulong__into_strm( 20, x, sizeof x );
+    ASSERT( streq( x, "20" ) );
+    ulong__into_strm( 100, x, sizeof x );
+    ASSERT( streq( x, "100" ) );
+    ulong__into_strm( 123456789, x, sizeof x );
+    ASSERT( streq( x, "123456789" ) );
+
+    char y[ 4 ];
+
+    int__into_strm( 12345678, y, sizeof y );
+    ASSERT( streq( y, "123" ) );
+    int__into_strm( -12345678, y, sizeof y );
+    ASSERT( streq( y, "-12" ) );
+
+    ulong__into_strm( 12345678, y, sizeof y );
+    ASSERT( streq( y, "123" ) );
+
+    errno = 0;
+    char * const a = int__to_strm( 0 );
+    ASSERT( errno == 0, streq( a, "0" ) );
+    char * const b = int__to_strm( 9999 );
+    ASSERT( errno == 0, streq( b, "9999" ) );
+    char * const c = int__to_strm( -123 );
+    ASSERT( errno == 0, streq( c, "-123" ) );
+    char * const d = ulong__to_strm( 0 );
+    ASSERT( errno == 0, streq( d, "0" ) );
+    char * const e = ulong__to_strm( 9999 );
+    ASSERT( errno == 0, streq( e, "9999" ) );
+
+    free( a ); free( b ); free( c ); free( d ); free( e );
 }
 
 
@@ -64,10 +103,6 @@ main( void )
         int const x = rand();
         int const y = rand();
         int const z = rand();
-        // To avoid warnings when compiling without assertions:
-        ( void ) x;
-        ( void ) y;
-        ( void ) z;
         ASSERT( int__equal( x, x ),
                 int__equal( y, y ),
                 IMPLIES( int__compare( x, y ) == LT,
@@ -89,10 +124,6 @@ main( void )
         uchar const x = rand() % uchar__max_bound();
         uchar const y = rand() % uchar__max_bound();
         uchar const z = rand() % uchar__max_bound();
-        // To avoid warnings when compiling without assertions:
-        ( void ) x;
-        ( void ) y;
-        ( void ) z;
         ASSERT( uchar__equal( x, x ),
                 uchar__equal( y, y ),
                 IMPLIES( uchar__compare( x, y ) == LT,

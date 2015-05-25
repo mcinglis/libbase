@@ -47,30 +47,6 @@
 
 
 
-{% if char_funcs is defined %}
-
-bool
-{{funcname}}__equal_i(
-        {{type}},
-        {{type}} );
-
-
-bool
-{{funcname}}__not_equal_i(
-        {{type}},
-        {{type}} );
-
-
-ord
-{{funcname}}__compare_i(
-        {{type}},
-        {{type}} );
-
-{# TODO: provide classification functions e.g. 'char__is_whitespace()' #}
-
-{% endif %}
-
-
 
 {% macro typeclass(name) %}
 {% if name in typeclasses %}
@@ -263,6 +239,39 @@ bool
 
 {% endcall %}
 
+
+{% call typeclass('CHAR') %}
+
+{{type}}
+{{funcname}}__to_lower(
+        {{type}} );
+
+
+{{type}}
+{{funcname}}__to_upper(
+        {{type}} );
+
+
+bool
+{{funcname}}__equal_i(
+        {{type}},
+        {{type}} );
+
+
+bool
+{{funcname}}__not_equal_i(
+        {{type}},
+        {{type}} );
+
+
+ord
+{{funcname}}__compare_i(
+        {{type}},
+        {{type}} );
+
+{# TODO: provide classification functions e.g. 'char__is_whitespace()' #}
+
+{% endcall %}
 
 
 {% call typeclass('NUM') %}

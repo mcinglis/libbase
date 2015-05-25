@@ -18,36 +18,44 @@ CFLAGS ?= -std=c11 -g \
 TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 
 
-test_types   := uchar int ulong ptrm-short
+libbase_types := uchar int ulong ptrm_short
 
-uchar_type    := uchar
-uchar_options := --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
-                 --extra char_funcs=true num_type=unsigned
+uchar_type := uchar
+uchar_options := \
+    --typeclasses NULL BOUNDED EQ ORD ENUM CHAR NUM FROM_STR TO_STRM \
+    --extra num_type=unsigned
 
-int_type    := int
-int_options := --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
-               --extra num_type=signed
+int_type := int
+int_options := \
+    --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+    --extra num_type=signed
 
-ulong_type    := ulong
-ulong_options := --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
-                 --extra num_type=unsigned
+ulong_type := ulong
+ulong_options := \
+    --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
+    --extra num_type=unsigned
 
-ptrm_short_type    := short *
-ptrm_short_options := --typeclasses NULL EQ ORD ENUM
+ptrm_short_type := short *
+ptrm_short_options := \
+    --typeclasses NULL EQ ORD ENUM
 
-test_gen_sources := $(addsuffix .c,$(test_types))
-test_gen_headers := $(test_gen_sources:.c=.h)
-test_gen_objects := $(test_gen_sources:.c=.o)
-test_binaries := $(basename $(wildcard tests/*.c))
+# Generated files:
+libbase_sources := $(addsuffix .c,$(libbase_types))
+libbase_headers := $(libbase_sources:.c=.h)
+libbase_objects := $(libbase_sources:.c=.o)
 
-test_gen := $(test_gen_sources) \
-            $(test_gen_headers) \
-            $(test_gen_objects)
+gen := \
+    $(libbase_sources) \
+    $(libbase_headers) \
+    $(libbase_objects)
 
-sources := $(wildcard *.c)
+# Non-generated files:
+sources := ord.c
 objects := $(sources:.c=.o)
 
-mkdeps  := $(objects:.o=.dep.mk) $(test_gen_objects:.o=.dep.mk)
+test_binaries := $(basename $(wildcard tests/*.c))
+
+mkdeps  := $(objects:.o=.dep.mk) $(libbase_objects:.o=.dep.mk)
 
 
 
@@ -70,26 +78,22 @@ test: tests
 
 .PHONY: clean
 clean:
-	rm -rf $(objects) $(test_gen) $(test_binaries) $(mkdeps)
+	rm -rf $(objects) $(gen) $(test_binaries) $(mkdeps)
 
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -MMD -MF "$(@:.o=.dep.mk)" -c $< -o $@
 
 
-tests/test: $(test_gen_objects)
+tests/test: $(libbase_objects)
 
-name_from_path = $(subst -,_,$1)
+$(libbase_sources): %.c: source.c.jinja
+	$(TPLRENDER) $< "$($(*)_type)" $($(*)_options) -o $@
 
-$(test_gen_headers): %.h: header.h.jinja
-	$(eval n := $(call name_from_path,$*))
-	$(TPLRENDER) $< "$($(n)_type)" $($(n)_options) -o $@
+$(libbase_headers): %.h: header.h.jinja
+	$(TPLRENDER) $< "$($(*)_type)" $($(*)_options) -o $@
 
-$(test_gen_sources): %.c: source.c.jinja
-	$(eval n := $(call name_from_path,$*))
-	$(TPLRENDER) $< "$($(n)_type)" $($(n)_options) -o $@
-
-$(test_gen_objects): %.o: %.h
+$(libbase_objects): %.o: %.h
 
 
 -include $(mkdeps)
