@@ -274,6 +274,17 @@ ord
 {% endcall %}
 
 
+{% call typeclass('FLOAT') %}
+
+bool
+{{funcname}}__equal_e(
+        {{type}} x,
+        {{type}} y,
+        {{type}} epsilon );
+
+{% endcall %}
+
+
 {% call typeclass('NUM') %}
 
 bool

@@ -18,7 +18,7 @@ CFLAGS ?= -std=c11 -g \
 TPLRENDER ?= $(DEPS_DIR)/tplrender/tplrender
 
 
-libbase_types := uchar int ulong ptrm_short
+libbase_types := uchar int ulong double ptrm_short
 
 uchar_type := uchar
 uchar_options := \
@@ -34,6 +34,11 @@ ulong_type := ulong
 ulong_options := \
     --typeclasses NULL BOUNDED EQ ORD ENUM NUM FROM_STR TO_STRM \
     --extra num_type=unsigned
+
+double_type := double
+double_options := \
+    --typeclasses NULL EQ ORD FLOAT FROM_STR \
+    --extra num_type=float
 
 ptrm_short_type := short *
 ptrm_short_options := \

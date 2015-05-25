@@ -68,6 +68,18 @@
     return 0;
 }
 
+
+{% if 'EQ' in typeclasses %}
+
+bool
+{{funcname}}__is_null(
+        {{type}} const x )
+{
+    return {{funcname}}__equal( x, {{funcname}}__null() );
+}
+
+{% endif %}
+
 {% endcall %}
 
 
@@ -119,17 +131,6 @@ bool
     return x != y;
 }
 
-
-{% if 'NULL' in typeclasses %}
-
-bool
-{{funcname}}__is_null(
-        {{type}} const x )
-{
-    return {{funcname}}__equal( x, {{funcname}}__null() );
-}
-
-{% endif %}
 
 {% endcall %}
 
@@ -393,6 +394,22 @@ ord
 {
     return COMPARE( {{funcname}}__to_lower( x ),
                     {{funcname}}__to_lower( y ) );
+}
+
+
+{% endcall %}
+
+
+{% call typeclass('FLOAT') %}
+
+
+bool
+{{funcname}}__equal_e(
+        {{type}} const x,
+        {{type}} const y,
+        {{type}} const epsilon )
+{
+    return ( x - y ) < epsilon;
 }
 
 
@@ -975,6 +992,28 @@ prefixi( char const * const xs,
         return false;
     }
     return r;
+}
+
+{% elif num_type == 'float' %}
+
+
+#include <stdlib.h>
+
+
+{{type}}
+{{funcname}}__from_str(
+        char const * const str )
+{
+    ASSERT( str != NULL );
+
+    errno = 0;
+{% if type == 'float' %}
+    return strtof( str, NULL );
+{% elif type == 'double' %}
+    return strtod( str, NULL );
+{% else %}
+    return strtold( str, NULL );
+{% endif %}
 }
 
 {% else %}

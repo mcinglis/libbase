@@ -12,6 +12,7 @@
 #include "../uchar.h"
 #include "../int.h"
 #include "../ulong.h"
+#include "../double.h"
 
 
 static
@@ -20,6 +21,16 @@ streq( char const * const xs,
        char const * const ys )
 {
     return strcmp( xs, ys ) == 0;
+}
+
+
+static
+void
+test_from_str( void )
+{
+    ASSERT( double__from_str( "0" ) == 0,
+            double__from_str( "3.14" ) == 3.14,
+            double__from_str( "-98.123" ) == -98.123 );
 }
 
 
@@ -86,7 +97,6 @@ test_to_str( void )
     ASSERT( errno == 0, streq( d, "0" ) );
     char * const e = ulong__to_strm( 9999 );
     ASSERT( errno == 0, streq( e, "9999" ) );
-
     free( a ); free( b ); free( c ); free( d ); free( e );
 }
 
@@ -162,8 +172,11 @@ main( void )
             uchar__clamp( UCHAR_MAX, 0, 10 ) == 10 );
     printf( "  clamp assertions passed\n" );
 
+    test_from_str();
+    printf( "  from_str tests passed\n" );
+
     test_to_str();
-    printf( "  to_str assertions passed\n" );
+    printf( "  to_str tests passed\n" );
 
 }
 
