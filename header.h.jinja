@@ -48,27 +48,30 @@
 
 
 
-{% macro typeclass(name) %}
-{% if name in typeclasses %}
-///////////////////////////////////
-/// TYPECLASS: {{name}}
-///////////////////////////////////
+{% if 'NULL' in typeclasses %}
 
-{{ caller() }}
-{% endif %}
-{% endmacro %}
-
-
-{% call typeclass('NULL') %}
 
 {{type}}
 {{funcname}}__null( void );
 // The value of the `{{type}}` type used to terminate buffers.
 
-{% endcall %}
+
+{% if 'EQ' in typeclasses %}
 
 
-{% call typeclass('BOUNDED') %}
+bool
+{{funcname}}__is_null(
+        {{type}} );
+
+
+{% endif %} {# EQ #}
+{% endif %} {# NULL #}
+
+
+
+
+{% if 'BOUNDED' in typeclasses %}
+
 
 {{type}}
 {{funcname}}__min_bound( void );
@@ -79,10 +82,14 @@
 {{funcname}}__max_bound( void );
 // Returns the maximum value representable by the `{{type}}` type.
 
-{% endcall %}
+
+{% endif %} {# BOUNDED #}
 
 
-{% call typeclass('EQ') %}
+
+
+{% if 'EQ' in typeclasses %}
+
 
 bool
 {{funcname}}__equal(
@@ -96,18 +103,13 @@ bool
         {{type}} );
 
 
-{% if 'NULL' in typeclasses %}
-
-bool
-{{funcname}}__is_null(
-        {{type}} );
-
-{% endif %}
-
-{% endcall %}
+{% endif %} {# EQ #}
 
 
-{% call typeclass('ORD') %}
+
+
+{% if 'ORD' in typeclasses %}
+
 
 ord
 {{funcname}}__compare(
@@ -207,10 +209,14 @@ bool
         {{type}} x );
 // Returns `lower < x && x < upper`.
 
-{% endcall %}
+
+{% endif %} {# ORD #}
 
 
-{% call typeclass('ENUM') %}
+
+
+{% if 'ENUM' in typeclasses %}
+
 
 {{type}}
 {{funcname}}__succ(
@@ -237,10 +243,13 @@ bool
 // Returns the largest `y` such that `y > x`, or `x` if there exists no
 // such `y` in the `{{type}}` type.
 
-{% endcall %}
+
+{% endif %} {# ENUM #}
 
 
-{% call typeclass('CHAR') %}
+
+
+{% if 'CHAR' in typeclasses %}
 
 {{type}}
 {{funcname}}__from_char(
@@ -276,10 +285,23 @@ ord
 
 {# TODO: provide classification functions e.g. 'char__is_whitespace()' #}
 
-{% endcall %}
+
+{% if 'EQ' in typeclasses %}
 
 
-{% call typeclass('FLOAT') %}
+bool
+{{funcname}}__equal_char(
+        {{type}},
+        char );
+
+
+{% endif %} {# EQ #}
+{% endif %} {# CHAR #}
+
+
+
+
+{% if 'FLOAT' in typeclasses %}
 
 bool
 {{funcname}}__equal_e(
@@ -287,10 +309,12 @@ bool
         {{type}} y,
         {{type}} epsilon );
 
-{% endcall %}
+{% endif %} {# FLOAT #}
 
 
-{% call typeclass('NUM') %}
+
+
+{% if 'NUM' in typeclasses %}
 
 bool
 {{funcname}}__is_signed( void );
@@ -605,10 +629,14 @@ bool
 {{funcname}}__mod_b_10(
         {{type}} );
 
-{% endcall %}
+
+{% endif %} {# NUM #}
 
 
-{% call typeclass('FROM_STR') %}
+
+
+{% if 'FROM_STR' in typeclasses %}
+
 
 {{type}}
 {{funcname}}__from_str(
@@ -628,20 +656,28 @@ void
 // Use with functions from Libargs to parse command-line arguments into
 // values of type `{{type}}`.
 
-{% endcall %}
+
+{% endif %}
 
 
-{% call typeclass('TO_STR') %}
+
+
+{% if 'TO_STR' in typeclasses %}
+
 
 char const *
 {{funcname}}__to_str(
         {{type}} );
 // Returns a pointer to a string representation of the given value.
 
-{% endcall %}
+
+{% endif %} {# TO_STR #}
 
 
-{% call typeclass('TO_STRM') %}
+
+
+{% if 'TO_STRM' in typeclasses %}
+
 
 void
 {{funcname}}__into_strm(
@@ -656,7 +692,8 @@ char *
 // Returns a pointer to an allocated buffer of bytes holding the string
 // representation of the given value.
 
-{% endcall %}
+
+{% endif %}
 
 
 #endif // ifndef LIBBASE_{{macroname}}_H

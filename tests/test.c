@@ -101,6 +101,21 @@ test_to_str( void )
 }
 
 
+static
+void
+test_null( void )
+{
+    ASSERT( uchar__null() == '\0',
+            !uchar__is_null( 'a' ),
+            !uchar__is_null( 'x' ),
+            uchar__is_null( '\0' ),
+            double__null() == 0,
+            !double__is_null( 0.001 ),
+            !double__is_null( -0.001 ),
+            double__is_null( 0 ) );
+}
+
+
 int
 main( void )
 {
@@ -178,7 +193,7 @@ main( void )
     test_to_str();
     printf( "  to_str tests passed\n" );
 
+    test_null();
+    printf( "  NULL typeclasses tests passed\n" );
 }
-
-
 

@@ -48,18 +48,8 @@
 
 
 
-{% macro typeclass(name) %}
-{% if typeclasses is defined and name in typeclasses %}
-///////////////////////////////////
-/// TYPECLASS: {{name}}
-///////////////////////////////////
+{% if 'NULL' in typeclasses %}
 
-{{ caller() }}
-{% endif %}
-{% endmacro %}
-
-
-{% call typeclass('NULL') %}
 
 {{type}}
 {{funcname}}__null(
@@ -71,6 +61,7 @@
 
 {% if 'EQ' in typeclasses %}
 
+
 bool
 {{funcname}}__is_null(
         {{type}} const x )
@@ -78,12 +69,14 @@ bool
     return {{funcname}}__equal( x, {{funcname}}__null() );
 }
 
-{% endif %}
 
-{% endcall %}
+{% endif %} {# EQ #}
+{% endif %} {# NULL #}
 
 
-{% call typeclass('BOUNDED') %}
+
+
+{% if 'BOUNDED' in typeclasses %}
 
 #include <libmacro/bound.h>
 
@@ -109,10 +102,13 @@ bool
 {% endif %}
 }
 
-{% endcall %}
+{% endif %}
 
 
-{% call typeclass('EQ') %}
+
+
+{% if 'EQ' in typeclasses %}
+
 
 bool
 {{funcname}}__equal(
@@ -132,10 +128,13 @@ bool
 }
 
 
-{% endcall %}
+{% endif %} {# EQ #}
 
 
-{% call typeclass('ORD') %}
+
+
+{% if 'ORD' in typeclasses %}
+
 
 #include <libmacro/assert.h>
 #include <libmacro/compare.h>
@@ -269,10 +268,14 @@ bool
     return lower < x && x < upper;
 }
 
-{% endcall %}
+
+{% endif %}
 
 
-{% call typeclass('ENUM') %}
+
+
+{% if 'ENUM' in typeclasses %}
+
 
 {{type}}
 {{funcname}}__succ(
@@ -329,10 +332,11 @@ bool
 {% endif %}
 }
 
-{% endcall %}
+{% endif %}
 
 
-{% call typeclass('CHAR') %}
+{% if 'CHAR' in typeclasses %}
+
 
 #include <libmacro/compare.h>
 
@@ -405,10 +409,23 @@ ord
 }
 
 
-{% endcall %}
+{% if 'EQ' in typeclasses %}
 
 
-{% call typeclass('FLOAT') %}
+bool
+{{funcname}}__equal_char(
+        {{type}} const x,
+        char const c )
+{
+    return {{funcname}}__equal( x, {{funcname}}__from_char( c ) );
+}
+
+
+{% endif %} {# EQ #}
+{% endif %} {# CHAR #}
+
+
+{% if 'FLOAT' in typeclasses %}
 
 
 bool
@@ -421,10 +438,11 @@ bool
 }
 
 
-{% endcall %}
+{% endif %} {# FLOAT #}
 
 
-{% call typeclass('NUM') %}
+{% if 'NUM' in typeclasses %}
+
 
 #include <errno.h>
 #include <limits.h>     // SIZE_MAX
@@ -766,7 +784,89 @@ ord {{funcname}}__compare_0( {{type}} const x )
         { return {{funcname}}__mod_b( x, 10 ); }
 
 
-{% if num_type == 'signed' %}
+{% if num_type == 'unsigned' %}
+
+
+bool
+{{funcname}}__add_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__add_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x > ( {{funcname}}__max_bound() - y );
+}
+
+
+bool
+{{funcname}}__sub_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return x < y;
+}
+
+
+bool
+{{funcname}}__sub_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__mul_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__mul_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return ( y > 0 ) && ( x > ( {{funcname}}__max_bound() / y ) );
+}
+
+
+bool
+{{funcname}}__div_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__div_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+{{type}}
+{{funcname}}__negate( {{type}} const x )
+{
+    return -x;
+}
+
+
+{% else %} {# signed #}
 
 
 bool
@@ -858,94 +958,13 @@ bool
 }
 
 
-{% else %} {# unsigned type #}
+{% endif %} {# num_type #}
+
+{% endif %} {# NUM #}
 
 
-bool
-{{funcname}}__add_would_underflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return false;
-}
+{% if 'FROM_STR' in typeclasses %}
 
-
-bool
-{{funcname}}__add_would_overflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return x > ( {{funcname}}__max_bound() - y );
-}
-
-
-bool
-{{funcname}}__sub_would_underflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return x < y;
-}
-
-
-bool
-{{funcname}}__sub_would_overflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return false;
-}
-
-
-bool
-{{funcname}}__mul_would_underflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return false;
-}
-
-
-bool
-{{funcname}}__mul_would_overflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return ( y > 0 ) && ( x > ( {{funcname}}__max_bound() / y ) );
-}
-
-
-bool
-{{funcname}}__div_would_underflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return false;
-}
-
-
-bool
-{{funcname}}__div_would_overflow(
-        {{type}} const x,
-        {{type}} const y )
-{
-    return false;
-}
-
-
-{{type}}
-{{funcname}}__negate( {{type}} const x )
-{
-    return -x;
-}
-
-
-{% endif %}
-
-{% endcall %}
-
-
-{% call typeclass('FROM_STR') %}
 
 #include <errno.h>
 
@@ -1024,7 +1043,7 @@ prefixi( char const * const xs,
 {% endif %}
 }
 
-{% else %}
+{% else %} {# from_str() impl for non-bool, non-float #}
 
 #include <ctype.h>
 #include <inttypes.h>
@@ -1082,10 +1101,10 @@ void
 }
 
 
-{% endcall %}
+{% endif %} {# FROM_STR #}
 
 
-{% call typeclass('TO_STR') %}
+{% if 'TO_STR' in typeclasses %}
 
 {% if type == 'bool' %}
 
@@ -1096,16 +1115,16 @@ char const *
     return x ? "true" : "false";
 }
 
-{% else %}
+{% else %} {# type != 'bool' #}
 
 {{no_implementation}}
 
 {% endif %}
 
-{% endcall %}
+{% endif %}
 
 
-{% call typeclass('TO_STRM') %}
+{% if 'TO_STRM' in typeclasses %}
 
 #include <errno.h>
 #include <limits.h>
@@ -1251,5 +1270,5 @@ void
 }
 
 
-{% endcall %}
+{% endif %} {# TO_STRM #}
 
