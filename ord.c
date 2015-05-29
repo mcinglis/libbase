@@ -243,8 +243,9 @@ ord__pred_b( ord const x )
 
 static
 bool
-prefixi( char const * const xs,
-         char const * const ys )
+prefixi(
+        char const * const xs,
+        char const * const ys )
 {
     ASSERT( xs != NULL, ys != NULL );
 
@@ -256,8 +257,10 @@ prefixi( char const * const xs,
     return true;
 }
 
+
 ord
-ord__from_str( char const * str )
+ord__from_str(
+        char const * str )
 {
     if ( str == NULL || str[ 0 ] == '\0' ) {
         errno = EINVAL;
@@ -291,14 +294,28 @@ ord__from_str( char const * str )
 }
 
 
+void
+ord__arg_parse(
+        char const * const arg_name,
+        char const * const arg_value,
+        void * const ordvp )
+{
+    ASSERT( arg_value != NULL, ordvp != NULL );
+
+    ord * const ordp = ordvp;
+    *ordp = ord__from_str( arg_value );
+}
+
+
 
 ///////////////////////////////////
-/// TYPECLASS: STR_FROM
+/// TYPECLASS: TO_STR
 ///////////////////////////////////
 
 
 char const *
-str__from_ord( ord const x )
+ord__to_str(
+        ord const x )
 {
     return ( x <= LT )  ? "LT"
          : ( x == EQ )  ? "EQ"

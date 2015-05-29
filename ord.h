@@ -147,7 +147,9 @@ ord ord__pred_b( ord x );
 /// TYPECLASS: FROM_STR
 ///////////////////////////////////
 
-ord ord__from_str( char const * str );
+ord
+ord__from_str(
+        char const * str );
 // Returns `LT` if the given `str` contains `"LT"` surrounded only by
 // whitespace, or `EQ` if it contains `"EQ"` surrounded only by whitespace, or
 // `GT` if it contains `"GT"` surrounded only by whitespace. On error, returns
@@ -156,13 +158,24 @@ ord ord__from_str( char const * str );
 // - `EBADMSG` if there was a parse error.
 
 
+void
+ord__arg_parse(
+        char const * arg_name,
+        char const * arg_value,
+        void * ordp );
+// Use with functions from Libargs to parse command-line arguments into
+// values of type `ord`.
+
+
+
 
 ///////////////////////////////////
-/// TYPECLASS: STR_FROM
+/// TYPECLASS: TO_STR
 ///////////////////////////////////
 
 char const *
-str__from_ord( ord );
+ord__to_str(
+        ord );
 // Returns `"LT"` if `x == LT`, `"EQ"` if `x == EQ`, or `"GT"` if `x == GT`.
 
 
