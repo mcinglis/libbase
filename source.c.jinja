@@ -74,6 +74,8 @@ bool
 
 {% if 'BOUNDED' in typeclasses %}
 
+#include <errno.h>
+
 #include <libmacro/bound.h>
 
 
@@ -97,6 +99,44 @@ bool
     return MAX_BOUND( ( {{type}} ) 0 );
 {% endif %}
 }
+
+
+{{type}}
+{{funcname}}__from_float(
+        float const x )
+{
+    return {{funcname}}__from_ldouble( x );
+}
+
+
+{{type}}
+{{funcname}}__from_double(
+        double const x )
+{
+    return {{funcname}}__from_ldouble( x );
+}
+
+
+{{type}}
+{{funcname}}__from_ldouble(
+        ldouble const x )
+{
+    if ( x < {{funcname}}__min_bound() ) {
+        errno = ERANGE;
+        return {{funcname}}__min_bound();
+    } else if ( x > {{funcname}}__max_bound() ) {
+        errno = ERANGE;
+        return {{funcname}}__max_bound();
+    } else {
+        errno = 0;
+        if ( x >= 0 ) {
+            return ( {{type}} ) ( x + 0.5 );
+        } else {
+            return ( {{type}} ) ( x - 0.5 );
+        }
+    }
+}
+
 
 {% endif %}
 
@@ -328,7 +368,10 @@ bool
 {% endif %}
 }
 
-{% endif %}
+
+{% endif %} {# ENUM #}
+
+
 
 
 {% if 'CHAR' in typeclasses %}
@@ -421,7 +464,13 @@ bool
 {% endif %} {# CHAR #}
 
 
+
+
 {% if 'FLOAT' in typeclasses %}
+
+
+#include <errno.h>
+#include <limits.h>
 
 
 bool
@@ -434,7 +483,25 @@ bool
 }
 
 
+{{type}}
+{{funcname}}__update_average(
+        {{type}} const avg,
+        size_t const n,
+        {{type}} const add )
+{
+    errno = 0;
+    if ( n == SIZE_MAX ) {
+        errno = EOVERFLOW;
+        return avg;
+    } else {
+        return ( ( avg * n ) + add ) / ( n + 1 );
+    }
+}
+
+
 {% endif %} {# FLOAT #}
+
+
 
 
 {% if 'NUM' in typeclasses %}
@@ -957,6 +1024,8 @@ bool
 {% endif %} {# num_type #}
 
 {% endif %} {# NUM #}
+
+
 
 
 {% if 'FROM_STR' in typeclasses %}

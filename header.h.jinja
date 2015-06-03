@@ -79,6 +79,21 @@ bool
 // Returns the maximum value representable by the `{{type}}` type.
 
 
+{{type}}
+{{funcname}}__from_float(
+        float );
+
+
+{{type}}
+{{funcname}}__from_double(
+        double );
+
+
+{{type}}
+{{funcname}}__from_ldouble(
+        ldouble );
+
+
 {% endif %} {# BOUNDED #}
 
 
@@ -247,6 +262,7 @@ bool
 
 {% if 'CHAR' in typeclasses %}
 
+
 {{type}}
 {{funcname}}__from_char(
         char );
@@ -299,11 +315,20 @@ bool
 
 {% if 'FLOAT' in typeclasses %}
 
+
 bool
 {{funcname}}__equal_e(
         {{type}} x,
         {{type}} y,
         {{type}} epsilon );
+
+
+{{type}}
+{{funcname}}__update_average(
+        {{type}} average,
+        size_t num_samples,
+        {{type}} addition );
+
 
 {% endif %} {# FLOAT #}
 
@@ -311,6 +336,7 @@ bool
 
 
 {% if 'NUM' in typeclasses %}
+
 
 bool
 {{funcname}}__is_signed( void );

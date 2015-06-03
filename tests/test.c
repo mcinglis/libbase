@@ -103,6 +103,21 @@ test_to_str( void )
 
 static
 void
+test_bounded( void )
+{
+    ASSERT( int__from_float( 3.5 )    == 4,
+            int__from_float( 0.1 )    == 0,
+            int__from_float( 0 )      == 0,
+            int__from_float( -0.1 )   == 0,
+            int__from_float( -0.5 )   == -1,
+            int__from_float( 1 )      == 1,
+            int__from_float( -8 )     == -8,
+            int__from_float( 1.9999 ) == 2 );
+}
+
+
+static
+void
 test_null( void )
 {
     ASSERT( uchar__null() == '\0',
@@ -113,6 +128,25 @@ test_null( void )
             !double__is_null( 0.001 ),
             !double__is_null( -0.001 ),
             double__is_null( 0 ) );
+}
+
+
+static
+void
+test_float( void )
+{
+    double const epsilon = 0.000001;
+    size_t n = 0;
+    double avg = double__update_average( 0, n++, 5 );
+    ASSERT( double__equal_e( avg, 5, epsilon ) );
+    avg = double__update_average( avg, n++, 10 );
+    ASSERT( double__equal_e( avg, 7.5, epsilon ) );
+    avg = double__update_average( avg, n++, 15 );
+    ASSERT( double__equal_e( avg, 10, epsilon ) );
+    avg = double__update_average( avg, n++, -10 );
+    ASSERT( double__equal_e( avg, 5, epsilon ) );
+    avg = double__update_average( avg, n++, -30 );
+    ASSERT( double__equal_e( avg, -2, epsilon ) );
 }
 
 
@@ -193,7 +227,10 @@ main( void )
     test_to_str();
     printf( "  to_str tests passed\n" );
 
-    test_null();
-    printf( "  NULL typeclasses tests passed\n" );
+    test_bounded();     puts( "  BOUNDED typeclass tests passed" );
+    test_null();        puts( "  NULL typeclass tests passed" );
+    test_float();       puts( "  FLOAT typeclass tests passed" );
+
+    puts( "All tests passed!" );
 }
 
