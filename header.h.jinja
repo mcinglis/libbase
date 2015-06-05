@@ -329,13 +329,25 @@ bool
 
 
 {{type}}
-{{funcname}}__average_(
+{{funcname}}__sum_n(
+        {{type}} const * xs,
+        size_t n );
+
+
+#define {{funcname}}__sum( ... ) \
+    {{funcname}}__sum_n( \
+        ( {{type}} [] ){ __VA_ARGS__ }, \
+        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
+
+
+{{type}}
+{{funcname}}__average_n(
         {{type}} const * xs,
         size_t n );
 
 
 #define {{funcname}}__average( ... ) \
-    {{funcname}}__average_( \
+    {{funcname}}__average_n( \
         ( {{type}} [] ){ __VA_ARGS__ }, \
         NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
 
