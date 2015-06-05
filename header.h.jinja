@@ -31,7 +31,6 @@
 
 
 #include <libtypes/types.h>
-#include <libmacro/nelem.h>
 {% for p in sys_headers %}
 #include <{{p}}>
 {% endfor %}
@@ -120,6 +119,9 @@ bool
 
 
 {% if 'ORD' in typeclasses %}
+
+
+#include <libmacro/nelem.h>
 
 
 ord
@@ -316,11 +318,26 @@ bool
 {% if 'FLOAT' in typeclasses %}
 
 
+#include <libmacro/nelem.h>
+
+
 bool
 {{funcname}}__equal_e(
         {{type}} x,
         {{type}} y,
         {{type}} epsilon );
+
+
+{{type}}
+{{funcname}}__average_(
+        {{type}} const * xs,
+        size_t n );
+
+
+#define {{funcname}}__average( ... ) \
+    {{funcname}}__average_( \
+        ( {{type}} [] ){ __VA_ARGS__ }, \
+        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
 
 
 {{type}}

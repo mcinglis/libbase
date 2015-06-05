@@ -147,6 +147,11 @@ test_float( void )
     ASSERT( double__equal_e( avg, 5, epsilon ) );
     avg = double__update_average( avg, n++, -30 );
     ASSERT( double__equal_e( avg, -2, epsilon ) );
+
+    ASSERT( double__equal_e( double__average( 1, 2, 3 ), 2, epsilon ),
+            double__equal_e( double__average( 0.5, 1 ), 0.75, epsilon ),
+            double__equal_e( double__average( 3 ), 3, epsilon ),
+            double__equal_e( double__average( -5, 0, 0, 5 ), 0, epsilon ) );
 }
 
 
