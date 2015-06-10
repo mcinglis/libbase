@@ -1185,6 +1185,44 @@ size_t
 #include <limits.h>
 
 
+intmax_t
+{{funcname}}__to_intmax(
+        {{type}} const x )
+{
+    errno = 0;
+    if ( x < ( INTMAX_MIN - 0.5 ) ) {
+        errno = EOVERFLOW;
+        return INTMAX_MIN;
+    } else if ( x > ( INTMAX_MAX + 0.5 ) ) {
+        errno = EOVERFLOW;
+        return INTMAX_MAX;
+    } else {
+        if ( x >= 0 ) {
+            return x + 0.5;
+        } else {
+            return x - 0.5;
+        }
+    }
+}
+
+
+uintmax_t
+{{funcname}}__to_uintmax(
+        {{type}} const x )
+{
+    errno = 0;
+    if ( x < -0.5 ) {
+        errno = EOVERFLOW;
+        return 0;
+    } else if ( x > ( UINTMAX_MAX + 0.5 ) ) {
+        errno = EOVERFLOW;
+        return UINTMAX_MAX;
+    } else {
+        return x + 0.5;
+    }
+}
+
+
 bool
 {{funcname}}__equal_e(
         {{type}} const x,

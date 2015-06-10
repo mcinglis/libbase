@@ -154,6 +154,18 @@ test_float( void )
             double__equal_e( double__average( 0.5, 1 ), 0.75, epsilon ),
             double__equal_e( double__average( 3 ), 3, epsilon ),
             double__equal_e( double__average( -5, 0, 0, 5 ), 0, epsilon ) );
+
+    errno = 0;
+    ASSERT( double__to_intmax( 0 ) == 0 && errno == 0,
+            double__to_uintmax( 0 ) == 0 && errno == 0,
+            double__to_intmax( 123.4567 ) == 123 && errno == 0,
+            double__to_uintmax( 123.4567 ) == 123 && errno == 0,
+            double__to_intmax( 0.999999 ) == 1 && errno == 0,
+            double__to_intmax( -0.999999 ) == -1 && errno == 0,
+            double__to_intmax( -0.5 ) == -1 && errno == 0,
+            double__to_intmax( 0.5 ) == 1 && errno == 0,
+            double__to_intmax( 12345678901234567890123.123 ) == INTMAX_MAX
+            && errno == EOVERFLOW );
 }
 
 
