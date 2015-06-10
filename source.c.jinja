@@ -466,70 +466,6 @@ bool
 
 
 
-{% if 'FLOAT' in typeclasses %}
-
-
-#include <errno.h>
-#include <limits.h>
-
-
-bool
-{{funcname}}__equal_e(
-        {{type}} const x,
-        {{type}} const y,
-        {{type}} const epsilon )
-{
-    return ( x - y ) < epsilon;
-}
-
-
-{{type}}
-{{funcname}}__sum_n(
-        {{type}} const * const xs,
-        size_t const n )
-{
-    ASSERT( xs != NULL, n > 0 );
-
-    {{type}} sum = xs[ 0 ];
-    for ( size_t i = 1; i < n; i++ ) {
-        sum += xs[ i ];
-    }
-    return sum;
-}
-
-
-{{type}}
-{{funcname}}__average_n(
-        {{type}} const * const xs,
-        size_t const n )
-{
-    ASSERT( xs != NULL, n > 0 );
-
-    return {{funcname}}__sum_n( xs, n ) / n;
-}
-
-
-{{type}}
-{{funcname}}__update_average(
-        {{type}} const avg,
-        size_t const n,
-        {{type}} const add )
-{
-    errno = 0;
-    if ( n == SIZE_MAX ) {
-        errno = EOVERFLOW;
-        return avg;
-    } else {
-        return ( ( avg * n ) + add ) / ( n + 1 );
-    }
-}
-
-
-{% endif %} {# FLOAT #}
-
-
-
-
 {% if 'NUM' in typeclasses %}
 
 
@@ -549,25 +485,21 @@ bool
 {{funcname}}__is_signed(
         void )
 {
-{% if num_type == 'signed' %}
+{% if 'FLOAT' in typeclasses %}
     return true;
-{% else %}
+{% elif num_type == 'unsigned' %}
     return false;
+{% else %}
+    return true;
 {% endif %}
 }
 
 
-size_t
-{{funcname}}__num_digits(
+{{type}}
+{{funcname}}__abs(
         {{type}} const x )
 {
-    size_t count = 0;
-    {{type}} rem = x;
-    do {
-        rem /= 10;
-        count++;
-    } while ( rem != 0 );
-    return count;
+    return {{funcname}}__is_negative( x ) ? {{funcname}}__negate( x ) : x;
 }
 
 
@@ -613,109 +545,12 @@ bool
 
 
 {{type}}
-{{funcname}}__add(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__add_would_underflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__min_bound();
-    } else if ( {{funcname}}__add_would_overflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__max_bound();
-    } else {
-        return x + y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__sub(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__sub_would_underflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__min_bound();
-    } else if ( {{funcname}}__sub_would_overflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__max_bound();
-    } else {
-        return x - y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__mul(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__mul_would_underflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__min_bound();
-    } else if ( {{funcname}}__mul_would_overflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__max_bound();
-    } else {
-        return x * y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__div(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( y == 0 ) {
-        errno = EDOM;
-        // We return the maximum value as `y` approaches `0` from positive:
-        return ( x < 0 ) ? {{funcname}}__min_bound()
-             : ( x > 0 ) ? {{funcname}}__max_bound()
-                         : 0;
-    } else if ( {{funcname}}__div_would_underflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__min_bound();
-    } else if ( {{funcname}}__div_would_overflow( x, y ) ) {
-        errno = EOVERFLOW;
-        return {{funcname}}__max_bound();
-    } else {
-        return x / y;
-    }
-}
-
-
-{{type}}
-{{funcname}}__mod(
-        {{type}} const x,
-        {{type}} const y )
-{
-    if ( {{funcname}}__can_div( x, y ) ) {
-        return x % y;
-    } else {
-        errno = EOVERFLOW;
-        return 0;
-    }
-}
-
-
-{{type}}
-{{funcname}}__abs(
-        {{type}} const x )
-{
-    return ( x < 0 ) ? {{funcname}}__negate( x ) : x;
-}
-
-
-{{type}}
 {{funcname}}__add_b(
         {{type}} const x,
         {{type}} const y )
 {
-    int const saved_errno = errno;
     {{type}} const r = {{funcname}}__add( x, y );
-    errno = saved_errno;
+    errno = 0;
     return r;
 }
 
@@ -725,9 +560,8 @@ bool
         {{type}} const x,
         {{type}} const y )
 {
-    int const saved_errno = errno;
     {{type}} const r = {{funcname}}__sub( x, y );
-    errno = saved_errno;
+    errno = 0;
     return r;
 }
 
@@ -737,9 +571,8 @@ bool
         {{type}} const x,
         {{type}} const y )
 {
-    int const saved_errno = errno;
     {{type}} const r = {{funcname}}__mul( x, y );
-    errno = saved_errno;
+    errno = 0;
     return r;
 }
 
@@ -749,9 +582,8 @@ bool
         {{type}} const x,
         {{type}} const y )
 {
-    int const saved_errno = errno;
     {{type}} const r = {{funcname}}__div( x, y );
-    errno = saved_errno;
+    errno = 0;
     return r;
 }
 
@@ -761,9 +593,8 @@ bool
         {{type}} const x,
         {{type}} const y )
 {
-    int const saved_errno = errno;
     {{type}} const r = {{funcname}}__mod( x, y );
-    errno = saved_errno;
+    errno = 0;
     return r;
 }
 
@@ -772,9 +603,8 @@ bool
 {{funcname}}__negate_b(
         {{type}} const x )
 {
-    int const saved_errno = errno;
     {{type}} const r = {{funcname}}__negate( x );
-    errno = saved_errno;
+    errno = 0;
     return r;
 }
 
@@ -783,9 +613,8 @@ bool
 {{funcname}}__abs_b(
         {{type}} const x )
 {
-    int const saved_errno = errno;
     {{type}} const r = {{funcname}}__abs( x );
-    errno = saved_errno;
+    errno = 0;
     return r;
 }
 
@@ -795,7 +624,7 @@ bool
         {{type}} const x,
         {{type}} const y )
 {
-    return ( x < 0 ) == ( y < 0 );
+    return {{funcname}}__is_negative( x ) == {{funcname}}__is_negative( y );
 }
 
 
@@ -805,8 +634,9 @@ bool
         {{type}} const delta,
         {{type}} const y )
 {
-    return {{funcname}}__sub_b( x, delta ) <= y
-        && y <= {{funcname}}__add_b( x, delta );
+    {{type}} const lower = {{funcname}}__sub_b( x, delta );
+    {{type}} const upper = {{funcname}}__add_b( x, delta );
+    return {{funcname}}__in_range( lower, upper, y );
 }
 
 
@@ -816,8 +646,9 @@ bool
         {{type}} const delta,
         {{type}} const y )
 {
-    return {{funcname}}__sub_b( x, delta ) < y
-        && y < {{funcname}}__add_b( x, delta );
+    {{type}} const lower = {{funcname}}__sub_b( x, delta );
+    {{type}} const upper = {{funcname}}__add_b( x, delta );
+    return {{funcname}}__in_xrange( lower, upper, y );
 }
 
 
@@ -829,12 +660,8 @@ bool {{funcname}}__is_nonnegative( {{type}} const x ) { return x >= 0; }
 bool {{funcname}}__is_positive   ( {{type}} const x ) { return x > 0; }
 
 
-bool {{funcname}}__is_even( {{type}} const x ) { return x % 2 == 0; }
-bool {{funcname}}__is_odd ( {{type}} const x ) { return x % 2 == 1; }
-
-
 ord {{funcname}}__compare_0( {{type}} const x )
-    { return {{funcname}}__compare( x, 0 ); }
+        { return {{funcname}}__compare( x, 0 ); }
 
 
 {{type}} {{funcname}}__add_2( {{type}} const x )
@@ -871,6 +698,264 @@ ord {{funcname}}__compare_0( {{type}} const x )
         { return {{funcname}}__div_b( x, 10 ); }
 {{type}} {{funcname}}__mod_b_10( {{type}} const x )
         { return {{funcname}}__mod_b( x, 10 ); }
+
+
+{% if 'FLOAT' in typeclasses %}
+
+
+{{type}}
+{{funcname}}__add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( {{funcname}}__add_would_underflow( x, y )
+      || {{funcname}}__add_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return 0;
+    } else {
+        return x + y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( {{funcname}}__sub_would_underflow( x, y )
+      || {{funcname}}__sub_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return 0;
+    } else {
+        return x - y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( {{funcname}}__mul_would_underflow( x, y )
+      || {{funcname}}__mul_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return 0;
+    } else {
+        return x * y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( y == 0 ) {
+        errno = EDOM;
+        return 0;
+    } else {
+        return x / y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mod(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( y == 0 ) {
+        errno = EDOM;
+        return 0;
+    } else {
+        intmax_t const n = x / y;
+        return x - ( n * y );
+    }
+}
+
+
+bool
+{{funcname}}__add_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__add_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__sub_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__sub_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__mul_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__mul_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__div_would_underflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+bool
+{{funcname}}__div_would_overflow(
+        {{type}} const x,
+        {{type}} const y )
+{
+    return false;
+}
+
+
+{{type}}
+{{funcname}}__negate( {{type}} const x )
+{
+    return -x;
+}
+
+
+
+{% else %} {# 'FLOAT' not in typeclasses #}
+
+
+{{type}}
+{{funcname}}__add(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( {{funcname}}__add_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__add_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x + y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__sub(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( {{funcname}}__sub_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__sub_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x - y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mul(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( {{funcname}}__mul_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__mul_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x * y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__div(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( y == 0 ) {
+        errno = EDOM;
+        // We return the maximum value as `y` approaches `0` from positive:
+        return ( x < 0 ) ? {{funcname}}__min_bound()
+             : ( x > 0 ) ? {{funcname}}__max_bound()
+                         : 0;
+    } else if ( {{funcname}}__div_would_underflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__min_bound();
+    } else if ( {{funcname}}__div_would_overflow( x, y ) ) {
+        errno = EOVERFLOW;
+        return {{funcname}}__max_bound();
+    } else {
+        return x / y;
+    }
+}
+
+
+{{type}}
+{{funcname}}__mod(
+        {{type}} const x,
+        {{type}} const y )
+{
+    errno = 0;
+    if ( {{funcname}}__can_div( x, y ) ) {
+        return x % y;
+    } else {
+        errno = EOVERFLOW;
+        return 0;
+    }
+}
 
 
 {% if num_type == 'unsigned' %}
@@ -955,7 +1040,7 @@ bool
 }
 
 
-{% else %} {# signed #}
+{% else %} {# num_type != 'unsigned' #}
 
 
 bool
@@ -1038,6 +1123,7 @@ bool
 {{funcname}}__negate(
         {{type}} const x )
 {
+    errno = 0;
     if ( x != {{funcname}}__min_bound() ) {
         return -x;
     } else {
@@ -1047,9 +1133,111 @@ bool
 }
 
 
-{% endif %} {# num_type #}
+{% endif %} {# num_type != 'unsigned' #}
+{% endif %} {# 'FLOAT' not in typeclasses #}
+{% endif %} {# 'NUM' in typeclasses #}
 
-{% endif %} {# NUM #}
+
+
+
+{% if 'INTEGER' in typeclasses %}
+
+
+bool
+{{funcname}}__is_even(
+        {{type}} const x )
+{
+    return x % 2 == 0;
+}
+
+
+bool
+{{funcname}}__is_odd (
+        {{type}} const x )
+{
+    return x % 2 == 1;
+}
+
+
+size_t
+{{funcname}}__num_digits(
+        {{type}} const x )
+{
+    size_t count = 0;
+    {{type}} rem = x;
+    do {
+        rem /= 10;
+        count++;
+    } while ( rem != 0 );
+    return count;
+}
+
+
+{% endif %} {# 'INTEGER' in typeclasses #}
+
+
+
+
+{% if 'FLOAT' in typeclasses %}
+
+
+#include <errno.h>
+#include <limits.h>
+
+
+bool
+{{funcname}}__equal_e(
+        {{type}} const x,
+        {{type}} const y,
+        {{type}} const epsilon )
+{
+    return ( x - y ) < epsilon;
+}
+
+
+{{type}}
+{{funcname}}__sum_n(
+        {{type}} const * const xs,
+        size_t const n )
+{
+    ASSERT( xs != NULL, n > 0 );
+
+    {{type}} sum = xs[ 0 ];
+    for ( size_t i = 1; i < n; i++ ) {
+        sum += xs[ i ];
+    }
+    return sum;
+}
+
+
+{{type}}
+{{funcname}}__average_n(
+        {{type}} const * const xs,
+        size_t const n )
+{
+    ASSERT( xs != NULL, n > 0 );
+
+    return {{funcname}}__sum_n( xs, n ) / n;
+}
+
+
+{{type}}
+{{funcname}}__update_average(
+        {{type}} const avg,
+        size_t const n,
+        {{type}} const add )
+{
+    errno = 0;
+    if ( n == SIZE_MAX ) {
+        errno = EOVERFLOW;
+        return avg;
+    } else {
+        return ( ( avg * n ) + add ) / ( n + 1 );
+    }
+}
+
+
+{% endif %} {# 'FLOAT' in typeclasses #}
 
 
 
@@ -1057,18 +1245,52 @@ bool
 {% if 'FROM_STR' in typeclasses %}
 
 
+#include <ctype.h>
 #include <errno.h>
 
-{% if type == 'bool' %}
 
-#include <ctype.h>
+{% if 'FLOAT' in typeclasses %}
+
+
+#include <stdlib.h>
+
+
+{{type}}
+{{funcname}}__from_str(
+        char const * const str )
+{
+    if ( str == NULL || str[ 0 ] == '\0' ) {
+        errno = EINVAL;
+        return 0;
+    }
+
+    errno = 0;
+    char * end_ptr = NULL;
+    ldouble const x = strtold( str, &end_ptr );
+    if ( errno ) { return 0; }
+    while ( isspace( *end_ptr ) ) {
+        end_ptr++;
+    }
+    if ( *end_ptr != '\0' ) {
+        errno = EBADMSG;
+        return x;
+    } else {
+        return x;
+    }
+}
+
+
+{% elif type == 'bool' %} {# 'FLOAT' not in typeclasses #}
+
+
 #include <string.h>
 
 
 static
 bool
-prefixi( char const * const xs,
-         char const * const ys )
+prefixi(
+        char const * const xs,
+        char const * const ys )
 {
     for ( size_t i = 0; xs[ i ] != '\0'; i++ ) {
         if ( tolower( ( uchar ) xs[ i ] ) != tolower( ( uchar ) ys[ i ] ) ) {
@@ -1112,32 +1334,12 @@ prefixi( char const * const xs,
     return r;
 }
 
-{% elif num_type == 'float' %}
+
+{% else %} {# 'FLOAT' not in typeclasses and type != 'bool' #}
 
 
-#include <stdlib.h>
-
-
-{{type}}
-{{funcname}}__from_str(
-        char const * const str )
-{
-    ASSERT( str != NULL );
-
-    errno = 0;
-{% if type == 'float' %}
-    return strtof( str, NULL );
-{% elif type == 'double' %}
-    return strtod( str, NULL );
-{% else %}
-    return strtold( str, NULL );
-{% endif %}
-}
-
-{% else %} {# from_str() impl for non-bool, non-float #}
-
-#include <ctype.h>
 #include <inttypes.h>
+
 
 {{type}}
 {{funcname}}__from_str(
@@ -1147,17 +1349,15 @@ prefixi( char const * const xs,
         errno = EINVAL;
         return 0;
     }
-    int const saved_errno = errno;
+
     errno = 0;
     char * end_ptr;
-{% if num_type == 'signed' %}
-    intmax_t const x = strtoimax( str, &end_ptr, 10 );
-{% else %}
+{% if num_type == 'unsigned' %}
     uintmax_t const x = strtoumax( str, &end_ptr, 10 );
+{% else %}
+    intmax_t const x = strtoimax( str, &end_ptr, 10 );
 {% endif %}
-    if ( errno ) {
-        return 0;
-    }
+    if ( errno ) { return 0; }
     while ( isspace( *end_ptr ) ) {
         end_ptr++;
     }
@@ -1171,28 +1371,102 @@ prefixi( char const * const xs,
         errno = ERANGE;
         return {{funcname}}__max_bound();
     } else {
-        errno = saved_errno;
         return x;
     }
 }
+
 
 {% endif %}
 
 
 void
-{{funcname}}__arg_parse(
+{{funcname}}__argparse(
         char const * const name,
         char const * const value,
         void * const vdestination )
 {
-    ASSERT( value != NULL, vdestination != NULL );
-
+    if ( vdestination == NULL ) { return; }
     {{type}} * const dest = vdestination;
     *dest = {{funcname}}__from_str( value );
 }
 
 
-{% endif %} {# FROM_STR #}
+{% if 'NUM' in typeclasses %}
+
+
+static
+void
+argparse_check(
+        char const * const name,
+        char const * const value,
+        void * const vx,
+        bool ( * const p )( {{type}} ) )
+{
+    ASSERT( p != NULL );
+
+    errno = 0;
+    if ( vx == NULL ) { return; }
+    {{type}} * const x = vx;
+    *x = {{funcname}}__from_str( value );
+    if ( errno == 0 && p( *x ) == false ) {
+        errno = ERANGE;
+    }
+}
+
+
+
+void
+{{funcname}}__argparse_nonzero(
+        char const * const name,
+        char const * const value,
+        void * const vx )
+{
+    argparse_check( name, value, vx, {{funcname}}__is_nonzero );
+}
+
+
+void
+{{funcname}}__argparse_negative(
+        char const * const name,
+        char const * const value,
+        void * const vx )
+{
+    argparse_check( name, value, vx, {{funcname}}__is_negative );
+}
+
+
+void
+{{funcname}}__argparse_nonpositive(
+        char const * const name,
+        char const * const value,
+        void * const vx )
+{
+    argparse_check( name, value, vx, {{funcname}}__is_nonpositive );
+}
+
+
+void
+{{funcname}}__argparse_nonnegative(
+        char const * const name,
+        char const * const value,
+        void * const vx )
+{
+    argparse_check( name, value, vx, {{funcname}}__is_nonnegative );
+}
+
+
+void
+{{funcname}}__argparse_positive(
+        char const * const name,
+        char const * const value,
+        void * const vx )
+{
+    argparse_check( name, value, vx, {{funcname}}__is_positive );
+}
+
+
+{% endif %} {# 'NUM' in typeclasses #}
+{% endif %} {# 'FROM_STR' in typeclasses #}
 
 
 {% if 'TO_STR' in typeclasses %}
@@ -1246,8 +1520,52 @@ reverse( char * const xs )
 }
 
 
-{% if num_type == 'signed' %}
-{# signed number #}
+{% if num_type == 'unsigned' %}
+
+
+char *
+{{funcname}}__to_strm(
+        {{type}} const x )
+{
+    size_t const nd = {{funcname}}__num_digits( x );
+    ASSERT( nd < SIZE_MAX - 1 );
+
+    size_t const size = nd + 1;
+    int const saved_errno = errno;
+    errno = 0;
+    char * const buf = malloc( size );
+    if ( errno ) { return NULL; }
+    {{funcname}}__into_strm( x, buf, size );
+    errno = saved_errno;
+    return buf;
+}
+
+
+static
+void
+into_strm(
+        {{type}} const x,
+        char * const buf,
+        size_t const size )
+{
+    ASSERT( size > 0 );
+
+    size_t i = 0;
+    {{type}} r = x;
+    do {
+        if ( i >= size - 1 ) {
+            break;
+        }
+        buf[ i ] = '0' + ( r % 10 );
+        r /= 10;
+        i++;
+    } while ( r != 0 );
+    buf[ i ] = '\0';
+    reverse( buf );
+}
+
+
+{% else %} {# num_type != 'unsigned' #}
 
 
 char *
@@ -1296,49 +1614,6 @@ into_strm(
 }
 
 
-{% else %}
-{# unsigned number #}
-
-char *
-{{funcname}}__to_strm(
-        {{type}} const x )
-{
-    size_t const nd = {{funcname}}__num_digits( x );
-    ASSERT( nd < SIZE_MAX - 1 );
-
-    size_t const size = nd + 1;
-    int const saved_errno = errno;
-    errno = 0;
-    char * const buf = malloc( size );
-    if ( errno ) { return NULL; }
-    {{funcname}}__into_strm( x, buf, size );
-    errno = saved_errno;
-    return buf;
-}
-
-
-static
-void
-into_strm(
-        {{type}} const x,
-        char * const buf,
-        size_t const size )
-{
-    ASSERT( size > 0 );
-
-    size_t i = 0;
-    {{type}} r = x;
-    do {
-        if ( i >= size - 1 ) {
-            break;
-        }
-        buf[ i ] = '0' + ( r % 10 );
-        r /= 10;
-        i++;
-    } while ( r != 0 );
-    buf[ i ] = '\0';
-    reverse( buf );
-}
 
 {% endif %}
 

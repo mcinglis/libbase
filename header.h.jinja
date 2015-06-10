@@ -315,55 +315,6 @@ bool
 
 
 
-{% if 'FLOAT' in typeclasses %}
-
-
-#include <libmacro/nelem.h>
-
-
-bool
-{{funcname}}__equal_e(
-        {{type}} x,
-        {{type}} y,
-        {{type}} epsilon );
-
-
-{{type}}
-{{funcname}}__sum_n(
-        {{type}} const * xs,
-        size_t n );
-
-
-#define {{funcname}}__sum( ... ) \
-    {{funcname}}__sum_n( \
-        ( {{type}} [] ){ __VA_ARGS__ }, \
-        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
-
-
-{{type}}
-{{funcname}}__average_n(
-        {{type}} const * xs,
-        size_t n );
-
-
-#define {{funcname}}__average( ... ) \
-    {{funcname}}__average_n( \
-        ( {{type}} [] ){ __VA_ARGS__ }, \
-        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
-
-
-{{type}}
-{{funcname}}__update_average(
-        {{type}} average,
-        size_t num_samples,
-        {{type}} addition );
-
-
-{% endif %} {# FLOAT #}
-
-
-
-
 {% if 'NUM' in typeclasses %}
 
 
@@ -375,6 +326,46 @@ bool
 {{type}}
 {{funcname}}__zero( void );
 // Returns the zero value of the `{{type}}` type.
+
+
+{{type}}
+{{funcname}}__add(
+        {{type}} x,
+        {{type}} y );
+
+
+{{type}}
+{{funcname}}__sub(
+        {{type}} x,
+        {{type}} y );
+
+
+{{type}}
+{{funcname}}__mul(
+        {{type}} x,
+        {{type}} y );
+
+
+{{type}}
+{{funcname}}__div(
+        {{type}} x,
+        {{type}} y );
+
+
+{{type}}
+{{funcname}}__mod(
+        {{type}} x,
+        {{type}} y );
+
+
+{{type}}
+{{funcname}}__negate(
+        {{type}} x );
+
+
+{{type}}
+{{funcname}}__abs(
+        {{type}} x );
 
 
 bool
@@ -450,46 +441,6 @@ bool
 
 
 {{type}}
-{{funcname}}__add(
-        {{type}} x,
-        {{type}} y );
-
-
-{{type}}
-{{funcname}}__sub(
-        {{type}} x,
-        {{type}} y );
-
-
-{{type}}
-{{funcname}}__mul(
-        {{type}} x,
-        {{type}} y );
-
-
-{{type}}
-{{funcname}}__div(
-        {{type}} x,
-        {{type}} y );
-
-
-{{type}}
-{{funcname}}__mod(
-        {{type}} x,
-        {{type}} y );
-
-
-{{type}}
-{{funcname}}__negate(
-        {{type}} x );
-
-
-{{type}}
-{{funcname}}__abs(
-        {{type}} x );
-
-
-{{type}}
 {{funcname}}__add_b(
         {{type}},
         {{type}} );
@@ -549,7 +500,8 @@ bool
         {{type}} x,
         {{type}} delta,
         {{type}} y );
-// Returns `( x - delta ) < y && y < ( x + delta )`.
+// Returns `( x - delta ) < y && y < ( x + delta )`, in the domain of the
+// `{{type}}` type.
 
 
 bool
@@ -592,18 +544,6 @@ ord
 {{funcname}}__compare_0(
         {{type}} x );
 // Returns `{{funcname}}__compare( x, 0 )`.
-
-
-bool
-{{funcname}}__is_even(
-        {{type}} x );
-// Returns `x % 2 == 0`.
-
-
-bool
-{{funcname}}__is_odd(
-        {{type}} x );
-// Returns `x % 2 == 1`.
 
 
 {{type}}
@@ -681,7 +621,81 @@ bool
         {{type}} );
 
 
-{% endif %} {# NUM #}
+{% endif %} {# 'NUM' in typeclasses #}
+
+
+
+
+{% if 'INTEGER' in typeclasses %}
+
+
+bool
+{{funcname}}__is_even(
+        {{type}} x );
+// Returns `x % 2 == 0`.
+
+
+bool
+{{funcname}}__is_odd(
+        {{type}} x );
+// Returns `x % 2 == 1`.
+
+
+size_t
+{{funcname}}__num_digits(
+        {{type}} const x );
+
+
+{% endif %} {# 'INTEGER' in typeclasses #}
+
+
+
+
+{% if 'FLOAT' in typeclasses %}
+
+
+#include <libmacro/nelem.h>
+
+
+bool
+{{funcname}}__equal_e(
+        {{type}} x,
+        {{type}} y,
+        {{type}} epsilon );
+
+
+{{type}}
+{{funcname}}__sum_n(
+        {{type}} const * xs,
+        size_t n );
+
+
+#define {{funcname}}__sum( ... ) \
+    {{funcname}}__sum_n( \
+        ( {{type}} [] ){ __VA_ARGS__ }, \
+        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
+
+
+{{type}}
+{{funcname}}__average_n(
+        {{type}} const * xs,
+        size_t n );
+
+
+#define {{funcname}}__average( ... ) \
+    {{funcname}}__average_n( \
+        ( {{type}} [] ){ __VA_ARGS__ }, \
+        NELEM( ( {{type}} [] ){ __VA_ARGS__ } ) )
+
+
+{{type}}
+{{funcname}}__update_average(
+        {{type}} average,
+        size_t num_samples,
+        {{type}} addition );
+
+
+{% endif %} {# 'FLOAT' in typeclasses #}
 
 
 
@@ -700,7 +714,7 @@ bool
 
 
 void
-{{funcname}}__arg_parse(
+{{funcname}}__argparse(
         char const * name,
         char const * value,
         void * destination );
@@ -708,7 +722,56 @@ void
 // values of type `{{type}}`.
 
 
-{% endif %}
+{% if 'NUM' in typeclasses %}
+
+
+void
+{{funcname}}__argparse_nonzero(
+        char const * name,
+        char const * value,
+        void * destination );
+// Like `{{funcname}}__argparse()`, but sets `errno = ERANGE` if the parsed
+// value is equal to `0`.
+
+
+void
+{{funcname}}__argparse_negative(
+        char const * name,
+        char const * value,
+        void * destination );
+// Like `{{funcname}}__argparse()`, but sets `errno = ERANGE` if the parsed
+// value is `>= 0`.
+
+
+void
+{{funcname}}__argparse_nonpositive(
+        char const * name,
+        char const * value,
+        void * destination );
+// Like `{{funcname}}__argparse()`, but sets `errno = ERANGE` if the parsed
+// value is `> 0`.
+
+
+void
+{{funcname}}__argparse_nonnegative(
+        char const * name,
+        char const * value,
+        void * destination );
+// Like `{{funcname}}__argparse()`, but sets `errno = ERANGE` if the parsed
+// value is `< 0`.
+
+
+void
+{{funcname}}__argparse_positive(
+        char const * name,
+        char const * value,
+        void * destination );
+// Like `{{funcname}}__argparse()`, but sets `errno = ERANGE` if the parsed
+// value is `<= 0`.
+
+
+{% endif %} {# 'NUM' in typeclasses #}
+{% endif %} {# 'FROM_STR' in typeclasses #}
 
 
 
@@ -722,7 +785,7 @@ char const *
 // Returns a pointer to a string representation of the given value.
 
 
-{% endif %} {# TO_STR #}
+{% endif %} {# 'TO_STR' in typeclasses #}
 
 
 
@@ -744,7 +807,9 @@ char *
 // representation of the given value.
 
 
-{% endif %}
+{% endif %} {# 'TO_STRM' in typeclasses #}
+
+
 
 
 #endif // ifndef LIBBASE_{{macroname}}_H
