@@ -1532,15 +1532,50 @@ char const *
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include <libmacro/assert.h>
 #include <libmacro/logic.h>
 
 
+{% if num_type == 'float' %}
+
+
+char *
+{{funcname}}__to_strm(
+        {{type}} const x )
+{
+    errno = 0;
+    size_t const size = 64;
+    char * const buf = malloc( size );
+    if ( errno ) { return buf; }
+    {{funcname}}__into_strm( x, buf, size );
+    return buf;
+}
+
+
 static
 void
-reverse( char * const xs )
+into_strm(
+        {{type}} const x,
+        char * const buf,
+        size_t const size )
+{
+    ASSERT( size > 0 );
+
+    snprintf( buf, size, "%.6lf", ( double ) x );
+    buf[ size - 1 ] = '\0';
+}
+
+
+{% else %} {# num_type != 'float' #}
+
+
+static
+void
+reverse(
+        char * const xs )
 {
     ASSERT( xs != NULL );
 
@@ -1569,12 +1604,10 @@ char *
     ASSERT( nd < SIZE_MAX - 1 );
 
     size_t const size = nd + 1;
-    int const saved_errno = errno;
     errno = 0;
     char * const buf = malloc( size );
-    if ( errno ) { return NULL; }
+    if ( errno ) { return buf; }
     {{funcname}}__into_strm( x, buf, size );
-    errno = saved_errno;
     return buf;
 }
 
@@ -1614,12 +1647,10 @@ char *
     ASSERT( nd < SIZE_MAX - 2 );
 
     size_t const size = nd + 1 + ( x < 0 );
-    int const saved_errno = errno;
     errno = 0;
     char * const buf = malloc( size );
-    if ( errno ) { return NULL; }
+    if ( errno ) { return buf; }
     {{funcname}}__into_strm( x, buf, size );
-    errno = saved_errno;
     return buf;
 }
 
@@ -1652,8 +1683,8 @@ into_strm(
 }
 
 
-
-{% endif %}
+{% endif %} {# num_type != 'unsigned' #}
+{% endif %} {# num_type != 'float' #}
 
 
 void

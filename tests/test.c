@@ -36,68 +36,94 @@ test_from_str( void )
 
 static
 void
-test_to_str( void )
+test_to_strm( void )
 {
-    char x[ 32 ];
-
-    int__into_strm( 0, x, sizeof x );
-    ASSERT( streq( x, "0" ) );
-    int__into_strm( 5, x, sizeof x );
-    ASSERT( streq( x, "5" ) );
-    int__into_strm( 10, x, sizeof x );
-    ASSERT( streq( x, "10" ) );
-    int__into_strm( 20, x, sizeof x );
-    ASSERT( streq( x, "20" ) );
-    int__into_strm( 100, x, sizeof x );
-    ASSERT( streq( x, "100" ) );
-    int__into_strm( 123456789, x, sizeof x );
-    ASSERT( streq( x, "123456789" ) );
-    int__into_strm( -5, x, sizeof x );
-    ASSERT( streq( x, "-5" ) );
-    int__into_strm( -10, x, sizeof x );
-    ASSERT( streq( x, "-10" ) );
-    int__into_strm( -20, x, sizeof x );
-    ASSERT( streq( x, "-20" ) );
-    int__into_strm( -100, x, sizeof x );
-    ASSERT( streq( x, "-100" ) );
-    int__into_strm( -123456789, x, sizeof x );
-    ASSERT( streq( x, "-123456789" ) );
-
-    ulong__into_strm( 0, x, sizeof x );
-    ASSERT( streq( x, "0" ) );
-    ulong__into_strm( 5, x, sizeof x );
-    ASSERT( streq( x, "5" ) );
-    ulong__into_strm( 10, x, sizeof x );
-    ASSERT( streq( x, "10" ) );
-    ulong__into_strm( 20, x, sizeof x );
-    ASSERT( streq( x, "20" ) );
-    ulong__into_strm( 100, x, sizeof x );
-    ASSERT( streq( x, "100" ) );
-    ulong__into_strm( 123456789, x, sizeof x );
-    ASSERT( streq( x, "123456789" ) );
-
-    char y[ 4 ];
-
-    int__into_strm( 12345678, y, sizeof y );
-    ASSERT( streq( y, "123" ) );
-    int__into_strm( -12345678, y, sizeof y );
-    ASSERT( streq( y, "-12" ) );
-
-    ulong__into_strm( 12345678, y, sizeof y );
-    ASSERT( streq( y, "123" ) );
-
-    errno = 0;
-    char * const a = int__to_strm( 0 );
-    ASSERT( errno == 0, streq( a, "0" ) );
-    char * const b = int__to_strm( 9999 );
-    ASSERT( errno == 0, streq( b, "9999" ) );
-    char * const c = int__to_strm( -123 );
-    ASSERT( errno == 0, streq( c, "-123" ) );
-    char * const d = ulong__to_strm( 0 );
-    ASSERT( errno == 0, streq( d, "0" ) );
-    char * const e = ulong__to_strm( 9999 );
-    ASSERT( errno == 0, streq( e, "9999" ) );
-    free( a ); free( b ); free( c ); free( d ); free( e );
+    {
+        char buf[ 32 ];
+        int__into_strm( 0, buf, sizeof buf );
+        ASSERT( streq( buf, "0" ) );
+        int__into_strm( 5, buf, sizeof buf );
+        ASSERT( streq( buf, "5" ) );
+        int__into_strm( 10, buf, sizeof buf );
+        ASSERT( streq( buf, "10" ) );
+        int__into_strm( 20, buf, sizeof buf );
+        ASSERT( streq( buf, "20" ) );
+        int__into_strm( 100, buf, sizeof buf );
+        ASSERT( streq( buf, "100" ) );
+        int__into_strm( 123456789, buf, sizeof buf );
+        ASSERT( streq( buf, "123456789" ) );
+        int__into_strm( -5, buf, sizeof buf );
+        ASSERT( streq( buf, "-5" ) );
+        int__into_strm( -10, buf, sizeof buf );
+        ASSERT( streq( buf, "-10" ) );
+        int__into_strm( -20, buf, sizeof buf );
+        ASSERT( streq( buf, "-20" ) );
+        int__into_strm( -100, buf, sizeof buf );
+        ASSERT( streq( buf, "-100" ) );
+        int__into_strm( -123456789, buf, sizeof buf );
+        ASSERT( streq( buf, "-123456789" ) );
+    }
+    {
+        char buf[ 32 ];
+        ulong__into_strm( 0, buf, sizeof buf );
+        ASSERT( streq( buf, "0" ) );
+        ulong__into_strm( 5, buf, sizeof buf );
+        ASSERT( streq( buf, "5" ) );
+        ulong__into_strm( 10, buf, sizeof buf );
+        ASSERT( streq( buf, "10" ) );
+        ulong__into_strm( 20, buf, sizeof buf );
+        ASSERT( streq( buf, "20" ) );
+        ulong__into_strm( 100, buf, sizeof buf );
+        ASSERT( streq( buf, "100" ) );
+        ulong__into_strm( 123456789, buf, sizeof buf );
+        ASSERT( streq( buf, "123456789" ) );
+    }
+    {
+        char buf[ 4 ];
+        int__into_strm( 12345678, buf, sizeof buf );
+        ASSERT( streq( buf, "123" ) );
+        int__into_strm( -12345678, buf, sizeof buf );
+        ASSERT( streq( buf, "-12" ) );
+        ulong__into_strm( 12345678, buf, sizeof buf );
+        ASSERT( streq( buf, "123" ) );
+    }
+    {
+        char * const str = int__to_strm( 0 );
+        ASSERT( errno == 0, streq( str, "0" ) );
+        free( str );
+    }
+    {
+        char * const str = int__to_strm( 9999 );
+        ASSERT( errno == 0, streq( str, "9999" ) );
+        free( str );
+    }
+    {
+        char * const str = int__to_strm( -123 );
+        ASSERT( errno == 0, streq( str, "-123" ) );
+        free( str );
+    }
+    {
+        char * const str = ulong__to_strm( 0 );
+        ASSERT( errno == 0, streq( str, "0" ) );
+        free( str );
+    }
+    {
+        char * const str = ulong__to_strm( 9999 );
+        ASSERT( errno == 0, streq( str, "9999" ) );
+        free( str );
+    }
+    {
+        double const x = 3.14;
+        char * const str = double__to_strm( x );
+        ASSERT( errno == 0, streq( str, "3.140000" ) );
+        free( str );
+    }
+    {
+        double const x = 6;
+        char * const str = double__to_strm( x );
+        ASSERT( errno == 0, streq( str, "6.000000" ) );
+        free( str );
+    }
 }
 
 
@@ -243,9 +269,7 @@ main( void )
     test_from_str();
     printf( "  from_str tests passed\n" );
 
-    test_to_str();
-    printf( "  to_str tests passed\n" );
-
+    test_to_strm();     puts( "  TO_STRM typeclass tests passed" );
     test_bounded();     puts( "  BOUNDED typeclass tests passed" );
     test_null();        puts( "  NULL typeclass tests passed" );
     test_float();       puts( "  FLOAT typeclass tests passed" );

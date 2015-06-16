@@ -37,7 +37,7 @@ ulong_options := \
 
 double_type := double
 double_options := \
-    --typeclasses NULL EQ ORD NUM FLOAT FROM_STR \
+    --typeclasses NULL EQ ORD NUM FLOAT FROM_STR TO_STRM \
     --extra num_type=float
 
 ptrm_short_type := short *
