@@ -1301,7 +1301,6 @@ bool
         errno = EINVAL;
         return 0;
     }
-
     errno = 0;
     char * end_ptr = NULL;
     ldouble const x = strtold( str, &end_ptr );
@@ -1347,6 +1346,7 @@ prefixi(
         errno = EINVAL;
         return false;
     }
+    errno = 0;
     char const * p = str;
     while ( isspace( *p ) ) {
         p++;
@@ -1387,7 +1387,6 @@ prefixi(
         errno = EINVAL;
         return 0;
     }
-
     errno = 0;
     char * end_ptr;
 {% if num_type == 'unsigned' %}
