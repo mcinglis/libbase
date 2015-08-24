@@ -38,6 +38,10 @@ ord ord__normalize( ord x );
 // to provide that functionality.
 
 
+ord ord__invert( ord x );
+// If `x <= LT`, returns `GT`. If `x == EQ`, returns `EQ`. Otherwise, returns
+// `LT`.
+
 
 ///////////////////////////////////
 /// TYPECLASS: BOUNDED

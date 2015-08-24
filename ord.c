@@ -33,6 +33,16 @@ ord ord__id( ord const x ) { return x; }
 ord ord__normalize( ord const x ) { return ord__clamp( LT, GT, x ); }
 
 
+ord
+ord__invert(
+        ord const x )
+{
+    return ( x <= LT ) ? GT
+         : ( x == EQ ) ? EQ
+                       : LT;
+}
+
+
 
 ///////////////////////////////////
 /// TYPECLASS: BOUNDED
